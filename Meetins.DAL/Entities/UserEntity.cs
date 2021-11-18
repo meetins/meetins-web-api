@@ -46,6 +46,9 @@ namespace Meetins.DAL.Entities
         [Column("DateRegister")]
         public DateTime DateRegister { get; set; }
 
+        /// <summary>
+        /// Запомнить меня
+        /// </summary>
         [Column("RememberMe")]
         public bool RememberMe { get; set; }
     }
