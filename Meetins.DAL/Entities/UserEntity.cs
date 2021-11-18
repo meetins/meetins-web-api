@@ -24,7 +24,7 @@ namespace Meetins.DAL.Entities
 
         [Column("Email")]
         public string Email { get; set; }
-
+        //пароль
         [Column("Password")]
         public string Password { get; set; }
 
