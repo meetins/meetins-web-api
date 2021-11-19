@@ -31,29 +31,13 @@ namespace Meetins.DAL.Repositories
             }
         }
 
-        private bool disposed = false;
-
-        public virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    _db.DisposeAsync();
-                }
-                this.disposed = true;
-            }
-        }
-
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            _db.Dispose();            
         }
-
-        public void SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
         {
-            _db.SaveChangesAsync();
+            return await _db.SaveChangesAsync();
         }
     }
 }

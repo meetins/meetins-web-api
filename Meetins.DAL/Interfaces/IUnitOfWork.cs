@@ -10,6 +10,6 @@ namespace Meetins.DAL.Interfaces
     {
         IUserRepository Users { get; }
         
-        void SaveChangesAsync();
+        Task<int> SaveChangesAsync();
     }
 }

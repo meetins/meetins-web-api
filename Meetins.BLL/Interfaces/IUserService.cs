@@ -9,8 +9,6 @@ namespace Meetins.BLL.Interfaces
 {
     public interface IUserService
     {
-        IEnumerable<UserDto> GetAllUsers();
-
-        void Dispose();
+        Task<IEnumerable<UserDto>> GetAllUsersAsync();       
     }
 }

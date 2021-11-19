@@ -9,6 +9,6 @@ namespace Meetins.DAL.Interfaces
 {
     public interface IUserRepository
     {
-        IEnumerable<UserEntity> GetAllUsers();
+        Task<IEnumerable<UserEntity>> GetAllUsersAsync();
     }
 }

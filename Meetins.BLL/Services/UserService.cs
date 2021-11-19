@@ -9,18 +9,17 @@ using System.Threading.Tasks;
 
 namespace Meetins.BLL.Services
 {
-    class UserService : IUserService
+    public class UserService : IUserService
     {
         private IUnitOfWork _db;
 
-        public void Dispose()
+        public UserService(IUnitOfWork unitOfWork)
         {
-            _db.Dispose();
+            _db = unitOfWork;
         }
-
-        public IEnumerable<UserDto> GetAllUsers()
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
-            var users = _db.Users.GetAllUsers().ToList();
+            var users = await _db.Users.GetAllUsersAsync();
 
             List<UserDto> userDtos = new List<UserDto>();
 

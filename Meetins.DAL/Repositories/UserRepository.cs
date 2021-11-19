@@ -1,6 +1,7 @@
 ﻿using Meetins.DAL.EF;
 using Meetins.DAL.Entities;
 using Meetins.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,9 @@ namespace Meetins.DAL.Repositories
         {
             _db = db;
         }
-        public IEnumerable<UserEntity> GetAllUsers()
+        public async Task<IEnumerable<UserEntity>> GetAllUsersAsync()
         {
-            return _db.Users;
+            return await _db.Users.ToListAsync();
         }
     }
 }
