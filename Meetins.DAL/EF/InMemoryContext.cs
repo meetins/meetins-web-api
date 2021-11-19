@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Meetins.DAL.EF
 {
-    class InMemoryContext : DbContext
+    public class InMemoryContext : DbContext
     {
         public InMemoryContext()
         {

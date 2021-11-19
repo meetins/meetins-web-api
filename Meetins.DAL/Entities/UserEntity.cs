@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Meetins.DAL.Entities
 {
     [Table("Users", Schema = "Users")]
-    class UserEntity
+    public class UserEntity
     {
         [Column("UserId")]
         public Guid UserId { get; set; }
