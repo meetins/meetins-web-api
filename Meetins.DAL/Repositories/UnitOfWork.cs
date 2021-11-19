@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Meetins.DAL.Repositories
 {
-    class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private InMemoryContext _db;
         private UserRepository _userRepository;
