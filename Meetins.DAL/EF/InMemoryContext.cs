@@ -20,7 +20,11 @@ namespace Meetins.DAL.EF
             //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=fsapp;Trusted_Connection=True;");
             optionsBuilder.UseInMemoryDatabase(databaseName: "MeetinsDbInMemory");
         }
+
         public DbSet<UserEntity> Users { get; set; }
+
+        public DbSet<HeaderEntity> Headers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserEntity>().HasData(
@@ -50,6 +54,36 @@ namespace Meetins.DAL.EF
                     DateRegister = new DateTime(2021-11-12),
                     RememberMe = false
                 }
+                });
+
+            modelBuilder.Entity<HeaderEntity>().HasData(
+                new HeaderEntity[]
+                {
+                    new HeaderEntity
+                    {
+                        HeaderId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF370542"),
+                        MainText = "События",
+                        Description = ""
+                    },
+                   new HeaderEntity
+                    {
+                        HeaderId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF372242"),
+                        MainText = "Интересы",
+                        Description = ""
+                    },
+                   new HeaderEntity
+                    {
+                        HeaderId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF373342"),
+                        MainText = "Встречи",
+                        Description = ""
+                    },
+                   new HeaderEntity
+                    {
+                        HeaderId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF376842"),
+                        MainText = "Места",
+                        Description = ""
+                    },
+
                 });
         }
     }

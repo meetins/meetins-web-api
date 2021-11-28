@@ -12,7 +12,7 @@ namespace Meetins.DAL.Repositories
     {
         private InMemoryContext _db;
         private UserRepository _userRepository;
-
+        private HeaderRepository _headerRepository;
 
         public UnitOfWork()
         {
@@ -31,9 +31,21 @@ namespace Meetins.DAL.Repositories
             }
         }
 
+        public IHeaderRepository Headers
+        {
+            get
+            {
+                if (_headerRepository is null)
+                {
+                    _headerRepository = new HeaderRepository(_db);
+                }
+                return _headerRepository;
+            }
+        }
+
         public void Dispose()
         {
-            _db.Dispose();            
+            _db.Dispose();
         }
         public async Task<int> SaveChangesAsync()
         {
