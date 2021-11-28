@@ -17,7 +17,7 @@ namespace Meetins.BLL.Services
         {
             _db = unitOfWork;
         }
-        public async Task<IEnumerable<HeaderDto>> GetAllUsersAsync()
+        public async Task<IEnumerable<HeaderDto>> GetAllHeadersAsync()
         {
             var headers = await _db.Headers.GetAllHeadersAsync();
 

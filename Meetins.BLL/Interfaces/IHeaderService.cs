@@ -9,6 +9,6 @@ namespace Meetins.BLL.Interfaces
 {
     public interface IHeaderService
     {
-        Task<IEnumerable<HeaderDto>> GetAllUsersAsync();
+        Task<IEnumerable<HeaderDto>> GetAllHeadersAsync();
     }
 }
