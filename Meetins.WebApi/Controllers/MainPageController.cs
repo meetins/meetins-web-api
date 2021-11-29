@@ -12,17 +12,17 @@ namespace Meetins.WebApi.Controllers
     [ApiController]
     public class MainPageController : Controller
     {
-        IHeaderService _headerService;
+        IAboutService _aboutService;
 
-        public MainPageController(IHeaderService headerService)
+        public MainPageController(IAboutService aboutService)
         {
-            _headerService = headerService;
+            _aboutService = aboutService;
         }
 
-        [HttpGet, Route("get-headers")]
-        public async Task<ActionResult<IEnumerable<HeaderDto>>> GetHeaders()
+        [HttpGet, Route("get-about")]
+        public async Task<ActionResult<IEnumerable<AboutDto>>> GetAboutsAsync()
         {
-            var result = await _headerService.GetAllHeadersAsync();
+            var result = await _aboutService.GetAboutsAsync();
 
             return Ok(result);
         }

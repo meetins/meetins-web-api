@@ -10,7 +10,7 @@ namespace Meetins.DAL.Interfaces
     {
         IUserRepository Users { get; }
 
-        IHeaderRepository Headers { get; }
+        IAboutRepository Abouts { get; }
 
         Task<int> SaveChangesAsync();
     }

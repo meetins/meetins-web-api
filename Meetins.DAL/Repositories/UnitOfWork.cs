@@ -12,7 +12,7 @@ namespace Meetins.DAL.Repositories
     {
         private InMemoryContext _db;
         private UserRepository _userRepository;
-        private HeaderRepository _headerRepository;
+        private AboutRepository _aboutRepository;
 
         public UnitOfWork()
         {
@@ -31,15 +31,15 @@ namespace Meetins.DAL.Repositories
             }
         }
 
-        public IHeaderRepository Headers
+        public IAboutRepository Abouts
         {
             get
             {
-                if (_headerRepository is null)
+                if (_aboutRepository is null)
                 {
-                    _headerRepository = new HeaderRepository(_db);
+                    _aboutRepository = new AboutRepository(_db);
                 }
-                return _headerRepository;
+                return _aboutRepository;
             }
         }
 

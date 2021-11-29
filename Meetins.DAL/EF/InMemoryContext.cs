@@ -23,7 +23,7 @@ namespace Meetins.DAL.EF
 
         public DbSet<UserEntity> Users { get; set; }
 
-        public DbSet<HeaderEntity> Headers { get; set; }
+        public DbSet<AboutEntity> Abouts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,30 +56,30 @@ namespace Meetins.DAL.EF
                 }
                 });
 
-            modelBuilder.Entity<HeaderEntity>().HasData(
-                new HeaderEntity[]
+            modelBuilder.Entity<AboutEntity>().HasData(
+                new AboutEntity[]
                 {
-                    new HeaderEntity
+                    new AboutEntity
                     {
-                        HeaderId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF370542"),
+                        AboutId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF370542"),
                         MainText = "События",
                         Description = ""
                     },
-                   new HeaderEntity
+                   new AboutEntity
                     {
-                        HeaderId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF372242"),
+                        AboutId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF372242"),
                         MainText = "Интересы",
                         Description = ""
                     },
-                   new HeaderEntity
+                   new AboutEntity
                     {
-                        HeaderId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF373342"),
+                        AboutId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF373342"),
                         MainText = "Встречи",
                         Description = ""
                     },
-                   new HeaderEntity
+                   new AboutEntity
                     {
-                        HeaderId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF376842"),
+                        AboutId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF376842"),
                         MainText = "Места",
                         Description = ""
                     },

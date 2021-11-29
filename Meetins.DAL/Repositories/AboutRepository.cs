@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace Meetins.DAL.Repositories
 {
-    public class HeaderRepository : IHeaderRepository
+    public class AboutRepository : IAboutRepository
     {
         private InMemoryContext _db;
-        public HeaderRepository(InMemoryContext db)
+        public AboutRepository(InMemoryContext db)
         {
             _db = db;
         }
-        public async Task<IEnumerable<HeaderEntity>> GetAllHeadersAsync()
+        public async Task<IEnumerable<AboutEntity>> GetAboutsAsync()
         {
-            return await _db.Headers.ToListAsync();
+            return await _db.Abouts.ToListAsync();
         }
     }
 }

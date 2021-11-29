@@ -9,30 +9,30 @@ using System.Threading.Tasks;
 
 namespace Meetins.BLL.Services
 {
-    public class HeaderService : IHeaderService
+    public class AboutService : IAboutService
     {
         private IUnitOfWork _db;
 
-        public HeaderService(IUnitOfWork unitOfWork)
+        public AboutService(IUnitOfWork unitOfWork)
         {
             _db = unitOfWork;
         }
-        public async Task<IEnumerable<HeaderDto>> GetAllHeadersAsync()
+        public async Task<IEnumerable<AboutDto>> GetAboutsAsync()
         {
-            var headers = await _db.Headers.GetAllHeadersAsync();
+            var abouts = await _db.Abouts.GetAboutsAsync();
 
-            List<HeaderDto> headerDtos = new List<HeaderDto>();
+            List<AboutDto> aboutDtos = new List<AboutDto>();
 
-            foreach (var item in headers)
+            foreach (var item in abouts)
             {
-                headerDtos.Add(new HeaderDto
+                aboutDtos.Add(new AboutDto
                 {
                     MainText = item.MainText,
                     Description = item.Description
                 });
             }
 
-            return headerDtos;
+            return aboutDtos;
         }
     }
 }

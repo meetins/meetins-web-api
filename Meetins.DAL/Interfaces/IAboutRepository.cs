@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Meetins.DAL.Interfaces
 {
-    public interface IHeaderRepository
+    public interface IAboutRepository
     {
-        Task<IEnumerable<HeaderEntity>> GetAllHeadersAsync();
+        Task<IEnumerable<AboutEntity>> GetAboutsAsync();
     }
 }

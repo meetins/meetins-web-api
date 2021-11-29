@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Meetins.BLL.DTO
 {
-    public class HeaderDto
+    public class AboutDto
     {
         public string MainText { get; set; }
         public string Description { get; set; }

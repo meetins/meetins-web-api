@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Meetins.DAL.Entities
 {
-    [Table("Headers", Schema = "Info")]
-    public class HeaderEntity
+    [Table("About", Schema = "Info")]
+    public class AboutEntity
     {
         [Key]
-        [Column("HeaderId")]
-        public Guid HeaderId { get; set; }
+        [Column("AboutId")]
+        public Guid AboutId { get; set; }
         [Column("MainText")]
         public string MainText { get; set; }
         [Column("Description")]

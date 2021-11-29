@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Meetins.BLL.Interfaces
 {
-    public interface IHeaderService
+    public interface IAboutService
     {
-        Task<IEnumerable<HeaderDto>> GetAllHeadersAsync();
+        Task<IEnumerable<AboutDto>> GetAboutsAsync();
     }
 }
