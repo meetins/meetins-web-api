@@ -21,5 +21,9 @@ namespace Meetins.DAL.Repositories
         {
             return await _db.Users.ToListAsync();
         }
+        public async Task<UserEntity> IdentityUserAsync(string email, string password)
+        {
+            return await _db.Users.FirstAsync(u=>u.Email == email && u.Password == password);
+        }
     }
 }
