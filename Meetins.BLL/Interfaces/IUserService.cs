@@ -9,6 +9,8 @@ namespace Meetins.BLL.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserDto>> GetAllUsersAsync();       
+        Task<IEnumerable<UserDto>> GetAllUsersAsync();
+        Task<string> GenerateTokenAsync(string email, string password);
+        Task<UserDto> RegisterUserAsync(UserDto user);
     }
 }
