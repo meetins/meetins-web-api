@@ -68,9 +68,21 @@ namespace Meetins.BLL.Services
             return null;
         }
 
-        public Task<UserDto> RegisterUserAsync(UserDto user)
+        public async Task RegisterUserAsync(UserDto user)
         {
-            throw new NotImplementedException();
+            UserEntity newUser = new UserEntity()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                Password = user.Password,
+                Gender = user.Gender,
+                DateRegister = DateTime.UtcNow
+            };
+
+            await _db.Users.AddUserAsync(newUser);
+            await _db.SaveChangesAsync();            
         }
 
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
@@ -83,7 +95,13 @@ namespace Meetins.BLL.Services
             {
                 userDtos.Add(new UserDto
                 {
-                    FirstName = item.FirstName
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    PhoneNumber = item.PhoneNumber,
+                    Email = item.Email,
+                    Password = item.Password,
+                    Gender = item.Gender,
+                    DateRegister = item.DateRegister
                 });
             }
 

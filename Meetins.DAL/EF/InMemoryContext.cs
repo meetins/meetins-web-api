@@ -12,12 +12,13 @@ namespace Meetins.DAL.EF
     {
         public InMemoryContext()
         {
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=fsapp;Trusted_Connection=True;");
+            //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=meetins;Trusted_Connection=True;");
             optionsBuilder.UseInMemoryDatabase(databaseName: "MeetinsDbInMemory");
         }
 
@@ -39,7 +40,7 @@ namespace Meetins.DAL.EF
                     Password = "hash_password_petr",
                     Gender = "M",
                     UserIcon = "path_to_petr_avatar.png",
-                    DateRegister = new DateTime(2021-11-14),
+                    DateRegister = new DateTime(2021,03,14),
                     RememberMe = true
                 },
                 new UserEntity { 
@@ -51,7 +52,7 @@ namespace Meetins.DAL.EF
                     Password = "janna_hash",
                     Gender = "F",
                     UserIcon = "path_to_janna_avatar.png",
-                    DateRegister = new DateTime(2021-11-12),
+                    DateRegister = new DateTime(2021,11,12),
                     RememberMe = false
                 }
                 });

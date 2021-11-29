@@ -47,7 +47,7 @@ namespace Meetins.WebApi.Controllers
             return Json(response);
         }
 
-        [HttpPost, Route("register")]
+        [HttpPost, Route("register-user")]
         public async Task<ActionResult> RegisterUserAsync([FromBody] UserDto user)
         {
             if (user == null)
@@ -55,13 +55,12 @@ namespace Meetins.WebApi.Controllers
                 return BadRequest();
             }
 
-            //db.Users.Add(user);
-            //await db.SaveChangesAsync();
+            await _userService.RegisterUserAsync(user);
             return Ok(user);
         }
 
         [Authorize]
-        [HttpGet, Route("get-content")]
+        [HttpGet, Route("get-private-content")]
         public ActionResult<string> GetContent()
         {
 

@@ -17,6 +17,12 @@ namespace Meetins.DAL.Repositories
         {
             _db = db;
         }
+
+        public async Task AddUserAsync(UserEntity user)
+        {
+            await _db.Users.AddAsync(user);
+        }
+
         public async Task<IEnumerable<UserEntity>> GetAllUsersAsync()
         {
             return await _db.Users.ToListAsync();

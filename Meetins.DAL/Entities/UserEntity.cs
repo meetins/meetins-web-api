@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Meetins.DAL.Entities
 {
-    [Table("Users", Schema = "Users")]
+    [Table("Users", Schema = "User")]
     public class UserEntity
     {
         [Key]

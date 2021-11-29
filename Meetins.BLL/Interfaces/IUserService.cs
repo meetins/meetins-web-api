@@ -11,6 +11,6 @@ namespace Meetins.BLL.Interfaces
     {
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
         Task<string> GenerateTokenAsync(string email, string password);
-        Task<UserDto> RegisterUserAsync(UserDto user);
+        Task RegisterUserAsync(UserDto user);
     }
 }
