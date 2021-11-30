@@ -12,7 +12,7 @@ namespace Meetins.DAL.EF
     {
         public InMemoryContext()
         {
-            //Database.EnsureDeleted();
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -64,25 +64,25 @@ namespace Meetins.DAL.EF
                     {
                         AboutId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF370542"),
                         MainText = "События",
-                        Description = ""
+                        Description = "Посещайте любые события сообща. Знакомьтесь ради дружбы, общения или любви."
                     },
                    new AboutEntity
                     {
                         AboutId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF372242"),
                         MainText = "Интересы",
-                        Description = ""
+                        Description = "Укрепите свои интересы новыми людьми. Узнайте больше и расширяйтесь."
                     },
                    new AboutEntity
                     {
                         AboutId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF373342"),
                         MainText = "Встречи",
-                        Description = ""
+                        Description = "Отправляйте приглашения, встречайтесь в местах развлечений, отдыха и других, дешевле, чем обычно."
                     },
                    new AboutEntity
                     {
                         AboutId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF376842"),
                         MainText = "Места",
-                        Description = ""
+                        Description = "Просматривайте места, которые посещаете. Общайтесь и делитесь впечатлениями от посещения, находите новых друзей где угодно."
                     },
 
                 });

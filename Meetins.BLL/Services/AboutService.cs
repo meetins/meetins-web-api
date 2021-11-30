@@ -19,7 +19,7 @@ namespace Meetins.BLL.Services
         }
         public async Task<IEnumerable<AboutDto>> GetAboutsAsync()
         {
-            var abouts = await _db.Abouts.GetAboutsAsync();
+            IEnumerable<DAL.Entities.AboutEntity> abouts = await _db.Abouts.GetAboutsAsync();
 
             List<AboutDto> aboutDtos = new List<AboutDto>();
 
