@@ -237,5 +237,18 @@ namespace Meetins.BLL.Services
 
 
         }
+
+        public async Task<bool> CheckUserByEmailOrPhoneNumber(string email, string phoneNumber)
+        {
+            var user = await  _db.Users.GetUserByEmailOrPhoneNumber(email, phoneNumber);
+
+            if (user is null)
+            {
+                return false;
+            }
+
+            return true;
+            
+        }
     }
 }

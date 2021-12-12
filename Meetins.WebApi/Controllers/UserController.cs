@@ -3,6 +3,7 @@ using Meetins.BLL.DTOs.Requests;
 using Meetins.BLL.DTOs.Responses;
 using Meetins.BLL.Interfaces;
 using Meetins.WebApi.Models;
+using Meetins.WebApi.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -32,7 +33,7 @@ namespace Meetins.WebApi.Controllers
         }
 
         [HttpPost, Route("authenticate")]
-        public async Task<ActionResult<string>> GetTokenAsync([FromBody] AuthenticateRequestModel authenticateRequest)
+        public async Task<ActionResult<string>> AuthenticateUser([FromBody] AuthenticateRequestModel authenticateRequest)
         {
             AuthenticateRequestDto authenticateRequestDto = new AuthenticateRequestDto
             {
@@ -87,15 +88,49 @@ namespace Meetins.WebApi.Controllers
         }
 
         [HttpPost, Route("register-user")]
-        public async Task<ActionResult> RegisterUserAsync([FromBody] UserDto user)
+        public async Task<ActionResult> RegisterUserAsync([FromBody] RegisterUserRequest userRequest)
         {
-            if (user == null)
+            if (userRequest == null)
             {
                 return BadRequest();
             }
 
-            await _userService.RegisterUserAsync(user);
-            return Ok(user);
+            bool isUserExists = await _userService.CheckUserByEmailOrPhoneNumber(userRequest.Email, userRequest.PhoneNumber);
+
+            if (isUserExists)
+            {
+                return BadRequest(new { errortext = "User already exists." });
+            }
+
+            UserDto userDto = new UserDto
+            {
+                FirstName = userRequest.FirstName,
+                LastName = userRequest.LastName,
+                PhoneNumber = userRequest.PhoneNumber,
+                Email = userRequest.Email,
+                Password = userRequest.Password,
+                Gender = userRequest.Gender,
+                DateRegister = DateTime.UtcNow
+            };
+            await _userService.RegisterUserAsync(userDto);
+
+            AuthenticateRequestDto authenticateRequestDto = new AuthenticateRequestDto
+            {
+                Email = userDto.Email,
+                Password = userDto.Password
+            };
+
+            AutheticateResponseDto authResult = await _userService.AuthenticateUser(authenticateRequestDto);
+
+            var response = new
+            {
+                status = "user registered successfully",
+                access_token = authResult.Token,
+                resresh_token = authResult.RefreshToken,
+                user_email = authenticateRequestDto.Email
+            };
+
+            return Json(response); 
         }
 
         [Authorize]

@@ -15,5 +15,6 @@ namespace Meetins.BLL.Interfaces
         Task<AutheticateResponseDto> AuthenticateUser(AuthenticateRequestDto autheticateRequest);
         Task RegisterUserAsync(UserDto user);
         Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto refreshTokenRequest);
+        Task<bool> CheckUserByEmailOrPhoneNumber(string email, string phoneNumber);
     }
 }
