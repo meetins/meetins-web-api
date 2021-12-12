@@ -1,4 +1,6 @@
 ﻿using Meetins.BLL.DTO;
+using Meetins.BLL.DTOs.Requests;
+using Meetins.BLL.DTOs.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,8 @@ namespace Meetins.BLL.Interfaces
     public interface IUserService
     {
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
-        Task<string> GenerateTokenAsync(string email, string password);
+        Task<AutheticateResponseDto> AuthenticateUser(AuthenticateRequestDto autheticateRequest);
         Task RegisterUserAsync(UserDto user);
+        Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto refreshTokenRequest);
     }
 }

@@ -33,20 +33,23 @@ namespace Meetins.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var tokenValidationParams = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = AccessTokenOptions.ISSUER,
+                ValidateAudience = true,
+                ValidAudience = AccessTokenOptions.AUDIENCE,
+                ValidateLifetime = true,
+                IssuerSigningKey = AccessTokenOptions.GetSymmetricSecurityKey(),
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero
+            };
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
+                        options.SaveToken = true;
                         options.RequireHttpsMetadata = false;
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {                            
-                            ValidateIssuer = true,                           
-                            ValidIssuer = AuthOptions.ISSUER,                            
-                            ValidateAudience = true,                            
-                            ValidAudience = AuthOptions.AUDIENCE,                            
-                            ValidateLifetime = true,                            
-                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),                            
-                            ValidateIssuerSigningKey = true,
-                        };
+                        options.TokenValidationParameters = tokenValidationParams;
                     });
             services.AddControllers();
             services.AddSwaggerGen(c =>

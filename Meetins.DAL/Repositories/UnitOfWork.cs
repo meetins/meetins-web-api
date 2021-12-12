@@ -13,6 +13,7 @@ namespace Meetins.DAL.Repositories
         private InMemoryContext _db;
         private UserRepository _userRepository;
         private AboutRepository _aboutRepository;
+        private RefreshTokenRepository _refreshTokenRepository;
 
         public UnitOfWork()
         {
@@ -43,6 +44,17 @@ namespace Meetins.DAL.Repositories
             }
         }
 
+        public IRefreshTokenRepository RefreshTokens
+        {
+            get
+            {
+                if (_refreshTokenRepository is null)
+                {
+                    _refreshTokenRepository = new RefreshTokenRepository(_db);
+                }
+                return _refreshTokenRepository;
+            }
+        }
         public void Dispose()
         {
             _db.Dispose();

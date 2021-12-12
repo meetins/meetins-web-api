@@ -1,5 +1,6 @@
 ﻿using Meetins.BLL.DTO;
 using Meetins.BLL.Interfaces;
+using Meetins.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,23 @@ namespace Meetins.WebApi.Controllers
         }
 
         [HttpGet, Route("get-about")]
-        public async Task<ActionResult<IEnumerable<AboutDto>>> GetAboutsAsync()
+        public async Task<ActionResult<IEnumerable<AboutsModelView>>> GetAboutsAsync()
         {
-            var result = await _aboutService.GetAboutsAsync();
+            IEnumerable<AboutDto> result = await _aboutService.GetAboutsAsync();
 
-            return Ok(result);
+            List<AboutsModelView> abouts = new List<AboutsModelView>();
+
+
+            foreach (var item in result)
+            {
+                abouts.Add(new AboutsModelView
+                    {
+                        MainText = item.MainText,
+                        Description = item.Description
+                    });
+            }
+
+            return Ok(abouts);
         }
     }
 }

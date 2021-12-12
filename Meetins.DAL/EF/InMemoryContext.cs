@@ -12,7 +12,7 @@ namespace Meetins.DAL.EF
     {
         public InMemoryContext()
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -25,6 +25,8 @@ namespace Meetins.DAL.EF
         public DbSet<UserEntity> Users { get; set; }
 
         public DbSet<AboutEntity> Abouts { get; set; }
+
+        public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -12,6 +12,7 @@ namespace Meetins.DAL.Interfaces
         Task<IEnumerable<UserEntity>> GetAllUsersAsync();
         Task<UserEntity> IdentityUserAsync(string email, string password);
 
+        Task<UserEntity> GetUserById(Guid guid);
         Task AddUserAsync(UserEntity user);
     }
 }

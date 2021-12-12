@@ -12,6 +12,7 @@ namespace Meetins.DAL.Interfaces
 
         IAboutRepository Abouts { get; }
 
+        IRefreshTokenRepository RefreshTokens { get; }
         Task<int> SaveChangesAsync();
     }
 }

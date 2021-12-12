@@ -1,4 +1,7 @@
 ﻿using Meetins.BLL.DTO;
+using Meetins.BLL.DTOs;
+using Meetins.BLL.DTOs.Requests;
+using Meetins.BLL.DTOs.Responses;
 using Meetins.BLL.Interfaces;
 using Meetins.BLL.Options;
 using Meetins.DAL.Entities;
@@ -23,43 +26,107 @@ namespace Meetins.BLL.Services
             _db = unitOfWork;
         }
 
-        public async Task<string> GenerateTokenAsync(string email, string password)
+        public async Task<AutheticateResponseDto> AuthenticateUser(AuthenticateRequestDto authenticateRequest)
         {
-            var identity = await GetIdentityAsync(email, password);
+            UserEntity user = await _db.Users.IdentityUserAsync(authenticateRequest.Email, authenticateRequest.Password);
+
+            var identity = GetClaimsIdentity(user);
 
             if (identity != null)
             {
-                var now = DateTime.UtcNow;
-                // создаем JWT-токен
-                var jwt = new JwtSecurityToken(
-                        issuer: AuthOptions.ISSUER,
-                        audience: AuthOptions.AUDIENCE,
-                        notBefore: now,
-                        claims: identity.Claims,
-                        expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
-                string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+                string accessToken = GenerateAccessToken(identity.Claims);
+                string refreshToken = GenerateRerfreshToken();
 
-                return encodedJwt;
+                RefreshTokenEntity refreshTokenDto = new RefreshTokenEntity()
+                {
+                    Token = refreshToken,
+                    UserId = user.UserId
+                };
+                await _db.RefreshTokens.Create(refreshTokenDto);
+                await _db.SaveChangesAsync();
+
+                AutheticateResponseDto autheticateResponse = new AutheticateResponseDto
+                {
+                    Email = authenticateRequest.Email,
+                    Token = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+                return autheticateResponse;
             }
 
             return null;
         }
 
-        private async Task<ClaimsIdentity> GetIdentityAsync(string email, string password)
+        public async Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto refreshTokenRequest)
         {
-            UserEntity user = await _db.Users.IdentityUserAsync(email, password);
+            bool isValidRefreshToken = ValidateRefreshToken(refreshTokenRequest.RefreshToken);
+
+            if (!isValidRefreshToken)
+            {
+                return null;
+            }
+
+            RefreshTokenEntity refreshToken = await _db.RefreshTokens.GetByToken(refreshTokenRequest.RefreshToken);
+
+            if (refreshToken is null)
+            {
+                return null;
+            }
+
+            UserEntity user = await _db.Users.GetUserById(refreshToken.UserId);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            await _db.RefreshTokens.Delete(refreshToken);
+            await _db.SaveChangesAsync();
+
+            var identity = GetClaimsIdentity(user);
+
+            if (identity != null)
+            {
+
+                string newAccessToken = GenerateAccessToken(identity.Claims);
+                string newRefreshToken = GenerateRerfreshToken();
+
+                RefreshTokenEntity refreshTokenDto = new RefreshTokenEntity()
+                {
+                    Token = newRefreshToken,
+                    UserId = user.UserId
+                };
+                await _db.RefreshTokens.Create(refreshTokenDto);
+                await _db.SaveChangesAsync();
+
+                RefreshTokenResponseDto refreshTokenResponse = new RefreshTokenResponseDto
+                {
+                    NewAccessToken = newAccessToken,
+                    NewRefreshToken = newRefreshToken
+                };
+
+                return refreshTokenResponse;
+
+            }
+            return null;
+        }
+
+        private ClaimsIdentity GetClaimsIdentity(UserEntity user)
+        {            
 
             if (user != null)
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.FirstName+user.LastName)
+                    new Claim("userId",user.UserId.ToString()),
+                    new Claim(ClaimTypes.Name, user.FirstName+user.LastName),
+                    new Claim(ClaimTypes.Email, user.Email)
                 };
 
                 ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                new ClaimsIdentity(claims, "JwtToken", ClaimsIdentity.DefaultNameClaimType,
                     ClaimsIdentity.DefaultRoleClaimType);
 
                 return claimsIdentity;
@@ -82,7 +149,7 @@ namespace Meetins.BLL.Services
             };
 
             await _db.Users.AddUserAsync(newUser);
-            await _db.SaveChangesAsync();            
+            await _db.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
@@ -106,6 +173,69 @@ namespace Meetins.BLL.Services
             }
 
             return userDtos;
+        }
+
+        private string GenerateAccessToken(IEnumerable<Claim> claims)
+        {
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: AccessTokenOptions.ISSUER,
+                    audience: AccessTokenOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: claims,
+                    expires: now.AddMinutes(AccessTokenOptions.LIFETIME),
+                    signingCredentials: new SigningCredentials(AccessTokenOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
+            string accessToken = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return accessToken;
+        }
+
+        private string GenerateRerfreshToken()
+        {
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: RefreshTokenOptions.ISSUER,
+                    audience: RefreshTokenOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: null,
+                    expires: now.AddMinutes(RefreshTokenOptions.LIFETIME),
+                    signingCredentials: new SigningCredentials(RefreshTokenOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
+            string refreshToken = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return refreshToken;
+        }
+
+        private bool ValidateRefreshToken(string refreshToken)
+        {
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            TokenValidationParameters validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = RefreshTokenOptions.ISSUER,
+                ValidateAudience = true,
+                ValidAudience = RefreshTokenOptions.AUDIENCE,
+                ValidateLifetime = true,
+                IssuerSigningKey = RefreshTokenOptions.GetSymmetricSecurityKey(),
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            try
+            {
+                tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+
+
         }
     }
 }
