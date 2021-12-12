@@ -56,9 +56,9 @@ namespace Meetins.WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Meetins.WebApi", Version = "v1" });
             });
-            services.AddScoped<IUserService, UserService>();
-            services.AddTransient<IAboutService, AboutService>();            
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IAboutService, AboutService>();            
+            services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddCors();
         }
 
