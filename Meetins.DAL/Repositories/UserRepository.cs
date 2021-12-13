@@ -30,7 +30,23 @@ namespace Meetins.DAL.Repositories
 
         public async Task<UserEntity> GetUserByEmailOrPhoneNumber(string email, string phoneNumber)
         {
+            if(phoneNumber is null && email is null)
+            {
+                return null;
+            }
+
+            if (phoneNumber is not null && email is null)
+            {
+                return await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            }
+
+            if (email is not null && phoneNumber is null)
+            {
+                return await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+            }
+
             return await _db.Users.FirstOrDefaultAsync(u => u.Email == email || u.PhoneNumber == phoneNumber);
+
         }
 
         public async Task<UserEntity> GetUserById(Guid guid)
