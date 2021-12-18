@@ -39,7 +39,7 @@ namespace Meetins.WebApi.Controllers
         {
             AuthenticateRequestDto authenticateRequestDto = new AuthenticateRequestDto
             {
-                Email = authenticateRequest.Email,
+                EmailOrPhone = authenticateRequest.EmailOrPhone,
                 Password = authenticateRequest.Password
             };
 
@@ -113,19 +113,20 @@ namespace Meetins.WebApi.Controllers
             await _userService.RegisterUserAsync(userDto);
 
             AuthenticateRequestDto authenticateRequestDto = new AuthenticateRequestDto
-            {
-                Email = userDto.Email,
+            {                
                 Password = userDto.Password
             };
+
+            authenticateRequestDto.EmailOrPhone = userDto.Email is not null ? userDto.Email : userDto.PhoneNumber;
 
             AutheticateResponseDto authResult = await _userService.AuthenticateUser(authenticateRequestDto);
 
             var response = new
             {
-                status = "user registered successfully",
+                status = "User registered successfully.",
                 access_token = authResult.Token,
                 resresh_token = authResult.RefreshToken,
-                user_email = authenticateRequestDto.Email
+                user_id = authResult.UserId
             };
 
             return Json(response); 
@@ -186,7 +187,6 @@ namespace Meetins.WebApi.Controllers
 
             return NoContent();
         }
-
 
         [Authorize]
         [HttpGet, Route("get-private-content")]

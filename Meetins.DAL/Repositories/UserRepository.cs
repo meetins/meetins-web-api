@@ -64,9 +64,9 @@ namespace Meetins.DAL.Repositories
             return await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phone);
         }
 
-        public async Task<UserEntity> IdentityUserAsync(string email, string password)
+        public async Task<UserEntity> IdentityUserAsync(string emailOrPhone, string password)
         {
-            return await _db.Users.FirstOrDefaultAsync(u=>u.Email == email && u.Password == password);
+            return await _db.Users.FirstOrDefaultAsync(u=>(u.Email == emailOrPhone || u.PhoneNumber == emailOrPhone) && u.Password == password);
         }
     }
 }

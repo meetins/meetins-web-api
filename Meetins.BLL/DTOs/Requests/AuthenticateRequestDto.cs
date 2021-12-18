@@ -10,7 +10,7 @@ namespace Meetins.BLL.DTOs.Requests
     public class AuthenticateRequestDto
     {
         [Required]
-        public string Email { get; set; }
+        public string EmailOrPhone { get; set; }
         [Required]
         public string Password { get; set; }
     }

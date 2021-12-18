@@ -28,7 +28,7 @@ namespace Meetins.BLL.Services
 
         public async Task<AutheticateResponseDto> AuthenticateUser(AuthenticateRequestDto authenticateRequest)
         {
-            UserEntity user = await _db.Users.IdentityUserAsync(authenticateRequest.Email, authenticateRequest.Password);
+            UserEntity user = await _db.Users.IdentityUserAsync(authenticateRequest.EmailOrPhone, authenticateRequest.Password);
 
             var identity = GetClaimsIdentity(user);
 
