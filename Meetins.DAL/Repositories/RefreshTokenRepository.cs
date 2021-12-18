@@ -1,6 +1,7 @@
 ﻿using Meetins.DAL.EF;
 using Meetins.DAL.Entities;
 using Meetins.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,19 @@ namespace Meetins.DAL.Repositories
         public Task Delete(RefreshTokenEntity refreshToken)
         {
             _db.RefreshTokens.Remove(refreshToken);
+
+            return Task.CompletedTask;
+        }
+
+        public async Task<Task> DeleteAll(Guid userId)
+        {
+            List<RefreshTokenEntity> refreshTokens = await _db.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
+
+            foreach (var item in refreshTokens)
+            {
+                _db.RefreshTokens.Remove(item);
+                
+            }
 
             return Task.CompletedTask;
         }

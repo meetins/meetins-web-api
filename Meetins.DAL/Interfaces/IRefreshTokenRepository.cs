@@ -12,6 +12,7 @@ namespace Meetins.DAL.Interfaces
         Task Create(RefreshTokenEntity refreshToken);
         Task<RefreshTokenEntity> GetByToken(string refreshToken);
         Task Delete(RefreshTokenEntity refreshToken);
+        Task<Task> DeleteAll(Guid userId);
         
     }
 }

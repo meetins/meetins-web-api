@@ -28,6 +28,11 @@ namespace Meetins.DAL.Repositories
             return await _db.Users.ToListAsync();
         }
 
+        public async Task<UserEntity> GetUserByEmail(string email)
+        {
+            return await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
         public async Task<UserEntity> GetUserByEmailOrPhoneNumber(string email, string phoneNumber)
         {
             if(phoneNumber is null && email is null)
@@ -52,6 +57,11 @@ namespace Meetins.DAL.Repositories
         public async Task<UserEntity> GetUserById(Guid guid)
         {
             return await _db.Users.FirstOrDefaultAsync(u => u.UserId == guid);
+        }
+
+        public async Task<UserEntity> GetUserByPhone(string phone)
+        {
+            return await _db.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phone);
         }
 
         public async Task<UserEntity> IdentityUserAsync(string email, string password)

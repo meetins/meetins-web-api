@@ -48,7 +48,7 @@ namespace Meetins.BLL.Services
 
                 AutheticateResponseDto autheticateResponse = new AutheticateResponseDto
                 {
-                    Email = authenticateRequest.Email,
+                    UserId = user.UserId,
                     Token = accessToken,
                     RefreshToken = refreshToken
                 };
@@ -249,6 +249,58 @@ namespace Meetins.BLL.Services
 
             return true;
             
+        }
+
+        public async Task<UserDto> CheckUserByEmail(string email)
+        {
+            UserEntity user = await _db.Users.GetUserByEmail(email);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            UserDto userDto = new UserDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                Password = user.Password,
+                Gender = user.Gender,
+                DateRegister = user.DateRegister
+            };
+
+            return userDto;
+        }
+
+        public async Task<UserDto> CheckUserByPhone(string phone)
+        {
+            UserEntity user = await _db.Users.GetUserByPhone(phone);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            UserDto userDto = new UserDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                Password = user.Password,
+                Gender = user.Gender,
+                DateRegister = user.DateRegister
+            };
+
+            return userDto;
+        }
+
+        public async Task DeleteAllRefreshTokenByUserId(Guid userId)
+        {
+            await _db.RefreshTokens.DeleteAll(userId);
+            await _db.SaveChangesAsync();            
         }
     }
 }

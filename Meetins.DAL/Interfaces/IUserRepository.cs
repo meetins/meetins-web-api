@@ -16,5 +16,8 @@ namespace Meetins.DAL.Interfaces
         Task AddUserAsync(UserEntity user);
 
         Task<UserEntity> GetUserByEmailOrPhoneNumber(string email, string phoneNumber);
+
+        Task<UserEntity> GetUserByEmail(string email);
+        Task<UserEntity> GetUserByPhone(string phone);
     }
 }

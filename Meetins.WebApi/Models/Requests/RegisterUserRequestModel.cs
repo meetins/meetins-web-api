@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Meetins.WebApi.Models.Requests
 {
-    public class RegisterUserRequest
+    public class RegisterUserRequestModel
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }        

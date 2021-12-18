@@ -8,7 +8,7 @@ namespace Meetins.BLL.DTOs.Responses
 {
     public class AutheticateResponseDto
     {
-        public string Email { get; set; }
+        public Guid UserId { get; set; }
         public string Token { get; set; }       
         public string RefreshToken { get; set; }
     }

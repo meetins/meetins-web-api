@@ -8,16 +8,14 @@ namespace Meetins.WebApi.Models.Responses
 {
     public class AuthenticateResponseModel
     { 
-        public string Email { get; set; }
-        public string JwtToken { get; set; }
-
-        [JsonIgnore] // refresh token is returned in http only cookie
+        public Guid UserId { get; set; }
+        public string AccessToken { get; set; }       
         public string RefreshToken { get; set; }
 
-        public AuthenticateResponseModel(string email, string jwtToken, string refreshToken)
+        public AuthenticateResponseModel(Guid userId, string accessToken, string refreshToken)
         {
-            Email = email;
-            JwtToken = jwtToken;
+            UserId = userId;
+            AccessToken = accessToken;
             RefreshToken = refreshToken;
         }
     }

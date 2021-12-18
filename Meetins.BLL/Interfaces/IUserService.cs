@@ -14,7 +14,10 @@ namespace Meetins.BLL.Interfaces
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
         Task<AutheticateResponseDto> AuthenticateUser(AuthenticateRequestDto autheticateRequest);
         Task RegisterUserAsync(UserDto user);
+        Task DeleteAllRefreshTokenByUserId(Guid userId);
         Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto refreshTokenRequest);
         Task<bool> CheckUserByEmailOrPhoneNumber(string email, string phoneNumber);
+        Task<UserDto> CheckUserByEmail(string email);
+        Task<UserDto> CheckUserByPhone(string phone);
     }
 }

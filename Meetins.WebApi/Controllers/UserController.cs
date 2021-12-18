@@ -4,11 +4,13 @@ using Meetins.BLL.DTOs.Responses;
 using Meetins.BLL.Interfaces;
 using Meetins.WebApi.Models;
 using Meetins.WebApi.Models.Requests;
+using Meetins.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Meetins.WebApi.Controllers
@@ -33,7 +35,7 @@ namespace Meetins.WebApi.Controllers
         }
 
         [HttpPost, Route("authenticate")]
-        public async Task<ActionResult<string>> AuthenticateUser([FromBody] AuthenticateRequestModel authenticateRequest)
+        public async Task<ActionResult<AuthenticateResponseModel>> AuthenticateUser([FromBody] AuthenticateRequestModel authenticateRequest)
         {
             AuthenticateRequestDto authenticateRequestDto = new AuthenticateRequestDto
             {
@@ -48,18 +50,14 @@ namespace Meetins.WebApi.Controllers
                 return BadRequest(new { errorText = "Invalid email or password." });
             }
 
-            var response = new
-            {
-                access_token = authResult.Token,
-                resresh_token = authResult.RefreshToken,
-                user_email = authenticateRequest.Email
-            };
+            AuthenticateResponseModel response = new AuthenticateResponseModel(authResult.UserId, authResult.Token, authResult.RefreshToken);
+            
 
-            return Json(response);
+            return Ok(response);
         }
 
         [HttpPost, Route("refresh-token")]
-        public async Task<ActionResult<string>> RefreshTokenAsync([FromBody] RefreshTokenRequestModel refreshTokenModel)
+        public async Task<ActionResult<RefreshTokenResponseModel>> RefreshTokenAsync([FromBody] RefreshTokenRequestModel refreshTokenModel)
         {
             if (!ModelState.IsValid)
             {
@@ -78,17 +76,17 @@ namespace Meetins.WebApi.Controllers
                 return BadRequest(new { errortext = "Invalid refresh token." });
             }
 
-            var response = new
+            RefreshTokenResponseModel response = new RefreshTokenResponseModel
             {
-                access_token = refreshTokenResults.NewAccessToken,
-                resresh_token = refreshTokenResults.NewRefreshToken               
+                AccessToken = refreshTokenResults.NewAccessToken,
+                RefreshToken = refreshTokenResults.NewRefreshToken
             };
 
             return Json(response);
         }
 
         [HttpPost, Route("register-user")]
-        public async Task<ActionResult> RegisterUserAsync([FromBody] RegisterUserRequest userRequest)
+        public async Task<ActionResult> RegisterUserAsync([FromBody] RegisterUserRequestModel userRequest)
         {
             if (userRequest == null)
             {
@@ -132,6 +130,63 @@ namespace Meetins.WebApi.Controllers
 
             return Json(response); 
         }
+
+        [HttpGet,Route("check-email")]
+        public async Task<ActionResult<CheckEmailResponseModel>> CheckEmailAsync(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest(new { errorText = "Email cannot be null or empty." });
+            }
+
+            UserDto user = await _userService.CheckUserByEmail(email);
+
+            CheckEmailResponseModel checkEmailResponseModel = new CheckEmailResponseModel()
+            {
+                Email = email
+            };
+
+            checkEmailResponseModel.IsExists = user is not null;
+
+            return Ok(checkEmailResponseModel);
+        }
+
+        [HttpGet, Route("check-phone")]
+        public async Task<ActionResult<CheckPhoneResponseModel>> CheckPhoneAsync(string phone)
+        {
+            if (string.IsNullOrEmpty(phone))
+            {
+                return BadRequest(new { errorText = "Phone cannot be null or empty." });
+            }
+
+            UserDto user = await _userService.CheckUserByPhone(phone);
+
+            CheckPhoneResponseModel checkPhoneResponseModel = new CheckPhoneResponseModel()
+            {
+                Phone = phone
+            };
+
+            checkPhoneResponseModel.IsExists = user is not null;
+
+            return Ok(checkPhoneResponseModel);
+        }
+
+        [Authorize]
+        [HttpDelete, Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            string rawUserId = HttpContext.User.FindFirstValue("userId");
+
+            if (!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            await _userService.DeleteAllRefreshTokenByUserId(userId);
+
+            return NoContent();
+        }
+
 
         [Authorize]
         [HttpGet, Route("get-private-content")]

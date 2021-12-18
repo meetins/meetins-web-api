@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Meetins.WebApi.Models.Responses
 {
-    public class AboutsModelView
+    public class CheckPhoneResponseModel
     {
-        public string MainText { get; set; }
-        public string Description { get; set; }
+        public string Phone { get; set; }
+        public bool IsExists { get; set; }
     }
 }

@@ -21,16 +21,16 @@ namespace Meetins.WebApi.Controllers
         }
 
         [HttpGet, Route("get-about")]
-        public async Task<ActionResult<IEnumerable<AboutsModelView>>> GetAboutsAsync()
+        public async Task<ActionResult<IEnumerable<AboutsResponseModel>>> GetAboutsAsync()
         {
             IEnumerable<AboutDto> result = await _aboutService.GetAboutsAsync();
 
-            List<AboutsModelView> abouts = new List<AboutsModelView>();
+            List<AboutsResponseModel> abouts = new List<AboutsResponseModel>();
 
 
             foreach (var item in result)
             {
-                abouts.Add(new AboutsModelView
+                abouts.Add(new AboutsResponseModel
                     {
                         MainText = item.MainText,
                         Description = item.Description
