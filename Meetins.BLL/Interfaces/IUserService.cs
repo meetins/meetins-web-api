@@ -1,4 +1,4 @@
-﻿using Meetins.BLL.DTO;
+﻿using Meetins.BLL.DTOs;
 using Meetins.BLL.DTOs.Requests;
 using Meetins.BLL.DTOs.Responses;
 using System;
@@ -19,5 +19,7 @@ namespace Meetins.BLL.Interfaces
         Task<bool> CheckUserByEmailOrPhoneNumber(string email, string phoneNumber);
         Task<UserDto> CheckUserByEmail(string email);
         Task<UserDto> CheckUserByPhone(string phone);
+        Task<ProfileDto> GetUserProfile(Guid userId);
+
     }
 }

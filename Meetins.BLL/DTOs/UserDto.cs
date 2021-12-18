@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Meetins.BLL.DTO
+namespace Meetins.BLL.DTOs
 {
     public class UserDto
     {

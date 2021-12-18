@@ -1,4 +1,4 @@
-﻿using Meetins.BLL.DTO;
+﻿using Meetins.BLL.DTOs;
 using Meetins.BLL.DTOs.Requests;
 using Meetins.BLL.DTOs.Responses;
 using Meetins.BLL.Interfaces;
@@ -186,6 +186,34 @@ namespace Meetins.WebApi.Controllers
             await _userService.DeleteAllRefreshTokenByUserId(userId);
 
             return NoContent();
+        }
+
+
+        [Authorize]
+        [HttpGet,Route("my-profile")]
+        public async Task<ActionResult<ProfileResponseModel>> MyProfile()
+        {
+            string rawUserId = HttpContext.User.FindFirstValue("userId");
+
+            if (!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            ProfileDto profileDto = await _userService.GetUserProfile(userId);
+
+            ProfileResponseModel profile = new ProfileResponseModel
+            {
+                FirstName = profileDto.FirstName,
+                LastName = profileDto.LastName,
+                Email = profileDto.Email,
+                PhoneNumber = profileDto.PhoneNumber,
+                Gender = profileDto.Gender,
+                UserIcon = profileDto.UserIcon,
+                DateRegister = profileDto.DateRegister
+            };
+
+            return Ok(profile);
         }
 
         [Authorize]

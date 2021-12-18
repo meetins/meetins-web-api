@@ -302,5 +302,23 @@ namespace Meetins.BLL.Services
             await _db.RefreshTokens.DeleteAll(userId);
             await _db.SaveChangesAsync();            
         }
+
+        public async Task<ProfileDto> GetUserProfile(Guid userId)
+        {
+            UserEntity user = await _db.Users.GetUserById(userId);
+
+            var profileDto = new ProfileDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Gender= user.Gender,
+                UserIcon = user.UserIcon,
+                DateRegister = user.DateRegister
+            };
+
+            return profileDto; 
+        }
     }
 }
