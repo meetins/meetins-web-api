@@ -145,6 +145,7 @@ namespace Meetins.BLL.Services
                 Email = user.Email,
                 Password = user.Password,
                 Gender = user.Gender,
+                UserIcon = "/images/no-photo.png",
                 DateRegister = DateTime.UtcNow
             };
 

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 namespace Meetins.WebApi.Models.Responses
 {
     public class ProfileResponseModel
-    {        
+    {
+        public ProfileResponseModel()
+        {
+
+        }
         public string FirstName { get; set; }
         
         public string LastName { get; set; }

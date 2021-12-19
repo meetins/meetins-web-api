@@ -12,6 +12,10 @@ namespace Meetins.WebApi.Models.Responses
         public string AccessToken { get; set; }       
         public string RefreshToken { get; set; }
 
+        public AuthenticateResponseModel()
+        {
+
+        }
         public AuthenticateResponseModel(Guid userId, string accessToken, string refreshToken)
         {
             UserId = userId;

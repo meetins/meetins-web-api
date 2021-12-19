@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Meetins.WebApi.Controllers
@@ -54,6 +55,43 @@ namespace Meetins.WebApi.Controllers
             
 
             return Ok(response);
+        }
+
+        [HttpPost,Route("login")]
+        public async Task<ActionResult<LoginResponseModel>> Login([FromBody] AuthenticateRequestModel authenticateRequest)
+        {
+            AuthenticateRequestDto authenticateRequestDto = new AuthenticateRequestDto
+            {
+                EmailOrPhone = authenticateRequest.EmailOrPhone,
+                Password = authenticateRequest.Password
+            };
+
+            AutheticateResponseDto authResult = await _userService.AuthenticateUser(authenticateRequestDto);
+
+            if (authResult is null)
+            {
+                return BadRequest(new { errorText = "Invalid email or password." });
+            }
+
+            LoginResponseModel loginResponse = new LoginResponseModel();
+
+            loginResponse.authenticateResponse = new AuthenticateResponseModel(authResult.UserId, authResult.Token, authResult.RefreshToken);
+
+            ProfileDto profileDto = await _userService.GetUserProfile(authResult.UserId);
+
+            loginResponse.profile = new ProfileResponseModel
+            {
+                FirstName = profileDto.FirstName,
+                LastName = profileDto.LastName,
+                Email = profileDto.Email,
+                PhoneNumber = profileDto.PhoneNumber,
+                Gender = profileDto.Gender,
+                UserIcon = profileDto.UserIcon,
+                DateRegister = profileDto.DateRegister
+            };
+
+            return Ok(loginResponse);
+
         }
 
         [HttpPost, Route("refresh-token")]
@@ -187,7 +225,6 @@ namespace Meetins.WebApi.Controllers
 
             return NoContent();
         }
-
 
         [Authorize]
         [HttpGet,Route("my-profile")]

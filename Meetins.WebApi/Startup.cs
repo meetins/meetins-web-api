@@ -56,8 +56,8 @@ namespace Meetins.WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Meetins.WebApi", Version = "v1" });
             });
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IAboutService, AboutService>();            
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IAboutService, AboutService>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddCors();
         }
@@ -65,7 +65,7 @@ namespace Meetins.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors(options => 
+            app.UseCors(options =>
             options.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()
@@ -74,9 +74,9 @@ namespace Meetins.WebApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Meetins.WebApi v1")); 
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Meetins.WebApi v1"));
             }
-
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
             app.UseRouting();

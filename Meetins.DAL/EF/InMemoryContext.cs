@@ -41,7 +41,7 @@ namespace Meetins.DAL.EF
                     Email = "petrov@gmail.com",
                     Password = "hash_password_petr",
                     Gender = "M",
-                    UserIcon = "path_to_petr_avatar.png",
+                    UserIcon = "/images/no-photo.png",
                     DateRegister = new DateTime(2021,03,14),
                     RememberMe = true
                 },
@@ -53,10 +53,34 @@ namespace Meetins.DAL.EF
                     Email = "janna@gmail.com",
                     Password = "janna_hash",
                     Gender = "F",
-                    UserIcon = "path_to_janna_avatar.png",
+                    UserIcon = "/images/no-photo.png",
                     DateRegister = new DateTime(2021,11,12),
                     RememberMe = false
-                }
+                },
+                new UserEntity {
+                    UserId=new Guid("5BB1C998-E1DA-4E0D-88F8-E1EA1CE2C251"),
+                    FirstName="Дмитрий",
+                    LastName = "А7",
+                    PhoneNumber = "+79998887766",
+                    Email = "DmitriyA7@gmail.com",
+                    Password = "adminadmin7",
+                    Gender = "M",
+                    UserIcon = "/images/no-photo.png",
+                    DateRegister = new DateTime(2021,12,19),
+                    RememberMe = false
+                },
+                new UserEntity {
+                    UserId=new Guid("15847892-12EB-4382-9905-FA5F097E60B0"),
+                    FirstName="FirstName",
+                    LastName = "LastName",
+                    PhoneNumber = "+78881112233",
+                    Email = "Meettest@gmail.com",
+                    Password = "meettest",
+                    Gender = "F",
+                    UserIcon = "/images/no-photo.png",
+                    DateRegister = new DateTime(2021,12,19),
+                    RememberMe = false
+                },
                 });
 
             modelBuilder.Entity<AboutEntity>().HasData(
