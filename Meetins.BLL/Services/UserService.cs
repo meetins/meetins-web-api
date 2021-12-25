@@ -264,7 +264,8 @@ namespace Meetins.BLL.Services
                     Gender = item.Gender,
                     DateRegister = item.DateRegister,
                     LoginUrl = item.LoginUrl,
-                    BirthDate = item.BirthDate
+                    BirthDate = item.BirthDate,
+                    AvatarPath = item.UserIcon
                 });
             }
 
