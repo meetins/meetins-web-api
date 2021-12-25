@@ -33,5 +33,8 @@ namespace Meetins.WebApi.Models.Responses
         /// Дата регистрации пользователя.
         /// </summary>       
         public DateTime DateRegister { get; set; }
+
+        public string LoginUrl { get; set; }
+        public DateTime BirthDate { get; set; }
     }
 }

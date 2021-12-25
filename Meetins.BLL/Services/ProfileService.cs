@@ -31,7 +31,9 @@ namespace Meetins.BLL.Services
                 PhoneNumber = user.PhoneNumber,
                 Gender = user.Gender,
                 UserIcon = user.UserIcon,
-                DateRegister = user.DateRegister
+                DateRegister = user.DateRegister,
+                BirthDate = user.BirthDate,
+                LoginUrl = user.LoginUrl
             };
 
             return profileDto;

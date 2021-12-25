@@ -30,5 +30,7 @@ namespace Meetins.BLL.DTOs
         /// Дата регистрации пользователя.
         /// </summary>       
         public DateTime DateRegister { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string LoginUrl { get; set; }
     }
 }

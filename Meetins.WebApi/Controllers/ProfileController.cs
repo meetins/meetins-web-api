@@ -42,7 +42,9 @@ namespace Meetins.WebApi.Controllers
                 PhoneNumber = profileDto.PhoneNumber,
                 Gender = profileDto.Gender,
                 UserIcon = profileDto.UserIcon,
-                DateRegister = profileDto.DateRegister
+                DateRegister = profileDto.DateRegister,
+                BirthDate = profileDto.BirthDate,
+                LoginUrl = profileDto.LoginUrl
             };
 
             return Ok(profile);
