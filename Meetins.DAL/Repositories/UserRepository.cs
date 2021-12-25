@@ -32,7 +32,7 @@ namespace Meetins.DAL.Repositories
             updatedUser.Email = user.Email;
             updatedUser.LoginUrl = user.LoginUrl;
             updatedUser.BirthDate = user.BirthDate;
-            if (user.Password != null)
+            if (user.Password != null && user.Password != "")
             {
                 updatedUser.Password = user.Password;
             }
