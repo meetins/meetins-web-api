@@ -16,15 +16,20 @@ using System.Threading.Tasks;
 
 namespace Meetins.WebApi.Controllers
 {
+    /// <summary>
+    /// В контроллере содержится функционал для регистрации, проверки учетных данных, аутентификации, авторизации, входа в систему и выхода.
+    /// </summary>
     [Route("user")]
     [ApiController]
     public class UserController : Controller
     {
         IUserService _userService;
+        IProfileService _profileService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService,IProfileService profileService)
         {
             _userService = userService;
+            _profileService = profileService;
         }
 
         [HttpGet, Route("get-users")]
@@ -77,7 +82,7 @@ namespace Meetins.WebApi.Controllers
 
             loginResponse.authenticateResponse = new AuthenticateResponseModel(authResult.UserId, authResult.Token, authResult.RefreshToken);
 
-            ProfileDto profileDto = await _userService.GetUserProfile(authResult.UserId);
+            ProfileDto profileDto = await _profileService.GetUserProfile(authResult.UserId);
 
             loginResponse.profile = new ProfileResponseModel
             {
@@ -224,33 +229,6 @@ namespace Meetins.WebApi.Controllers
             await _userService.DeleteAllRefreshTokenByUserId(userId);
 
             return NoContent();
-        }
-
-        [Authorize]
-        [HttpGet,Route("my-profile")]
-        public async Task<ActionResult<ProfileResponseModel>> MyProfile()
-        {
-            string rawUserId = HttpContext.User.FindFirstValue("userId");
-
-            if (!Guid.TryParse(rawUserId, out Guid userId))
-            {
-                return Unauthorized();
-            }
-
-            ProfileDto profileDto = await _userService.GetUserProfile(userId);
-
-            ProfileResponseModel profile = new ProfileResponseModel
-            {
-                FirstName = profileDto.FirstName,
-                LastName = profileDto.LastName,
-                Email = profileDto.Email,
-                PhoneNumber = profileDto.PhoneNumber,
-                Gender = profileDto.Gender,
-                UserIcon = profileDto.UserIcon,
-                DateRegister = profileDto.DateRegister
-            };
-
-            return Ok(profile);
         }
 
         [Authorize]

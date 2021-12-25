@@ -49,6 +49,18 @@ namespace Meetins.DAL.Entities
         public DateTime DateRegister { get; set; }
 
         /// <summary>
+        /// Дата рождения
+        /// </summary>
+        [Column("BirthDate")]
+        public DateTime BirthDate { get; set; }
+
+        /// <summary>
+        /// Логин и url для пользователя
+        /// </summary>
+        [Column("LoginUrl")]
+        public string LoginUrl { get; set; }
+        
+        /// <summary>
         /// Запомнить меня
         /// </summary>
         [Column("RememberMe")]

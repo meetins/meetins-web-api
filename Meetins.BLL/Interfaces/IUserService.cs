@@ -18,8 +18,6 @@ namespace Meetins.BLL.Interfaces
         Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto refreshTokenRequest);
         Task<bool> CheckUserByEmailOrPhoneNumber(string email, string phoneNumber);
         Task<UserDto> CheckUserByEmail(string email);
-        Task<UserDto> CheckUserByPhone(string phone);
-        Task<ProfileDto> GetUserProfile(Guid userId);
-
+        Task<UserDto> CheckUserByPhone(string phone);  
     }
 }

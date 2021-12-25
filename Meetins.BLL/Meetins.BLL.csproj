@@ -13,4 +13,9 @@
     <ProjectReference Include="..\Meetins.DAL\Meetins.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\Account\Requests\" />
+    <Folder Include="DTOs\Account\Responses\" />
+  </ItemGroup>
+
 </Project>

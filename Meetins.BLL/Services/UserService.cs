@@ -114,7 +114,7 @@ namespace Meetins.BLL.Services
         }
 
         private ClaimsIdentity GetClaimsIdentity(UserEntity user)
-        {            
+        {
 
             if (user != null)
             {
@@ -149,6 +149,15 @@ namespace Meetins.BLL.Services
                 DateRegister = DateTime.UtcNow
             };
 
+
+            DateTime dt2020 = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Utc);
+
+            TimeSpan tsInterval = newUser.DateRegister.Subtract(dt2020);
+
+            newUser.LoginUrl = "id"+Convert.ToUInt64(tsInterval.TotalSeconds).ToString();
+
+
+
             await _db.Users.AddUserAsync(newUser);
             await _db.SaveChangesAsync();
         }
@@ -169,7 +178,9 @@ namespace Meetins.BLL.Services
                     Email = item.Email,
                     Password = item.Password,
                     Gender = item.Gender,
-                    DateRegister = item.DateRegister
+                    DateRegister = item.DateRegister,
+                    LoginUrl = item.LoginUrl,
+                    BirthDate = item.BirthDate
                 });
             }
 
@@ -241,7 +252,7 @@ namespace Meetins.BLL.Services
 
         public async Task<bool> CheckUserByEmailOrPhoneNumber(string email, string phoneNumber)
         {
-            var user = await  _db.Users.GetUserByEmailOrPhoneNumber(email, phoneNumber);
+            var user = await _db.Users.GetUserByEmailOrPhoneNumber(email, phoneNumber);
 
             if (user is null)
             {
@@ -249,7 +260,7 @@ namespace Meetins.BLL.Services
             }
 
             return true;
-            
+
         }
 
         public async Task<UserDto> CheckUserByEmail(string email)
@@ -301,25 +312,8 @@ namespace Meetins.BLL.Services
         public async Task DeleteAllRefreshTokenByUserId(Guid userId)
         {
             await _db.RefreshTokens.DeleteAll(userId);
-            await _db.SaveChangesAsync();            
+            await _db.SaveChangesAsync();
         }
 
-        public async Task<ProfileDto> GetUserProfile(Guid userId)
-        {
-            UserEntity user = await _db.Users.GetUserById(userId);
-
-            var profileDto = new ProfileDto
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Gender= user.Gender,
-                UserIcon = user.UserIcon,
-                DateRegister = user.DateRegister
-            };
-
-            return profileDto; 
-        }
     }
 }

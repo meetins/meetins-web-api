@@ -14,6 +14,9 @@ namespace Meetins.BLL.DTOs
         public string Email { get; set; }                
         public string Password { get; set; }        
         public string Gender { get; set; }
-        public DateTime DateRegister { get; set; }        
+        public DateTime DateRegister { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string LoginUrl { get; set; }
+        public string AvatarPath { get; set; }
     }
 }
