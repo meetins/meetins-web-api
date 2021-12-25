@@ -239,7 +239,7 @@ namespace Meetins.BLL.Services
                 PhoneNumber = editAccountSettingsRequest.PhoneNumber,
                 Password = editAccountSettingsRequest.Password,
                 BirthDate = editAccountSettingsRequest.BirthDate,
-                LoginUrl = editAccountSettingsRequest.Password
+                LoginUrl = editAccountSettingsRequest.LoginUrl
             };
             await _db.Users.UpdateUser(userEntity);
             await _db.SaveChangesAsync();
