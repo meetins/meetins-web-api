@@ -18,23 +18,15 @@ namespace Meetins.WebApi.Models.Responses
         public string PhoneNumber { get; set; }
         
         public string Email { get; set; }
-        
-        /// <summary>
-        /// M - мужчина, F - женщина.
-        /// </summary>        
+               
         public string Gender { get; set; }
-
-        /// <summary>
-        /// Путь к иконке пользователя.
-        /// </summary>        
+            
         public string UserIcon { get; set; }
-
-        /// <summary>
-        /// Дата регистрации пользователя.
-        /// </summary>       
+            
         public DateTime DateRegister { get; set; }
 
         public string LoginUrl { get; set; }
+
         public DateTime BirthDate { get; set; }
     }
 }

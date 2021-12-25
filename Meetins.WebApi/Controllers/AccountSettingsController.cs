@@ -3,6 +3,7 @@ using Meetins.BLL.DTOs.AccountSettings.Requests;
 using Meetins.BLL.Interfaces;
 using Meetins.WebApi.Models.AccountSettings.Requests;
 using Meetins.WebApi.Models.AccountSettings.Responses;
+using Meetins.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,14 +19,16 @@ namespace Meetins.WebApi.Controllers
     public class AccountSettingsController : Controller
     {
         private IUserService _userService;
-        public AccountSettingsController(IUserService userService)
+        private IProfileService _profileService;
+        public AccountSettingsController(IUserService userService, IProfileService profileService)
         {
             _userService = userService;
+            _profileService = profileService;
         }
 
         [Authorize]
         [HttpPost, Route("edit")]
-        public async Task<IActionResult> EditAccountSettings([FromBody] EditAccountSettingsRequestModel editAccountSettingsRequest)
+        public async Task<ActionResult<ProfileResponseModel>> EditAccountSettings([FromBody] EditAccountSettingsRequestModel editAccountSettingsRequest)
         {
             string rawUserId = HttpContext.User.FindFirstValue("userId");
 
@@ -57,7 +60,22 @@ namespace Meetins.WebApi.Controllers
 
             await _userService.EditAccountSettings(editAccountSettingsRequestDto);
 
-            return Ok();
+            ProfileDto profileDto = await _profileService.GetUserProfile(userId);
+
+            ProfileResponseModel profile = new ProfileResponseModel
+            {
+                FirstName = profileDto.FirstName,
+                LastName = profileDto.LastName,
+                Email = profileDto.Email,
+                PhoneNumber = profileDto.PhoneNumber,
+                Gender = profileDto.Gender,
+                UserIcon = profileDto.UserIcon,
+                DateRegister = profileDto.DateRegister,
+                BirthDate = profileDto.BirthDate,
+                LoginUrl = profileDto.LoginUrl
+            };
+
+            return Ok(profile);
         }
 
         [Authorize]
