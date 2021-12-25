@@ -5,6 +5,7 @@ using Meetins.BLL.Interfaces;
 using Meetins.WebApi.Models;
 using Meetins.WebApi.Models.Requests;
 using Meetins.WebApi.Models.Responses;
+using Meetins.WebApi.Models.User.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -56,7 +57,7 @@ namespace Meetins.WebApi.Controllers
                 return BadRequest(new { errorText = "Invalid email or password." });
             }
 
-            AuthenticateResponseModel response = new AuthenticateResponseModel(authResult.UserId, authResult.Token, authResult.RefreshToken);
+            AuthenticateResponseModel response = new AuthenticateResponseModel(authResult.Token, authResult.RefreshToken);
             
 
             return Ok(response);
@@ -80,7 +81,7 @@ namespace Meetins.WebApi.Controllers
 
             LoginResponseModel loginResponse = new LoginResponseModel();
 
-            loginResponse.authenticateResponse = new AuthenticateResponseModel(authResult.UserId, authResult.Token, authResult.RefreshToken);
+            loginResponse.authenticateResponse = new AuthenticateResponseModel(authResult.Token, authResult.RefreshToken);
 
             ProfileDto profileDto = await _profileService.GetUserProfile(authResult.UserId);
 
@@ -92,7 +93,9 @@ namespace Meetins.WebApi.Controllers
                 PhoneNumber = profileDto.PhoneNumber,
                 Gender = profileDto.Gender,
                 UserIcon = profileDto.UserIcon,
-                DateRegister = profileDto.DateRegister
+                DateRegister = profileDto.DateRegister,
+                LoginUrl =profileDto.LoginUrl,
+                BirthDate = profileDto.BirthDate
             };
 
             return Ok(loginResponse);
@@ -129,11 +132,11 @@ namespace Meetins.WebApi.Controllers
         }
 
         [HttpPost, Route("register-user")]
-        public async Task<ActionResult> RegisterUserAsync([FromBody] RegisterUserRequestModel userRequest)
+        public async Task<ActionResult<RegisterUserResponseModel>> RegisterUserAsync([FromBody] RegisterUserRequestModel userRequest)
         {
             if (userRequest == null)
             {
-                return BadRequest();
+                return BadRequest(new { errortext = "User's field cannot be null or empty." });
             }
 
             bool isUserExists = await _userService.CheckUserByEmailOrPhoneNumber(userRequest.Email, userRequest.PhoneNumber);
@@ -154,25 +157,37 @@ namespace Meetins.WebApi.Controllers
                 DateRegister = DateTime.UtcNow
             };
             await _userService.RegisterUserAsync(userDto);
+                     
 
-            AuthenticateRequestDto authenticateRequestDto = new AuthenticateRequestDto
-            {                
-                Password = userDto.Password
-            };
+            
 
-            authenticateRequestDto.EmailOrPhone = userDto.Email is not null ? userDto.Email : userDto.PhoneNumber;
+            AutheticateResponseDto authResult = await _userService.AuthenticateUser(new AuthenticateRequestDto { EmailOrPhone = userDto.Email, Password = userDto.Password });
 
-            AutheticateResponseDto authResult = await _userService.AuthenticateUser(authenticateRequestDto);
-
-            var response = new
+            if (authResult is null)
             {
-                status = "User registered successfully.",
-                access_token = authResult.Token,
-                resresh_token = authResult.RefreshToken,
-                user_id = authResult.UserId
+                return BadRequest(new { errorText = "Invalid email or password." });
+            }
+
+            RegisterUserResponseModel registerUserResponse = new RegisterUserResponseModel();
+
+            registerUserResponse.authenticateResponse = new AuthenticateResponseModel(authResult.Token, authResult.RefreshToken);
+
+            ProfileDto profileDto = await _profileService.GetUserProfile(authResult.UserId);
+
+            registerUserResponse.profile = new ProfileResponseModel
+            {
+                FirstName = profileDto.FirstName,
+                LastName = profileDto.LastName,
+                Email = profileDto.Email,
+                PhoneNumber = profileDto.PhoneNumber,
+                Gender = profileDto.Gender,
+                UserIcon = profileDto.UserIcon,
+                DateRegister = profileDto.DateRegister,
+                LoginUrl = profileDto.LoginUrl,
+                BirthDate = profileDto.BirthDate
             };
 
-            return Json(response); 
+            return Ok(registerUserResponse); 
         }
 
         [HttpGet,Route("check-email")]

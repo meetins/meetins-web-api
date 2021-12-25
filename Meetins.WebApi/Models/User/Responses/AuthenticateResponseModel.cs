@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Meetins.WebApi.Models.Responses
 {
-    public class AuthenticateResponseModel
-    { 
-        public Guid UserId { get; set; }
+    public class AuthenticateResponseModel    { 
+       
         public string AccessToken { get; set; }       
         public string RefreshToken { get; set; }
 
@@ -16,9 +15,8 @@ namespace Meetins.WebApi.Models.Responses
         {
 
         }
-        public AuthenticateResponseModel(Guid userId, string accessToken, string refreshToken)
-        {
-            UserId = userId;
+        public AuthenticateResponseModel(string accessToken, string refreshToken)
+        {            
             AccessToken = accessToken;
             RefreshToken = refreshToken;
         }
