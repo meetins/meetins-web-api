@@ -42,7 +42,7 @@ namespace Meetins.DAL.Repositories
                 updatedUser.PhoneNumber = user.PhoneNumber;
             }
 
-            if (user.LoginUrl != null)
+            if (user.LoginUrl != null && user.LoginUrl != "")
             {
                 updatedUser.LoginUrl = user.LoginUrl;
             }            
