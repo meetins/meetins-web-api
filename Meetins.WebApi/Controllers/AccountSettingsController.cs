@@ -44,7 +44,7 @@ namespace Meetins.WebApi.Controllers
                 return BadRequest(new { errortext = "LoginUrl already exists." });
             }
 
-            string[] names = editAccountSettingsRequest.FisrtNameAndLastName.Split(' ');
+            string[] names = editAccountSettingsRequest.FirstNameAndLastName.Split(' ');
 
             EditAccountSettingsRequestDto editAccountSettingsRequestDto = new EditAccountSettingsRequestDto()
             {
