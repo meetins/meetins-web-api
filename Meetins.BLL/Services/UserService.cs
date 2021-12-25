@@ -199,6 +199,28 @@ namespace Meetins.BLL.Services
 
             return userDto;
         }
+        public async Task<UserDto> CheckUserByLoginUrl(string loginUrl)
+        {
+            UserEntity user = await _db.Users.GetUserByLoginUrl(loginUrl);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            UserDto userDto = new UserDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                Password = user.Password,
+                Gender = user.Gender,
+                DateRegister = user.DateRegister
+            };
+
+            return userDto;
+        }
 
         public async Task DeleteAllRefreshTokenByUserId(Guid userId)
         {
@@ -334,7 +356,7 @@ namespace Meetins.BLL.Services
             string refreshToken = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return refreshToken;
-        }
+        }        
         #endregion
     }
 }

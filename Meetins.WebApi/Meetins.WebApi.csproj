@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\AccountSettings\Responses\" />
     <Folder Include="Models\Profile\Requests\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>

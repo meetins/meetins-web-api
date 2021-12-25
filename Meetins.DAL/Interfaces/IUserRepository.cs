@@ -20,7 +20,7 @@ namespace Meetins.DAL.Interfaces
         Task<UserEntity> GetUserByEmailOrPhoneNumber(string email, string phoneNumber);
 
         Task<UserEntity> GetUserByEmail(string email);
-
+        Task<UserEntity> GetUserByLoginUrl(string loginUrl);
         Task<UserEntity> GetUserByPhone(string phone);
 
         Task UpdateUser(UserEntity user);
