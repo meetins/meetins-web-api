@@ -23,6 +23,31 @@ namespace Meetins.DAL.Repositories
             await _db.Users.AddAsync(user);
         }
 
+        public async Task UpdateUser(UserEntity user)
+        {
+            UserEntity updatedUser = await _db.Users.FirstOrDefaultAsync(u => u.UserId == user.UserId);
+           
+            updatedUser.FirstName = user.FirstName;
+            updatedUser.LastName = user.LastName;
+            updatedUser.Email = user.Email;
+            updatedUser.LoginUrl = user.LoginUrl;
+            updatedUser.BirthDate = user.BirthDate;
+            if (user.Password != null)
+            {
+                updatedUser.Password = user.Password;
+            }
+
+            if (user.PhoneNumber != null)
+            {
+                updatedUser.PhoneNumber = user.PhoneNumber;
+            }
+
+            if (user.LoginUrl != null)
+            {
+                updatedUser.LoginUrl = user.LoginUrl;
+            }            
+        }
+
         public async Task<IEnumerable<UserEntity>> GetAllUsersAsync()
         {
             return await _db.Users.ToListAsync();
@@ -35,7 +60,7 @@ namespace Meetins.DAL.Repositories
 
         public async Task<UserEntity> GetUserByEmailOrPhoneNumber(string email, string phoneNumber)
         {
-            if(phoneNumber is null && email is null)
+            if (phoneNumber is null && email is null)
             {
                 return null;
             }
@@ -66,7 +91,7 @@ namespace Meetins.DAL.Repositories
 
         public async Task<UserEntity> IdentityUserAsync(string emailOrPhone, string password)
         {
-            return await _db.Users.FirstOrDefaultAsync(u=>(u.Email == emailOrPhone || u.PhoneNumber == emailOrPhone) && u.Password == password);
+            return await _db.Users.FirstOrDefaultAsync(u => (u.Email == emailOrPhone || u.PhoneNumber == emailOrPhone) && u.Password == password);
         }
     }
 }

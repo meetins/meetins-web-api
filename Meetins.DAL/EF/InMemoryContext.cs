@@ -56,7 +56,7 @@ namespace Meetins.DAL.EF
                     Gender = "F",
                     UserIcon = "/images/no-photo.png",
                     DateRegister = new DateTime(2021,11,12),
-                    LoginUrl = "id_test_user#1",
+                    LoginUrl = "id_test_user#2",
                     RememberMe = false
                 },
                 new UserEntity {
@@ -69,7 +69,7 @@ namespace Meetins.DAL.EF
                     Gender = "M",
                     UserIcon = "/images/no-photo.png",
                     DateRegister = new DateTime(2021,12,19),
-                    LoginUrl = "id_test_user#1",
+                    LoginUrl = "id_test_user#3",
                     RememberMe = false
                 },
                 new UserEntity {
@@ -82,7 +82,7 @@ namespace Meetins.DAL.EF
                     Gender = "F",
                     UserIcon = "/images/no-photo.png",
                     DateRegister = new DateTime(2021,12,19),
-                    LoginUrl = "id_test_user#1",
+                    LoginUrl = "id_test_user#4",
                     RememberMe = false
                 },
                 });

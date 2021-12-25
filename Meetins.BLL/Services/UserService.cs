@@ -1,5 +1,6 @@
 ﻿using Meetins.BLL.DTO;
 using Meetins.BLL.DTOs;
+using Meetins.BLL.DTOs.AccountSettings.Requests;
 using Meetins.BLL.DTOs.Requests;
 using Meetins.BLL.DTOs.Responses;
 using Meetins.BLL.Interfaces;
@@ -112,29 +113,7 @@ namespace Meetins.BLL.Services
             }
             return null;
         }
-
-        private ClaimsIdentity GetClaimsIdentity(UserEntity user)
-        {
-
-            if (user != null)
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim("userId",user.UserId.ToString()),
-                    new Claim(ClaimTypes.Name, user.FirstName+user.LastName),
-                    new Claim(ClaimTypes.Email, user.Email)
-                };
-
-                ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "JwtToken", ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType);
-
-                return claimsIdentity;
-            }
-            // если пользователя не найдено
-            return null;
-        }
-
+         
         public async Task RegisterUserAsync(UserDto user)
         {
             UserEntity newUser = new UserEntity()
@@ -160,94 +139,6 @@ namespace Meetins.BLL.Services
 
             await _db.Users.AddUserAsync(newUser);
             await _db.SaveChangesAsync();
-        }
-
-        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
-        {
-            var users = await _db.Users.GetAllUsersAsync();
-
-            List<UserDto> userDtos = new List<UserDto>();
-
-            foreach (var item in users)
-            {
-                userDtos.Add(new UserDto
-                {
-                    FirstName = item.FirstName,
-                    LastName = item.LastName,
-                    PhoneNumber = item.PhoneNumber,
-                    Email = item.Email,
-                    Password = item.Password,
-                    Gender = item.Gender,
-                    DateRegister = item.DateRegister,
-                    LoginUrl = item.LoginUrl,
-                    BirthDate = item.BirthDate
-                });
-            }
-
-            return userDtos;
-        }
-
-        private string GenerateAccessToken(IEnumerable<Claim> claims)
-        {
-            var now = DateTime.UtcNow;
-            // создаем JWT-токен
-            var jwt = new JwtSecurityToken(
-                    issuer: AccessTokenOptions.ISSUER,
-                    audience: AccessTokenOptions.AUDIENCE,
-                    notBefore: now,
-                    claims: claims,
-                    expires: now.AddMinutes(AccessTokenOptions.LIFETIME),
-                    signingCredentials: new SigningCredentials(AccessTokenOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-
-            string accessToken = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            return accessToken;
-        }
-
-        private string GenerateRerfreshToken()
-        {
-            var now = DateTime.UtcNow;
-            // создаем JWT-токен
-            var jwt = new JwtSecurityToken(
-                    issuer: RefreshTokenOptions.ISSUER,
-                    audience: RefreshTokenOptions.AUDIENCE,
-                    notBefore: now,
-                    claims: null,
-                    expires: now.AddMinutes(RefreshTokenOptions.LIFETIME),
-                    signingCredentials: new SigningCredentials(RefreshTokenOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-
-            string refreshToken = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            return refreshToken;
-        }
-
-        private bool ValidateRefreshToken(string refreshToken)
-        {
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            TokenValidationParameters validationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = RefreshTokenOptions.ISSUER,
-                ValidateAudience = true,
-                ValidAudience = RefreshTokenOptions.AUDIENCE,
-                ValidateLifetime = true,
-                IssuerSigningKey = RefreshTokenOptions.GetSymmetricSecurityKey(),
-                ValidateIssuerSigningKey = true,
-                ClockSkew = TimeSpan.Zero
-            };
-
-            try
-            {
-                tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
-                return true;
-            }
-            catch (Exception)
-            {
-
-                return false;
-            }
-
-
         }
 
         public async Task<bool> CheckUserByEmailOrPhoneNumber(string email, string phoneNumber)
@@ -315,5 +206,135 @@ namespace Meetins.BLL.Services
             await _db.SaveChangesAsync();
         }
 
+        public async Task EditAccountSettings(EditAccountSettingsRequestDto editAccountSettingsRequest)
+        {
+            UserEntity userEntity = new UserEntity() 
+            { 
+                UserId = editAccountSettingsRequest.UserId,
+                FirstName = editAccountSettingsRequest.FirstName,
+                LastName = editAccountSettingsRequest.LastName,
+                Email = editAccountSettingsRequest.Email,
+                PhoneNumber = editAccountSettingsRequest.PhoneNumber,
+                Password = editAccountSettingsRequest.Password,
+                BirthDate = editAccountSettingsRequest.BirthDate,
+                LoginUrl = editAccountSettingsRequest.Password
+            };
+            await _db.Users.UpdateUser(userEntity);
+            await _db.SaveChangesAsync();
+        }
+
+        #region ТЕСТОВЫЕ МЕТОДЫ
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+        {
+            var users = await _db.Users.GetAllUsersAsync();
+
+            List<UserDto> userDtos = new List<UserDto>();
+
+            foreach (var item in users)
+            {
+                userDtos.Add(new UserDto
+                {
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    PhoneNumber = item.PhoneNumber,
+                    Email = item.Email,
+                    Password = item.Password,
+                    Gender = item.Gender,
+                    DateRegister = item.DateRegister,
+                    LoginUrl = item.LoginUrl,
+                    BirthDate = item.BirthDate
+                });
+            }
+
+            return userDtos;
+        }
+        #endregion
+
+        #region PRIVATE-методы
+        private bool ValidateRefreshToken(string refreshToken)
+        {
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            TokenValidationParameters validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = RefreshTokenOptions.ISSUER,
+                ValidateAudience = true,
+                ValidAudience = RefreshTokenOptions.AUDIENCE,
+                ValidateLifetime = true,
+                IssuerSigningKey = RefreshTokenOptions.GetSymmetricSecurityKey(),
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            try
+            {
+                tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+
+
+        }
+
+        private ClaimsIdentity GetClaimsIdentity(UserEntity user)
+        {
+
+            if (user != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim("userId",user.UserId.ToString()),
+                    new Claim(ClaimTypes.Name, user.FirstName+user.LastName),
+                    new Claim(ClaimTypes.Email, user.Email)
+                };
+
+                ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "JwtToken", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
+
+                return claimsIdentity;
+            }
+            // если пользователя не найдено
+            return null;
+        }
+
+        private string GenerateAccessToken(IEnumerable<Claim> claims)
+        {
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: AccessTokenOptions.ISSUER,
+                    audience: AccessTokenOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: claims,
+                    expires: now.AddMinutes(AccessTokenOptions.LIFETIME),
+                    signingCredentials: new SigningCredentials(AccessTokenOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
+            string accessToken = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return accessToken;
+        }
+
+        private string GenerateRerfreshToken()
+        {
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: RefreshTokenOptions.ISSUER,
+                    audience: RefreshTokenOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: null,
+                    expires: now.AddMinutes(RefreshTokenOptions.LIFETIME),
+                    signingCredentials: new SigningCredentials(RefreshTokenOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
+            string refreshToken = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            return refreshToken;
+        }
+        #endregion
     }
 }

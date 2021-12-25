@@ -1,4 +1,5 @@
 ﻿using Meetins.BLL.DTOs;
+using Meetins.BLL.DTOs.AccountSettings.Requests;
 using Meetins.BLL.DTOs.Requests;
 using Meetins.BLL.DTOs.Responses;
 using System;
@@ -18,6 +19,7 @@ namespace Meetins.BLL.Interfaces
         Task<RefreshTokenResponseDto> RefreshTokenAsync(RefreshTokenRequestDto refreshTokenRequest);
         Task<bool> CheckUserByEmailOrPhoneNumber(string email, string phoneNumber);
         Task<UserDto> CheckUserByEmail(string email);
-        Task<UserDto> CheckUserByPhone(string phone);  
+        Task<UserDto> CheckUserByPhone(string phone);
+        Task EditAccountSettings(EditAccountSettingsRequestDto editAccountSettingsRequest);
     }
 }
