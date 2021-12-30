@@ -39,5 +39,29 @@ namespace Meetins.BLL.Services
             return profileDto;
         }
 
+        public async Task<ProfileDto> GetUserProfileByLoginUrl(string loginUrl)
+        {
+            UserEntity user = await _db.Users.GetUserByLoginUrl(loginUrl);
+
+            if (user is null)
+            {
+                return null;
+            }
+            
+            var profileDto = new ProfileDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Gender = user.Gender,
+                UserIcon = user.UserIcon,
+                DateRegister = user.DateRegister,
+                BirthDate = user.BirthDate,
+                LoginUrl = user.LoginUrl
+            };
+
+            return profileDto;
+        }
     }
 }

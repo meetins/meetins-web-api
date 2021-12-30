@@ -7,5 +7,6 @@ namespace Meetins.BLL.Interfaces
     public interface IProfileService
     {
         Task<ProfileDto> GetUserProfile(Guid userId);
+        Task<ProfileDto> GetUserProfileByLoginUrl(string loginUrl);
     }
 }
