@@ -66,27 +66,34 @@ namespace Meetins.WebApi.Controllers
                 return BadRequest(new { errortext = "PhoneNumber already exists." });
             }
 
-
-            string[] names = editProfileSettingsRequest.FirstNameAndLastName.Split(' ');
-                       
-
-            EditProfileSettingsRequestDto editAProfileSettingsRequestDto = new EditProfileSettingsRequestDto()
-            {
-                UserId = userId,                
-                FirstName = names[0],
-                LastName = names[1],
-                PhoneNumber = editProfileSettingsRequest.PhoneNumber
-            };
-
             try
             {
-                editAProfileSettingsRequestDto.BirthDate = DateTime.Parse(editProfileSettingsRequest.BirthDate);
-            }
-            catch (Exception)
+                string[] names = editProfileSettingsRequest.FirstNameAndLastName.Split(' ');
+            
+                EditProfileSettingsRequestDto editAProfileSettingsRequestDto = new EditProfileSettingsRequestDto()
+                {
+                    UserId = userId,
+                    FirstName = names[0],
+                    LastName = names[1],
+                    PhoneNumber = editProfileSettingsRequest.PhoneNumber
+                };
+
+                try
+                {
+                    editAProfileSettingsRequestDto.BirthDate = DateTime.Parse(editProfileSettingsRequest.BirthDate);
+                }
+                catch (Exception)
+                {
+                    editAProfileSettingsRequestDto.BirthDate = null;
+                }
+                await _userService.EditProfileSettings(editAProfileSettingsRequestDto);
+
+                             
+            }       
+            catch(Exception)
             {
-                editAProfileSettingsRequestDto.BirthDate = null;
+                return BadRequest();
             }
-            await _userService.EditProfileSettings(editAProfileSettingsRequestDto);
 
             ProfileDto profileDto = await _profileService.GetUserProfile(userId);
 
@@ -102,8 +109,8 @@ namespace Meetins.WebApi.Controllers
                 BirthDate = profileDto.BirthDate,
                 LoginUrl = profileDto.LoginUrl
             };
-
             return Ok(profile);
+
         }
 
         [Authorize]
