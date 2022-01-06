@@ -1,5 +1,5 @@
 ﻿using Meetins.BLL.DTOs;
-using Meetins.BLL.DTOs.AccountSettings.Requests;
+using Meetins.BLL.DTOs.Settings.Requests;
 using Meetins.BLL.DTOs.Requests;
 using Meetins.BLL.DTOs.Responses;
 using System;
@@ -22,5 +22,6 @@ namespace Meetins.BLL.Interfaces
         Task<UserDto> CheckUserByLoginUrl(string loginUrl);
         Task<UserDto> CheckUserByPhone(string phone);
         Task EditAccountSettings(EditAccountSettingsRequestDto editAccountSettingsRequest);
+        Task EditProfileSettings(EditProfileSettingsRequestDto editProfileSettingsRequest);
     }
 }

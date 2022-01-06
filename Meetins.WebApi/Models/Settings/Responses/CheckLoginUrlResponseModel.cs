@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Meetins.WebApi.Models.AccountSettings.Responses
+namespace Meetins.WebApi.Models.Settings.Responses
 {
     public class CheckLoginUrlResponseModel
     {

@@ -52,7 +52,7 @@ namespace Meetins.DAL.Entities
         /// Дата рождения
         /// </summary>
         [Column("BirthDate")]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         /// <summary>
         /// Логин и url для пользователя

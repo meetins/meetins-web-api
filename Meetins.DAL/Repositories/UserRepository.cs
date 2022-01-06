@@ -26,12 +26,32 @@ namespace Meetins.DAL.Repositories
         public async Task UpdateUser(UserEntity user)
         {
             UserEntity updatedUser = await _db.Users.FirstOrDefaultAsync(u => u.UserId == user.UserId);
-           
-            updatedUser.FirstName = user.FirstName;
-            updatedUser.LastName = user.LastName;
-            updatedUser.Email = user.Email;
-            updatedUser.LoginUrl = user.LoginUrl;
-            updatedUser.BirthDate = user.BirthDate;
+            
+            if (user.FirstName != null && user.FirstName != "")
+            {
+                updatedUser.FirstName = user.FirstName;
+            }
+
+            if (user.LastName != null && user.LastName != "")
+            {
+                updatedUser.LastName = user.LastName;
+            }
+
+            if (user.Email != null && user.Email != "")
+            {
+                updatedUser.Email = user.Email;
+            }
+
+            if (user.LoginUrl != null && user.LoginUrl != "")
+            {
+                updatedUser.LoginUrl = user.LoginUrl;
+            }
+
+            if (user.BirthDate != null)
+            {
+                updatedUser.BirthDate = user.BirthDate;
+            }            
+
             if (user.Password != null && user.Password != "")
             {
                 updatedUser.Password = user.Password;

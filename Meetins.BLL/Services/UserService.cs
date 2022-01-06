@@ -1,6 +1,6 @@
 ﻿using Meetins.BLL.DTO;
 using Meetins.BLL.DTOs;
-using Meetins.BLL.DTOs.AccountSettings.Requests;
+using Meetins.BLL.DTOs.Settings.Requests;
 using Meetins.BLL.DTOs.Requests;
 using Meetins.BLL.DTOs.Responses;
 using Meetins.BLL.Interfaces;
@@ -232,19 +232,28 @@ namespace Meetins.BLL.Services
         {
             UserEntity userEntity = new UserEntity() 
             { 
-                UserId = editAccountSettingsRequest.UserId,
-                FirstName = editAccountSettingsRequest.FirstName,
-                LastName = editAccountSettingsRequest.LastName,
-                Email = editAccountSettingsRequest.Email,
-                PhoneNumber = editAccountSettingsRequest.PhoneNumber,
-                Password = editAccountSettingsRequest.Password,
-                BirthDate = editAccountSettingsRequest.BirthDate,
+                UserId = editAccountSettingsRequest.UserId,                
+                Email = editAccountSettingsRequest.Email,                
+                Password = editAccountSettingsRequest.Password,                
                 LoginUrl = editAccountSettingsRequest.LoginUrl
             };
             await _db.Users.UpdateUser(userEntity);
             await _db.SaveChangesAsync();
         }
+        public async Task EditProfileSettings(EditProfileSettingsRequestDto editProfileSettingsRequest)
+        {
+            UserEntity userEntity = new UserEntity()
+            {
+                UserId = editProfileSettingsRequest.UserId,
+                FirstName = editProfileSettingsRequest.FirstName,
+                LastName = editProfileSettingsRequest.LastName,
+                BirthDate = editProfileSettingsRequest.BirthDate,
+                PhoneNumber = editProfileSettingsRequest.PhoneNumber,
+            };
 
+            await _db.Users.UpdateUser(userEntity);
+            await _db.SaveChangesAsync();
+        }
         #region ТЕСТОВЫЕ МЕТОДЫ
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
@@ -302,7 +311,6 @@ namespace Meetins.BLL.Services
 
 
         }
-
         private ClaimsIdentity GetClaimsIdentity(UserEntity user)
         {
 
@@ -357,7 +365,7 @@ namespace Meetins.BLL.Services
             string refreshToken = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return refreshToken;
-        }        
+        }                
         #endregion
     }
 }

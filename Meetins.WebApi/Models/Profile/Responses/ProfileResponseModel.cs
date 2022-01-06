@@ -27,6 +27,6 @@ namespace Meetins.WebApi.Models.Responses
 
         public string LoginUrl { get; set; }
 
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
     }
 }
