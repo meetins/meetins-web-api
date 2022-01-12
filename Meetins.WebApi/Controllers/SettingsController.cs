@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-//test commit
+//test commit 2
 namespace Meetins.WebApi.Controllers
 {
     [Route("settings")]
