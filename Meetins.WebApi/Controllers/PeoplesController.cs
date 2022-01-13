@@ -21,7 +21,7 @@ namespace Meetins.WebApi.Controllers
             _userService = userService;            
         }
 
-        
+        [Authorize]
         [HttpGet, Route("get-all")]
         public async Task<ActionResult<IEnumerable<PeoplesResponseModel>>> CheckLoginurl()
         {
