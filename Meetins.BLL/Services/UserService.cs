@@ -265,6 +265,7 @@ namespace Meetins.BLL.Services
             {
                 userDtos.Add(new UserDto
                 {
+                    UserId = item.UserId,
                     FirstName = item.FirstName,
                     LastName = item.LastName,
                     PhoneNumber = item.PhoneNumber,
