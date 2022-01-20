@@ -1,5 +1,6 @@
 ﻿using Meetins.BLL.DTOs.Ftp.Request;
 using Meetins.BLL.Interfaces;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -9,9 +10,16 @@ namespace Meetins.BLL.Services
     {
         private readonly string pathToImagesDirectory = "../Meetins.WebApi/wwwroot";
 
-        public async Task<string> UploadFile(UpdateAvatarRequestDto updateAvatarRequest)
-        {           
-            string shortpath = "/images/"+ updateAvatarRequest.UserId.ToString().Replace("-", "") + updateAvatarRequest.UploadedFile.FileName;
+        private readonly string defaultAvatar = "/images/no-photo.png";
+
+        public async Task<string> UploadNewAvatar(UpdateAvatarRequestDto updateAvatarRequest)
+        {
+            if (updateAvatarRequest.OldAvatar != defaultAvatar)
+            {
+                await DeleteOldAvatar(updateAvatarRequest.OldAvatar);
+            }            
+
+            string shortpath = "/images/"+ Guid.NewGuid().ToString().Replace("-", "") + updateAvatarRequest.UploadedFile.FileName;
 
             // путь к папке 
             string path = pathToImagesDirectory + shortpath;
@@ -21,6 +29,16 @@ namespace Meetins.BLL.Services
             }
 
             return shortpath;
+        }
+
+        public Task DeleteOldAvatar(string path)
+        {
+            if (File.Exists(pathToImagesDirectory+path))
+            {
+                File.Delete(pathToImagesDirectory+path);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Meetins.BLL.DTOs.Ftp.Request
 {
     public class UpdateAvatarRequestDto
     {
-        public Guid UserId { get; set; }
+        public string OldAvatar { get; set; }
         public IFormFile UploadedFile { get; set; }
     }
 }

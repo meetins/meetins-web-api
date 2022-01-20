@@ -74,9 +74,9 @@ namespace Meetins.WebApi.Controllers
 
         [Authorize]
         [HttpPost, Route("update-avatar")]
-        public async Task<ActionResult> AddFile(IFormFile uploadedFile)
+        public async Task<ActionResult> UpdateAvatarAsync(IFormFile uploadedFile)
         {
-            string rawUserId = HttpContext.User.FindFirstValue("userId");
+            string rawUserId = HttpContext.User.FindFirstValue("userId");            
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
@@ -88,7 +88,9 @@ namespace Meetins.WebApi.Controllers
                 return BadRequest(new { errorText = "Uploaded file cannot be null." });
             }
 
-            string newAvatarPath = await _ftpService.UploadFile(new UpdateAvatarRequestDto { UserId = userId, UploadedFile = uploadedFile });
+            ProfileDto profile = await _profileService.GetUserProfile(userId);
+
+            string newAvatarPath = await _ftpService.UploadNewAvatar(new UpdateAvatarRequestDto { OldAvatar = profile.UserIcon, UploadedFile = uploadedFile });
 
             ProfileDto profileDto = await _profileService.UpdateAvatarPath(new UpdateAvatarPathRequestDto { UserId = userId, NewAvatarPath = newAvatarPath });
 

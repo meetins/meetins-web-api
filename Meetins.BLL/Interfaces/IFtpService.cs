@@ -5,6 +5,6 @@ namespace Meetins.BLL.Interfaces
 {
     public interface IFtpService
     {
-        Task<string> UploadFile(UpdateAvatarRequestDto updateAvatarRequest);
+        Task<string> UploadNewAvatar(UpdateAvatarRequestDto updateAvatarRequest);       
     }
 }
