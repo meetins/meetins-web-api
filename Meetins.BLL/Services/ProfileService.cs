@@ -1,11 +1,9 @@
 ﻿using Meetins.BLL.DTOs;
 using Meetins.BLL.Interfaces;
+using Meetins.BLL.Mapping;
 using Meetins.DAL.Entities;
 using Meetins.DAL.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Meetins.BLL.Services
@@ -21,22 +19,9 @@ namespace Meetins.BLL.Services
 
         public async Task<ProfileDto> GetUserProfile(Guid userId)
         {
-            UserEntity user = await _db.Users.GetUserById(userId);
+            UserEntity user = await _db.Users.GetUserById(userId);                      
 
-            var profileDto = new ProfileDto
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Gender = user.Gender,
-                UserIcon = user.UserIcon,
-                DateRegister = user.DateRegister,
-                BirthDate = user.BirthDate,
-                LoginUrl = user.LoginUrl
-            };
-
-            return profileDto;
+            return user.ToProfileDto();
         }
 
         public async Task<ProfileDto> GetUserProfileByLoginUrl(string loginUrl)
@@ -46,22 +31,9 @@ namespace Meetins.BLL.Services
             if (user is null)
             {
                 return null;
-            }
-            
-            var profileDto = new ProfileDto
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Gender = user.Gender,
-                UserIcon = user.UserIcon,
-                DateRegister = user.DateRegister,
-                BirthDate = user.BirthDate,
-                LoginUrl = user.LoginUrl
-            };
+            }  
 
-            return profileDto;
+            return user.ToProfileDto();
         }
     }
 }

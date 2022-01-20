@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Meetins.DAL.Entities
 {
@@ -59,7 +55,9 @@ namespace Meetins.DAL.Entities
         /// </summary>
         [Column("LoginUrl")]
         public string LoginUrl { get; set; }
-        
+
+        public string Status { get; set; }
+
         /// <summary>
         /// Запомнить меня
         /// </summary>
