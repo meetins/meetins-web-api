@@ -2,6 +2,7 @@
 using Meetins.BLL.DTOs.Requests;
 using Meetins.BLL.DTOs.Responses;
 using Meetins.BLL.Interfaces;
+using Meetins.BLL.Mapping;
 using Meetins.WebApi.Models;
 using Meetins.WebApi.Models.Requests;
 using Meetins.WebApi.Models.Responses;
@@ -85,18 +86,7 @@ namespace Meetins.WebApi.Controllers
 
             ProfileDto profileDto = await _profileService.GetUserProfile(authResult.UserId);
 
-            loginResponse.profile = new ProfileResponseModel
-            {
-                FirstName = profileDto.FirstName,
-                LastName = profileDto.LastName,
-                Email = profileDto.Email,
-                PhoneNumber = profileDto.PhoneNumber,
-                Gender = profileDto.Gender,
-                UserIcon = profileDto.UserIcon,
-                DateRegister = profileDto.DateRegister,
-                LoginUrl =profileDto.LoginUrl,
-                BirthDate = profileDto.BirthDate
-            };
+            loginResponse.profile = profileDto.ToProfileResponseModel();
 
             return Ok(loginResponse);
 

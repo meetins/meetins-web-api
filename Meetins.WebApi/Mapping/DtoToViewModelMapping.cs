@@ -1,10 +1,5 @@
 ﻿using Meetins.BLL.DTOs;
 using Meetins.WebApi.Models.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Meetins.BLL.Mapping
 {

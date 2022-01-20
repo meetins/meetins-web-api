@@ -37,6 +37,11 @@ namespace Meetins.DAL.Repositories
                 updatedUser.LastName = user.LastName;
             }
 
+            if (user.Status != null)
+            {
+                updatedUser.Status = user.Status;
+            }
+
             if (user.Email != null && user.Email != "")
             {
                 updatedUser.Email = user.Email;

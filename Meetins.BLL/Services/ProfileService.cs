@@ -1,4 +1,5 @@
 ﻿using Meetins.BLL.DTOs;
+using Meetins.BLL.DTOs.Profile.Request;
 using Meetins.BLL.Interfaces;
 using Meetins.BLL.Mapping;
 using Meetins.DAL.Entities;
@@ -32,6 +33,22 @@ namespace Meetins.BLL.Services
             {
                 return null;
             }  
+
+            return user.ToProfileDto();
+        }
+
+        public async Task<ProfileDto> UpdateProfileStatus(UpdateStatusRequestDto updateStatusRequestDto)
+        {
+            UserEntity userEntity = new UserEntity
+            {
+                UserId = updateStatusRequestDto.UserId,
+                Status = updateStatusRequestDto.NewStatus
+            };
+
+            await _db.Users.UpdateUser(userEntity);
+            await _db.SaveChangesAsync();
+
+            var user = await _db.Users.GetUserById(updateStatusRequestDto.UserId);
 
             return user.ToProfileDto();
         }

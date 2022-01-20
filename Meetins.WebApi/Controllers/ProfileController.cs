@@ -1,4 +1,5 @@
 ﻿using Meetins.BLL.DTOs;
+using Meetins.BLL.DTOs.Profile.Request;
 using Meetins.BLL.Interfaces;
 using Meetins.BLL.Mapping;
 using Meetins.WebApi.Models.Responses;
@@ -49,6 +50,22 @@ namespace Meetins.WebApi.Controllers
             {
                 return BadRequest(new { errorText = "User with this login does not exist." });
             }
+
+            return Ok(profileDto.ToProfileResponseModel());
+        }
+
+        [Authorize]
+        [HttpPost, Route("update-status")]
+        public async Task<ActionResult<ProfileResponseModel>> UpdateStatusAsync([FromBody] string newStatus)
+        {
+            string rawUserId = HttpContext.User.FindFirstValue("userId");
+
+            if (!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            ProfileDto profileDto = await _profileService.UpdateProfileStatus(new UpdateStatusRequestDto { UserId = userId, NewStatus = newStatus});
 
             return Ok(profileDto.ToProfileResponseModel());
         }
