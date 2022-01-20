@@ -59,6 +59,7 @@ namespace Meetins.WebApi
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IAboutService, AboutService>();
+            services.AddTransient<IFtpService, BaseFtpService>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddCors();
         }

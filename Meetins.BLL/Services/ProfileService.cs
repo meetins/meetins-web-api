@@ -37,6 +37,22 @@ namespace Meetins.BLL.Services
             return user.ToProfileDto();
         }
 
+        public async Task<ProfileDto> UpdateAvatarPath(UpdateAvatarPathRequestDto updateAvatarPathRequest)
+        {
+            UserEntity userEntity = new UserEntity
+            {
+                UserId = updateAvatarPathRequest.UserId,
+                UserIcon = updateAvatarPathRequest.NewAvatarPath
+            };
+
+            await _db.Users.UpdateUser(userEntity);
+            await _db.SaveChangesAsync();
+
+            var user = await _db.Users.GetUserById(updateAvatarPathRequest.UserId);
+
+            return user.ToProfileDto();
+        }
+
         public async Task<ProfileDto> UpdateProfileStatus(UpdateStatusRequestDto updateStatusRequestDto)
         {
             UserEntity userEntity = new UserEntity

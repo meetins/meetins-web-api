@@ -12,5 +12,7 @@ namespace Meetins.BLL.Interfaces
         Task<ProfileDto> GetUserProfileByLoginUrl(string loginUrl);
 
         Task<ProfileDto> UpdateProfileStatus(UpdateStatusRequestDto updateStatusRequest);
+
+        Task<ProfileDto> UpdateAvatarPath(UpdateAvatarPathRequestDto updateAvatarPathRequest);
     }
 }

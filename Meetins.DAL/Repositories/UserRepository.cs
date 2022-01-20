@@ -67,10 +67,10 @@ namespace Meetins.DAL.Repositories
                 updatedUser.PhoneNumber = user.PhoneNumber;
             }
 
-            if (user.LoginUrl != null && user.LoginUrl != "")
+            if (user.UserIcon != null && user.UserIcon != "")
             {
-                updatedUser.LoginUrl = user.LoginUrl;
-            }            
+                updatedUser.UserIcon = user.UserIcon;
+            }
         }
 
         public async Task<IEnumerable<UserEntity>> GetAllUsersAsync()
