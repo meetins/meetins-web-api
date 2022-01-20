@@ -129,7 +129,7 @@ namespace Meetins.BLL.Services
             };
 
 
-            DateTime dt2020 = new DateTime(2021, 12, 20, 0, 0, 0, 0, DateTimeKind.Utc);
+            DateTime dt2020 = new DateTime(2022, 1, 20, 0, 0, 0, 0, DateTimeKind.Utc);
 
             TimeSpan tsInterval = newUser.DateRegister.Subtract(dt2020);
 
@@ -199,6 +199,7 @@ namespace Meetins.BLL.Services
 
             return userDto;
         }
+
         public async Task<UserDto> CheckUserByLoginUrl(string loginUrl)
         {
             UserEntity user = await _db.Users.GetUserByLoginUrl(loginUrl);
@@ -240,6 +241,7 @@ namespace Meetins.BLL.Services
             await _db.Users.UpdateUser(userEntity);
             await _db.SaveChangesAsync();
         }
+
         public async Task EditProfileSettings(EditProfileSettingsRequestDto editProfileSettingsRequest)
         {
             UserEntity userEntity = new UserEntity()
@@ -254,6 +256,7 @@ namespace Meetins.BLL.Services
             await _db.Users.UpdateUser(userEntity);
             await _db.SaveChangesAsync();
         }
+        
         #region ТЕСТОВЫЕ МЕТОДЫ
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
@@ -287,6 +290,7 @@ namespace Meetins.BLL.Services
         private bool ValidateRefreshToken(string refreshToken)
         {
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+
             TokenValidationParameters validationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -312,6 +316,7 @@ namespace Meetins.BLL.Services
 
 
         }
+        
         private ClaimsIdentity GetClaimsIdentity(UserEntity user)
         {
 
@@ -333,7 +338,7 @@ namespace Meetins.BLL.Services
             // если пользователя не найдено
             return null;
         }
-
+       
         private string GenerateAccessToken(IEnumerable<Claim> claims)
         {
             var now = DateTime.UtcNow;

@@ -28,9 +28,8 @@ namespace Meetins.WebApi.Controllers
             List<PeoplesResponseModel> peoples = new List<PeoplesResponseModel>();
 
             IEnumerable<UserDto> users = await _userService.GetAllUsersAsync();
-            users.ToList();
-
-            foreach (var user in users)
+            
+            foreach (var user in users.ToList())
             {
                 peoples.Add(new PeoplesResponseModel { 
                     UserId = user.UserId,

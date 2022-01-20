@@ -1,5 +1,6 @@
 ﻿using Meetins.BLL.DTOs;
 using Meetins.BLL.Interfaces;
+using Meetins.BLL.Mapping;
 using Meetins.WebApi.Models.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,25 +35,12 @@ namespace Meetins.WebApi.Controllers
 
             ProfileDto profileDto = await _profileService.GetUserProfile(userId);
 
-            ProfileResponseModel profile = new ProfileResponseModel
-            {
-                FirstName = profileDto.FirstName,
-                LastName = profileDto.LastName,
-                Email = profileDto.Email,
-                PhoneNumber = profileDto.PhoneNumber,
-                Gender = profileDto.Gender,
-                UserIcon = profileDto.UserIcon,
-                DateRegister = profileDto.DateRegister,
-                BirthDate = profileDto.BirthDate,
-                LoginUrl = profileDto.LoginUrl
-            };
-
-            return Ok(profile);
+            return Ok(profileDto.ToProfileResponseModel());
         }
 
         [Authorize]
         [HttpPost, Route("by-loginurl")]
-        public async Task<ActionResult<ProfileResponseModel>> GetProfileByLoginUrl([FromBody]string loginUrl)
+        public async Task<ActionResult<ProfileResponseModel>> GetProfileByLoginUrl([FromBody] string loginUrl)
         {
 
             ProfileDto profileDto = await _profileService.GetUserProfileByLoginUrl(loginUrl);
@@ -62,20 +50,7 @@ namespace Meetins.WebApi.Controllers
                 return BadRequest(new { errorText = "User with this login does not exist." });
             }
 
-            ProfileResponseModel profile = new ProfileResponseModel
-            {
-                FirstName = profileDto.FirstName,
-                LastName = profileDto.LastName,
-                Email = profileDto.Email,
-                PhoneNumber = profileDto.PhoneNumber,
-                Gender = profileDto.Gender,
-                UserIcon = profileDto.UserIcon,
-                DateRegister = profileDto.DateRegister,
-                BirthDate = profileDto.BirthDate,
-                LoginUrl = profileDto.LoginUrl
-            };
-
-            return Ok(profile);
+            return Ok(profileDto.ToProfileResponseModel());
         }
     }
 }

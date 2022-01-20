@@ -1,14 +1,9 @@
 ﻿using Meetins.BLL.DTOs;
 using Meetins.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Meetins.BLL.Mapping
 {
-    public static class UserEntityMapping
+    public static class DalToDtoMapper
     {
         public static ProfileDto ToProfileDto(this UserEntity userEntity)
         {
