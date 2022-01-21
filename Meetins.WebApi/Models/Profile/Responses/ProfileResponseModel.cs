@@ -19,7 +19,7 @@ namespace Meetins.WebApi.Models.Responses
                
         public string Gender { get; set; }
             
-        public string UserIcon { get; set; }
+        public string Avatar { get; set; }
             
         public DateTime DateRegister { get; set; }
 

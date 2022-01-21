@@ -1,6 +1,7 @@
 ﻿using Meetins.BLL.DTOs;
 using Meetins.BLL.DTOs.Settings.Requests;
 using Meetins.BLL.Interfaces;
+using Meetins.BLL.Mapping;
 using Meetins.WebApi.Models.Responses;
 using Meetins.WebApi.Models.Settings.Requests;
 using Meetins.WebApi.Models.Settings.Responses;
@@ -96,21 +97,8 @@ namespace Meetins.WebApi.Controllers
             }
 
             ProfileDto profileDto = await _profileService.GetUserProfile(userId);
-
-            ProfileResponseModel profile = new ProfileResponseModel
-            {
-                FirstName = profileDto.FirstName,
-                LastName = profileDto.LastName,
-                Email = profileDto.Email,
-                PhoneNumber = profileDto.PhoneNumber,
-                Gender = profileDto.Gender,
-                UserIcon = profileDto.UserIcon,
-                DateRegister = profileDto.DateRegister,
-                BirthDate = profileDto.BirthDate,
-                LoginUrl = profileDto.LoginUrl
-            };
-            return Ok(profile);
-
+           
+            return Ok(profileDto.ToProfileResponseModel());
         }
 
         [Authorize]
@@ -148,22 +136,9 @@ namespace Meetins.WebApi.Controllers
 
             await _userService.EditAccountSettings(editAccountSettingsRequestDto);
 
-            ProfileDto profileDto = await _profileService.GetUserProfile(userId);
+            ProfileDto profileDto = await _profileService.GetUserProfile(userId);            
 
-            ProfileResponseModel profile = new ProfileResponseModel
-            {
-                FirstName = profileDto.FirstName,
-                LastName = profileDto.LastName,
-                Email = profileDto.Email,
-                PhoneNumber = profileDto.PhoneNumber,
-                Gender = profileDto.Gender,
-                UserIcon = profileDto.UserIcon,
-                DateRegister = profileDto.DateRegister,
-                BirthDate = profileDto.BirthDate,
-                LoginUrl = profileDto.LoginUrl
-            };
-
-            return Ok(profile);
+            return Ok(profileDto.ToProfileResponseModel());
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Meetins.WebApi.Controllers
 
         [Authorize]
         [HttpPost, Route("update-avatar")]
-        public async Task<ActionResult> UpdateAvatarAsync(IFormFile uploadedFile)
+        public async Task<ActionResult<ProfileResponseModel>> UpdateAvatarAsync(IFormFile uploadedFile)
         {
             string rawUserId = HttpContext.User.FindFirstValue("userId");            
 
@@ -90,7 +90,7 @@ namespace Meetins.WebApi.Controllers
 
             ProfileDto profile = await _profileService.GetUserProfile(userId);
 
-            string newAvatarPath = await _ftpService.UploadNewAvatar(new UpdateAvatarRequestDto { OldAvatar = profile.UserIcon, UploadedFile = uploadedFile });
+            string newAvatarPath = await _ftpService.UploadNewAvatar(new UpdateAvatarRequestDto { OldAvatar = profile.Avatar, UploadedFile = uploadedFile });
 
             ProfileDto profileDto = await _profileService.UpdateAvatarPath(new UpdateAvatarPathRequestDto { UserId = userId, NewAvatarPath = newAvatarPath });
 

@@ -15,7 +15,7 @@ namespace Meetins.BLL.Mapping
                 Email = profileDto.Email,                
                 PhoneNumber = profileDto.PhoneNumber,
                 Gender = profileDto.Gender,
-                UserIcon = profileDto.UserIcon,
+                Avatar = profileDto.Avatar,
                 DateRegister = profileDto.DateRegister,
                 BirthDate = profileDto.BirthDate,
                 LoginUrl = profileDto.LoginUrl

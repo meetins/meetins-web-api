@@ -15,7 +15,7 @@ namespace Meetins.BLL.Mapping
                 Email = userEntity.Email,
                 PhoneNumber = userEntity.PhoneNumber,
                 Gender = userEntity.Gender,
-                UserIcon = userEntity.UserIcon,
+                Avatar = userEntity.UserIcon,
                 DateRegister = userEntity.DateRegister,
                 BirthDate = userEntity.BirthDate,
                 LoginUrl = userEntity.LoginUrl

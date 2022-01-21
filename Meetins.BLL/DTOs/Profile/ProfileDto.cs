@@ -10,7 +10,7 @@ namespace Meetins.BLL.DTOs
         public string PhoneNumber { get; set; }
         public string Email { get; set; }     
         public string Gender { get; set; }       
-        public string UserIcon { get; set; }    
+        public string Avatar { get; set; }    
         public DateTime DateRegister { get; set; }
         public DateTime? BirthDate { get; set; }
         public string LoginUrl { get; set; }
