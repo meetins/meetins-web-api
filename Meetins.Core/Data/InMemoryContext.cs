@@ -87,7 +87,7 @@ namespace Meetins.Core.Data
                     {
                         AboutId = new Guid("187AC176-CB28-4216-9AB5-D3A1EF370542"),
                         MainText = "События",
-                        Description = "Посещайте любые события сообща. Знакомьтесь ради дружбы, общения или любви."
+                        Description = "Посещайте любые события сообща. Знакомьтесь рад дружбы, общения или любви!"
                     },
                    new AboutEntity
                     {
