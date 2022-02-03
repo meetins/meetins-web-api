@@ -1,23 +1,21 @@
-using Meetins.BLL.Interfaces;
-using Meetins.BLL.Options;
-using Meetins.BLL.Services;
-using Meetins.DAL.Interfaces;
-using Meetins.DAL.Repositories;
+using Meetins.Abstractions.Repositories;
+using Meetins.Abstractions.Services;
+using Meetins.Core.Data;
+using Meetins.Core.Options;
+using Meetins.Services.Ftp;
+using Meetins.Services.MainPage;
+using Meetins.Services.Profile;
+using Meetins.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Meetins.WebApi
 {
@@ -51,16 +49,23 @@ namespace Meetins.WebApi
                         options.RequireHttpsMetadata = false;
                         options.TokenValidationParameters = tokenValidationParams;
                     });
+
+            services.AddEntityFrameworkInMemoryDatabase().AddDbContext<InMemoryContext>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Meetins.WebApi", Version = "v1" });
             });
+
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddTransient<IAboutRepository, AboutRepository>();
+
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IAboutService, AboutService>();
-            services.AddTransient<IFtpService, BaseFtpService>();
-            services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IFtpService, FtpService>();            
             services.AddCors();
         }
 
