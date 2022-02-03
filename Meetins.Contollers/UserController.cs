@@ -1,4 +1,5 @@
 ﻿using Meetins.Abstractions.Services;
+using Meetins.Models.User.Input;
 using Meetins.Models.User.Output;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +25,9 @@ namespace Meetins.Controllers
         }
 
         [HttpPost, Route("login")]
-        public async Task<ActionResult<LoginOutput>> Login([FromBody] string email, string password)
+        public async Task<ActionResult<LoginOutput>> Login([FromBody] LoginInput loginInput)
         {
-            LoginOutput authResult = await _userService.AuthenticateUserAsync(email, password);
+            LoginOutput authResult = await _userService.AuthenticateUserAsync(loginInput.Email, loginInput.Password);
 
             if (authResult is null)
             {
@@ -51,16 +52,16 @@ namespace Meetins.Controllers
         }
 
         [HttpPost, Route("register-user")]
-        public async Task<ActionResult<LoginOutput>> RegisterUserAsync([FromBody] string name, string email, string password, string gender)
+        public async Task<ActionResult<LoginOutput>> RegisterUserAsync([FromBody] RegisterUserInput registerUserInput)
         {
-            var user = await _userService.CheckUserByEmailAsync(email);
+            var user = await _userService.CheckUserByEmailAsync(registerUserInput.Email);
 
             if (user != null)
             {
                 return BadRequest(new { errortext = "User already exists." });
             }
 
-            var result = await _userService.RegisterUserAsync(name, email, password, gender);            
+            var result = await _userService.RegisterUserAsync(registerUserInput.Name, registerUserInput.Email, registerUserInput.Password, registerUserInput.Gender);            
 
             return Ok(result);
         }
@@ -95,7 +96,7 @@ namespace Meetins.Controllers
         [HttpDelete, Route("logout")]
         public async Task<IActionResult> Logout()
         {
-            string rawUserId = HttpContext.User.FindFirst("userId").ToString();
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {

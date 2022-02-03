@@ -1,10 +1,10 @@
 ﻿using Meetins.Abstractions.Services;
+using Meetins.Models.Profile.Input;
 using Meetins.Models.Profile.Output;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Meetins.Controllers
@@ -25,7 +25,7 @@ namespace Meetins.Controllers
         [HttpGet, Route("my-profile")]
         public async Task<ActionResult<ProfileOutput>> GetUserProfileAsync()
         {
-            string rawUserId = HttpContext.User.FindFirst("userId").ToString();
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
@@ -39,7 +39,7 @@ namespace Meetins.Controllers
 
         [Authorize]
         [HttpPost, Route("by-login")]
-        public async Task<ActionResult<ProfileOutput>> GetProfileByLoginUrl([FromBody] string login)
+        public async Task<ActionResult<ProfileOutput>> GetProfileByLoginUrl(string login)
         {
 
             var profile = await _profileService.GetUserProfileByLoginAsync(login);
@@ -54,16 +54,16 @@ namespace Meetins.Controllers
 
         [Authorize]
         [HttpPost, Route("update-status")]
-        public async Task<ActionResult<ProfileOutput>> UpdateStatusAsync([FromBody] string newStatus)
+        public async Task<ActionResult<ProfileOutput>> UpdateStatusAsync([FromBody] UpdateStatusInput statusInput)
         {
-            string rawUserId = HttpContext.User.FindFirst("userId").ToString();
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
                 return Unauthorized();
             }
 
-            ProfileOutput profile = await _profileService.UpdateProfileStatusAsync(userId, newStatus);
+            ProfileOutput profile = await _profileService.UpdateProfileStatusAsync(userId, statusInput.Status);
 
             return Ok(profile);
         }
@@ -72,7 +72,7 @@ namespace Meetins.Controllers
         [HttpPost, Route("update-avatar")]
         public async Task<ActionResult<ProfileOutput>> UpdateAvatarAsync(IFormFile uploadedFile)
         {
-            string rawUserId = HttpContext.User.FindFirst("userId").ToString();
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {

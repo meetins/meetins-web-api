@@ -19,9 +19,10 @@ namespace Meetins.Services.User
         private IUserRepository _userRepository;
         private IRefreshTokenRepository _refreshTokenRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository)
         {
             _userRepository = userRepository;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         public async Task<LoginOutput> RegisterUserAsync(string name, string email, string password, string gender)
