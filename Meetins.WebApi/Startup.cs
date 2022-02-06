@@ -2,6 +2,7 @@ using Meetins.Abstractions.Repositories;
 using Meetins.Abstractions.Services;
 using Meetins.Core.Data;
 using Meetins.Core.Options;
+using Meetins.Models.Entities;
 using Meetins.Services.Ftp;
 using Meetins.Services.MainPage;
 using Meetins.Services.Profile;
@@ -15,7 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-
+using System.Linq;
 
 namespace Meetins.WebApi
 {
@@ -51,6 +52,7 @@ namespace Meetins.WebApi
                     });
 
             services.AddEntityFrameworkInMemoryDatabase().AddDbContext<InMemoryContext>();
+            services.AddEntityFrameworkNpgsql().AddDbContext<PostgreDbContext>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

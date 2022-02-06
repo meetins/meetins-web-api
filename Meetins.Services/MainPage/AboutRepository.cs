@@ -10,9 +10,9 @@ namespace Meetins.Services.MainPage
 {
     public class AboutRepository : IAboutRepository
     {
-        private readonly InMemoryContext _context;
+        private readonly PostgreDbContext _context;
 
-        public AboutRepository(InMemoryContext context)
+        public AboutRepository(PostgreDbContext context)
         {
             _context = context;
         }
