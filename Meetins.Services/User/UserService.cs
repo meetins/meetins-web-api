@@ -173,7 +173,7 @@ namespace Meetins.Services.User
 
         public async Task<UserOutput> UpdateProfileSettingsAsync(Guid userId, string name, string phone, string birthDate)
         {
-            var res = await _userRepository.UpdateAccountSettingsAsync(userId, name, phone, birthDate);
+            var res = await _userRepository.UpdateProfileSettingsAsync(userId, name, phone, birthDate);
 
             return res;
         }

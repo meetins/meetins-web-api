@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meetins.Models", "Meetins.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meetins.Core", "Meetins.Core\Meetins.Core.csproj", "{62EEC04D-B007-4FF7-B63D-1B970F7A35C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetins.Services", "Meetins.Services\Meetins.Services.csproj", "{691EED29-3E2A-42EA-B6F6-3171275E5E28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meetins.Services", "Meetins.Services\Meetins.Services.csproj", "{691EED29-3E2A-42EA-B6F6-3171275E5E28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetins.Communication", "Meetins.Communication\Meetins.Communication.csproj", "{352C0505-CBB6-4BE5-97B8-DC2C75FB9C21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{691EED29-3E2A-42EA-B6F6-3171275E5E28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{691EED29-3E2A-42EA-B6F6-3171275E5E28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{691EED29-3E2A-42EA-B6F6-3171275E5E28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{352C0505-CBB6-4BE5-97B8-DC2C75FB9C21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{352C0505-CBB6-4BE5-97B8-DC2C75FB9C21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{352C0505-CBB6-4BE5-97B8-DC2C75FB9C21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{352C0505-CBB6-4BE5-97B8-DC2C75FB9C21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
