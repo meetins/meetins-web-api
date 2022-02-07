@@ -1,8 +1,8 @@
 using Meetins.Abstractions.Repositories;
 using Meetins.Abstractions.Services;
+using Meetins.Communication.Hubs;
 using Meetins.Core.Data;
 using Meetins.Core.Options;
-using Meetins.Models.Entities;
 using Meetins.Services.Ftp;
 using Meetins.Services.MainPage;
 using Meetins.Services.Profile;
@@ -16,7 +16,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Linq;
 
 namespace Meetins.WebApi
 {
@@ -68,33 +67,35 @@ namespace Meetins.WebApi
             services.AddTransient<IAboutService, AboutService>();
             services.AddTransient<IFtpService, FtpService>();
             services.AddCors();
+            services.AddSignalR();
         }
 
-            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-            public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseCors(options =>
+            options.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+                );
+            if (env.IsDevelopment())
             {
-                app.UseCors(options =>
-                options.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                    );
-                if (env.IsDevelopment())
-                {
-                    app.UseDeveloperExceptionPage();
-                    app.UseSwagger();
-                    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Meetins.WebApi v1"));
-                }
-                app.UseStaticFiles();
-                app.UseHttpsRedirection();
-
-                app.UseRouting();
-                app.UseAuthentication();
-                app.UseAuthorization();
-
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                });
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Meetins.WebApi v1"));
             }
+            app.UseStaticFiles();
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<MessengerHub>("/messenger");
+            });
         }
     }
+}
