@@ -19,15 +19,19 @@ namespace Meetins.Services.User
 
         public async Task<UserOutput> AddUserAsync(string name, string email, string password, string gender)
         {
+            Guid guid = Guid.NewGuid();
+
             UserEntity user = new()
             {
+                UserId = guid,
                 Name = name,
                 Email = email,
                 Password = password,
                 Gender = gender,
                 Avatar = "/images/no-photo.png",
                 DateRegister = DateTime.Now,
-                Status = "Дефолтный статус"                
+                Status = "Дефолтный статус",
+                Login = guid.ToString("N")
             };
 
             await _db.Users.AddAsync(user);
@@ -39,7 +43,7 @@ namespace Meetins.Services.User
                 Name = name,
                 Email = email,
                 Gender = gender,
-                Login = user.UserId.ToString(),
+                Login = user.Login,
                 DateRegister = user.DateRegister,
                 Status = user.Status,
                 Avatar = user.Avatar,
