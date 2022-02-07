@@ -51,7 +51,6 @@ namespace Meetins.WebApi
                         options.TokenValidationParameters = tokenValidationParams;
                     });
 
-            services.AddEntityFrameworkInMemoryDatabase().AddDbContext<InMemoryContext>();
             services.AddEntityFrameworkNpgsql().AddDbContext<PostgreDbContext>();
 
             services.AddControllers();
@@ -67,35 +66,35 @@ namespace Meetins.WebApi
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IAboutService, AboutService>();
-            services.AddTransient<IFtpService, FtpService>();            
+            services.AddTransient<IFtpService, FtpService>();
             services.AddCors();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            app.UseCors(options =>
-            options.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-                );
-            if (env.IsDevelopment())
+            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Meetins.WebApi v1"));
+                app.UseCors(options =>
+                options.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                    );
+                if (env.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                    app.UseSwagger();
+                    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Meetins.WebApi v1"));
+                }
+                app.UseStaticFiles();
+                app.UseHttpsRedirection();
+
+                app.UseRouting();
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
             }
-            app.UseStaticFiles();
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
         }
     }
-}

@@ -14,7 +14,11 @@ namespace Meetins.Models.Entities
         [Key]
         [Column("RefreshTokenId")]
         public Guid RefreshTokenId { get; set; }
+
+        [Column("Token")]
         public string Token { get; set; }
+
+        [Column("UserId")]
         public Guid UserId { get; set; }
     }
 }
