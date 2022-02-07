@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Meetins.Abstractions\Meetins.Abstractions.csproj" />
+    <ProjectReference Include="..\Meetins.Communication\Meetins.Communication.csproj" />
     <ProjectReference Include="..\Meetins.Contollers\Meetins.Contollers.csproj" />
     <ProjectReference Include="..\Meetins.Core\Meetins.Core.csproj" />
     <ProjectReference Include="..\Meetins.Models\Meetins.Models.csproj" />
