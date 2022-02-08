@@ -50,7 +50,6 @@ namespace Meetins.WebApi
                         options.TokenValidationParameters = tokenValidationParams;
                     });
 
-            services.AddEntityFrameworkInMemoryDatabase().AddDbContext<InMemoryContext>();
             services.AddEntityFrameworkNpgsql().AddDbContext<PostgreDbContext>();
 
             services.AddControllers();
@@ -66,7 +65,7 @@ namespace Meetins.WebApi
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IAboutService, AboutService>();
-            services.AddTransient<IFtpService, FtpService>();            
+            services.AddTransient<IFtpService, FtpService>();
             services.AddCors();
             services.AddSignalR();
         }
