@@ -11,8 +11,8 @@ namespace Meetins.Services.User
 {
     public class UserRepository : IUserRepository
     {
-        private InMemoryContext _db;
-        public UserRepository(InMemoryContext db)
+        private PostgreDbContext _db;
+        public UserRepository(PostgreDbContext db)
         {
             _db = db;
         }
