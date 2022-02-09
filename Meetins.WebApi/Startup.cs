@@ -50,7 +50,6 @@ namespace Meetins.WebApi
                         options.TokenValidationParameters = tokenValidationParams;
                     });
 
-            services.AddEntityFrameworkInMemoryDatabase().AddDbContext<InMemoryContext>();
             services.AddEntityFrameworkNpgsql().AddDbContext<PostgreDbContext>();
 
             services.AddControllers();
@@ -66,7 +65,7 @@ namespace Meetins.WebApi
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IAboutService, AboutService>();
-            services.AddTransient<IFtpService, FtpService>();            
+            services.AddTransient<IFtpService, FtpService>();
             services.AddCors();
             services.AddSignalR();
         }
@@ -75,10 +74,12 @@ namespace Meetins.WebApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(options =>
-            options.AllowAnyOrigin()
+            options.WithOrigins("http://localhost:3000",
+                        "https://meetins-s.vercel.app",
+                        "https://meetins.ru")
             .AllowAnyMethod()
             .AllowAnyHeader()
-                );
+            .AllowCredentials());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

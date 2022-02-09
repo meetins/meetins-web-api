@@ -12,9 +12,9 @@ namespace Meetins.Services.User
 {
     public class RefreshTokenRepository : IRefreshTokenRepository
     {
-        private InMemoryContext _db;
+        private PostgreDbContext _db;
 
-        public RefreshTokenRepository(InMemoryContext db)
+        public RefreshTokenRepository(PostgreDbContext db)
         {
             _db = db;
         }
