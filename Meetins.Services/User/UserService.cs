@@ -134,8 +134,8 @@ namespace Meetins.Services.User
                 return null;
             }
 
-            //удаляем рефреш токен
-            await _refreshTokenRepository.DeleteAsync(token.TokenId);
+            //удаляем все рефреш токены юзера
+            await _refreshTokenRepository.DeleteAllAsync(user.UserId);
 
 
             var claimsIdentity = GetClaimsIdentity(user);
@@ -144,12 +144,12 @@ namespace Meetins.Services.User
             string newAccessToken = GenerateAccessToken(claimsIdentity.Claims);
             string newRefreshToken = GenerateRerfreshToken();
 
-            var newToken = _refreshTokenRepository.CreateAsync(newRefreshToken, user.UserId);
+            var newToken = await _refreshTokenRepository.CreateAsync(newRefreshToken, user.UserId);
 
             AuthenticateOutput auth = new AuthenticateOutput
             {
                 AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken
+                RefreshToken = newToken.Token
             };
 
             return auth;
@@ -212,9 +212,9 @@ namespace Meetins.Services.User
                 tokenHandler.ValidateToken(refreshToken, validationParameters, out SecurityToken validatedToken);
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.WriteLine(e.Message);
                 return false;
             }
         }
