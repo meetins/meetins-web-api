@@ -107,5 +107,26 @@ namespace Meetins.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Удаление аккаунта пользователя.
+        /// </summary>
+        /// <returns> NoContent </returns>
+        [Authorize]
+        [HttpDelete, Route("delete-user")]
+        public async Task<IActionResult> DeleteAsync()
+        {
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+            if (!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            await _userService.DeleteUserByUserIdAsync(userId);
+            await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
+
+            return NoContent();
+        }
     }
 }

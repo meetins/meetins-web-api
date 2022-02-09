@@ -90,5 +90,12 @@ namespace Meetins.Abstractions.Repositories
         /// <param name="birthDate">Дата рождения.</param>
         /// <returns>Данные пользователя.</returns>
         Task<UserOutput> UpdateProfileSettingsAsync(Guid userId, string name, string phone, string birthDate);
+
+        /// <summary>
+        /// Метод удалит аккаунт пользователя.
+        /// </summary>
+        /// <param name="userId"> Идентификатор пользователя. </param>
+        /// <returns></returns>
+        Task<Task> DeleteAsync(Guid userId);
     }
 }
