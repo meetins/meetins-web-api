@@ -96,6 +96,18 @@ namespace Meetins.Services.User
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Удаление аккаунта пользователя.
+        /// </summary>
+        /// <param name="userId"> Id пользователя. </param>
+        /// <returns> CompletedTask. </returns>
+        public async Task<Task> DeleteUserByUserIdAsync(Guid userId)
+        {
+            await _userRepository.DeleteAsync(userId);
+
+            return Task.CompletedTask;
+        }
+
         public async Task<AuthenticateOutput> RefreshAccessTokenAsync(string refreshToken)
         {
             //валидируем рефреш токен
