@@ -20,5 +20,15 @@ namespace Meetins.Core.Data
         public DbSet<UserEntity> Users { get; set; }
 
         public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
+
+        public DbSet<DialogEntity> Dialogs { get; set; }
+
+        public DbSet<MessageEntity> Messages { get; set; }
+
+        public DbSet<AboutMessageContent> MessageContents { get; set; }
+
+        public DbSet<AboutMessageToUser> MessageToUser { get; set; }
+
+        public DbSet<DialogMembers> DialogMembers { get; set; }
     }
 }
