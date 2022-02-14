@@ -15,20 +15,44 @@ namespace Meetins.Core.Data
             optionsBuilder.UseNpgsql("Host=34.116.153.6;Port=5432;Database=meetins_test_db;Username=meetinsadmin;Password=m33tt3st");
         }
 
+        /// <summary>
+        /// Соответствует таблице Info.About
+        /// </summary>
         public DbSet<AboutEntity> Abouts { get; set; }
 
+        /// <summary>
+        /// Соответствует таблице User.Users
+        /// </summary>
         public DbSet<UserEntity> Users { get; set; }
 
+        /// <summary>
+        /// Соответствует таблице User.RefreshTokens
+        /// </summary>
         public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
 
+        /// <summary>
+        /// Соответствует таблице Messenger.Dialogs
+        /// </summary>
         public DbSet<DialogEntity> Dialogs { get; set; }
 
+        /// <summary>
+        /// Соответствует таблице Messenger.Messages
+        /// </summary>
         public DbSet<MessageEntity> Messages { get; set; }
 
-        public DbSet<AboutMessageContent> MessageContents { get; set; }
+        /// <summary>
+        /// Соответствует таблице Messenger.MessageContents
+        /// </summary>
+        public DbSet<MessageContentsEntity> MessageContents { get; set; }
 
-        public DbSet<AboutMessageToUser> MessageToUser { get; set; }
+        /// <summary>
+        /// Соответствует таблице Messenger.ChatMessage
+        /// </summary>
+        public DbSet<AboutChatMessageEntity> ChatMessage { get; set; }
 
-        public DbSet<DialogMembers> DialogMembers { get; set; }
+        /// <summary>
+        /// Соответствует таблице Messenger.DialogMembers
+        /// </summary>
+        public DbSet<DialogMembersEntity> DialogMembers { get; set; }
     }
 }
