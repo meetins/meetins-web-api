@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,5 +23,15 @@ namespace Meetins.Models.Entities
         /// </summary>
         [Column("CreatedAt", TypeName = "timestamp")]
         public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Коллекция DialogMembersEntity для внешнего ключа 
+        /// </summary>
+        public ICollection<DialogMembersEntity> DialogMembers { get; set; }
+
+        /// <summary>
+        /// Коллекция MessageEntity для внешнего ключа
+        /// </summary>
+        public ICollection<MessageEntity> Messages { get; set; }
     }
 }

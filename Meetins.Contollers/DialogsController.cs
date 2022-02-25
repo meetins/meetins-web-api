@@ -26,13 +26,14 @@ namespace Meetins.Contollers
         /// <summary>
         /// Получения всех диалогов авторизованного пользователя.
         /// </summary>
-        /// <returns> Ok(result). </returns>
-        [Authorize]
+        /// <returns> Диалоги пользователя. </returns>
+        //[Authorize]
         [HttpGet, Route("my-dialogs")]
         public async Task<ActionResult<IEnumerable<DialogsOutput>>> GetDialogsAsync()
         {
-            string rawUserId = HttpContext.User.FindFirst("userId").Value;
+            //string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
+            string rawUserId = "187ac176-cb28-4456-9ab5-d3a1ef370500";
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
                 return Unauthorized();
@@ -47,7 +48,7 @@ namespace Meetins.Contollers
         /// Получение всех сообщений, принадлежащих диалогу.
         /// </summary>
         /// <param name="dialogId"> Идентификатор диалога. </param>
-        /// <returns> Ok(messages). </returns>
+        /// <returns> Сообщения пользователя. </returns>
         [HttpPost, Route("messages")]
         public async Task<ActionResult<IEnumerable<MessagesOutput>>> GetMessagesOfDialog([FromBody] Guid dialogId)
         {

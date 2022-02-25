@@ -8,7 +8,7 @@ namespace Meetins.Models.Entities
     /// Класс  сопоставляется с таблицей Messenger.ChatMessage
     /// </summary>
     [Table("ChatMessage", Schema = "Messenger")]
-    public class AboutChatMessageEntity
+    public class ChatMessageEntity
     {
         /// <summary>
         /// Идентификатор.
@@ -20,13 +20,14 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Идентификатор сообщения.
         /// </summary>
+        [ForeignKey("Message")]
         [Column("MessageId", TypeName = "uuid")]
         public Guid MessageId { get; set; }
 
         /// <summary>
         /// Идентификатор получателя.
         /// </summary>
-        [Column("RecipientId", TypeName = "uuid")]
+        [Column("UserId", TypeName = "uuid")]
         public Guid RecipientId { get; set; }
 
         /// <summary>
@@ -40,5 +41,7 @@ namespace Meetins.Models.Entities
         /// </summary>
         [Column("IsDeleted", TypeName = "bool")]
         public bool IsDeleted { get; set; }
+
+        public MessageEntity Message { get; set; }
     }
 }

@@ -6,14 +6,34 @@ using System.Threading.Tasks;
 
 namespace Meetins.Communication
 {
+    /// <summary>
+    /// Выходная модель для диалогов.
+    /// </summary>
     public class DialogsOutput
     {
-        public Guid Id { get; set; }
-
+        /// <summary>
+        /// Идентификатор диалога.
+        /// </summary>
         public Guid DialogId { get; set; }
 
-        public Guid UserId { get; set; }
+        /// <summary>
+        /// Имя пользователя.
+        /// </summary>
+        public string UserName { get; set; }
 
-        public String Status { get; set; }
+        /// <summary>
+        /// Аватар пользователя.
+        /// </summary>
+        public string UserAvatar { get; set; }
+
+        /// <summary>
+        /// Прочитано ли сообщение.
+        /// </summary>
+        public bool IsRead { get; set; }
+
+        /// <summary>
+        /// Содержание сообщения.
+        /// </summary>
+        public string Content { get; set; }
     }
 }

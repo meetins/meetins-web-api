@@ -40,7 +40,7 @@ namespace Meetins.Services.Dialogs
         /// <returns> Список всех сообщений, принадлежащих диалогу. </returns>
         public async Task<IEnumerable<MessagesOutput>> GetMessagesOfDialog(Guid dialogId)
         {
-            var result = await _dialogsRepository.GetMessagesOfDialog(dialogId);
+            var result = await _dialogsRepository.GetMessagesOfDialogAsync(dialogId);
 
             return result;
         }

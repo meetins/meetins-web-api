@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,13 +21,15 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Идентификатор диалога.
         /// </summary>
+        [ForeignKey("Dialog")]
         [Column("DialogId", TypeName = "uuid")]
         public Guid DialogId { get; set; }
 
         /// <summary>
         /// Идентификатор отправителя.
         /// </summary>
-        [Column("SenderId", TypeName = "uuid")]
+        [ForeignKey("User")]
+        [Column("UserId", TypeName = "uuid")]
         public Guid SenderId { get; set; }
 
         /// <summary>
@@ -34,5 +37,25 @@ namespace Meetins.Models.Entities
         /// </summary>
         [Column("SendAt", TypeName = "timestamp")]
         public DateTime SendAt { get; set; }
+
+        /// <summary>
+        /// DialogEntity для внешнего ключа
+        /// </summary>
+        public DialogEntity Dialog { get; set; }
+
+        /// <summary>
+        /// MessageContentsEntity для внешнего ключа
+        /// </summary>
+        public MessageContentsEntity MessageContent { get; set; }
+
+        /// <summary>
+        /// ChatMessageEntity для внешнего ключа
+        /// </summary>
+        public ChatMessageEntity ChatMessage { get; set; }
+
+        /// <summary>
+        /// UserEntity для внешнего ключа
+        /// </summary>
+        public UserEntity User { get; set; }
     }
 }
