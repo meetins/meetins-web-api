@@ -17,5 +17,10 @@ namespace Meetins.Communication.Hubs
         {
             await this.Clients.All.SendAsync("ReceiveBroadcast", message);
         }
+
+        public async Task SendMessageAsync(string message)
+        {
+            await this.Clients.All.SendAsync("ReceiveMessage", message);
+        }
     }
 }

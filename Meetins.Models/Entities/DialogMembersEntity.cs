@@ -21,14 +21,14 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Идентификатор диалога.
         /// </summary>
-        [ForeignKey("Dialog")]
+        [ForeignKey("dialogmembers_fk")]
         [Column("DialogId", TypeName = "uuid")]
         public Guid DialogId { get; set; }
 
         /// <summary>
         /// Идентификатор пользователя.
         /// </summary>
-        [ForeignKey("User")]
+        [ForeignKey("dialogmembers1_fk")]
         [Column("UserId", TypeName = "uuid")]
         public Guid UserId { get; set; }
 

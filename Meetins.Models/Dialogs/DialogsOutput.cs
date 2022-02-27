@@ -27,12 +27,12 @@ namespace Meetins.Communication
         public string UserAvatar { get; set; }
 
         /// <summary>
-        /// Прочитано ли сообщение.
+        /// Прочитано последнее ли сообщение.
         /// </summary>
         public bool IsRead { get; set; }
 
         /// <summary>
-        /// Содержание сообщения.
+        /// Содержание последнего сообщения.
         /// </summary>
         public string Content { get; set; }
     }

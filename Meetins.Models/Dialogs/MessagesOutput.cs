@@ -11,6 +11,8 @@ namespace Meetins.Models.Messages
     /// </summary>
     public class MessagesOutput
     {
+        public Guid DialogId { get; set; }
+
         /// <summary>
         /// Содержание сообщения.
         /// </summary>
@@ -40,5 +42,7 @@ namespace Meetins.Models.Messages
         /// Аватарка.
         /// </summary>
         public string Avatar { get; set; }
+
+        public string SenderName { get; set; }
     }
 }

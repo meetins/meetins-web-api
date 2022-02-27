@@ -26,5 +26,9 @@ namespace Meetins.Abstractions.Services
         /// <param name="dialogId"> Идентификатор диалога. </param>
         /// <returns> Список всех сообщений, принадлежащих диалогу. </returns>
         Task<IEnumerable<MessagesOutput>> GetMessagesOfDialogAsync(Guid dialogId);
+
+        Task<IEnumerable<MessagesOutput>> SendMessageAsync(Guid dialogId, Guid senderId, string content);
+
+        Task<IEnumerable<MessagesOutput>> StartDialogAsync(Guid senderId, Guid userId, string content);
     }
 }

@@ -20,7 +20,7 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Идентификатор сообщения.
         /// </summary>
-        [ForeignKey("Message")]
+        [ForeignKey("messagecontents_fk")]
         [Column("MessageId", TypeName = "uuid")]
         //[ForeignKey("Message")]
         public Guid MessageId { get; set; }
