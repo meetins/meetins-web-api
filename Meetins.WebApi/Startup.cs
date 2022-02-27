@@ -5,6 +5,7 @@ using Meetins.Core.Data;
 using Meetins.Core.Options;
 using Meetins.Services.Ftp;
 using Meetins.Services.MainPage;
+using Meetins.Services.Dialogs;
 using Meetins.Services.Profile;
 using Meetins.Services.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,11 +62,13 @@ namespace Meetins.WebApi
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddTransient<IAboutRepository, AboutRepository>();
+            services.AddTransient<IDialogsRepository, DialogsRepository>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProfileService, ProfileService>();
             services.AddTransient<IAboutService, AboutService>();
             services.AddTransient<IFtpService, FtpService>();
+            services.AddTransient<IDialogsService, DialogsService>();
             services.AddCors();
             services.AddSignalR();
         }

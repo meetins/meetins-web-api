@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -76,6 +77,5 @@ namespace Meetins.Models.Entities
         /// </summary>
         [Column("Status", TypeName = "varchar")]
         public string Status { get; set; }
-        
     }
 }

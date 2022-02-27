@@ -20,7 +20,9 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Идентификатор сообщения.
         /// </summary>
+        [ForeignKey("Message")]
         [Column("MessageId", TypeName = "uuid")]
+        //[ForeignKey("Message")]
         public Guid MessageId { get; set; }
 
         /// <summary>
@@ -34,5 +36,10 @@ namespace Meetins.Models.Entities
         /// </summary>
         [Column("Content", TypeName = "varchar")]
         public string Content { get; set; }
+
+        /// <summary>
+        /// MessageEntity для внешнего ключа
+        /// </summary>
+        public MessageEntity Message { get; set; }
     }
 }
