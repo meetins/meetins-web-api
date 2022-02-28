@@ -71,6 +71,7 @@ namespace Meetins.Services.Dialogs
                              .Include(d => d.Dialog)
                              .Include(d => d.MessageContent)
                              .Include(d => d.User)
+                             .OrderBy(d=>d.SendAt)
                              .Select(d => new MessagesOutput
                              {
                                  DialogId = d.DialogId,
@@ -120,6 +121,7 @@ namespace Meetins.Services.Dialogs
                             .Include(d => d.Dialog)
                             .Include(d => d.MessageContent)
                             .Include(d => d.User)
+                            .OrderBy(d => d.SendAt)
                             .Select(d => new MessagesOutput
                             {
                                 DialogId = d.DialogId,
@@ -196,12 +198,11 @@ namespace Meetins.Services.Dialogs
 
                 await _context.SaveChangesAsync();
 
-                await _context.SaveChangesAsync();                
-
                 var messages = await _context.Messages.Where(d => d.DialogId.Equals(createdDialog.DialogId))
                             .Include(d=>d.Dialog)
                             .Include(d=>d.MessageContent)
                             .Include(d=>d.User)
+                            .OrderBy(d => d.SendAt)
                             .Select(d => new MessagesOutput
                             {
                                 DialogId = d.DialogId,
@@ -215,8 +216,6 @@ namespace Meetins.Services.Dialogs
                             .ToListAsync();
 
                 return messages;
-
-
             }
             catch (Exception)
             {
