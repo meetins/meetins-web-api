@@ -4,8 +4,6 @@ using Meetins.Communication.Hubs;
 using Meetins.Models.Messages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Meetins.Services.Dialogs
@@ -48,12 +46,8 @@ namespace Meetins.Services.Dialogs
 
         public async Task<IEnumerable<MessagesOutput>> SendMessageAsync(Guid dialogId, Guid senderId, string content)
         {
-            var result = await _dialogsRepository.SendMessageAsync(dialogId,senderId, content);
-
-            MessengerHub hub = new MessengerHub();
-
-            await hub.SendMessageAsync("receive_check");
-
+            var result = await _dialogsRepository.SendMessageAsync(dialogId, senderId, content);
+           
             return result;
         }
 

@@ -1,10 +1,13 @@
 ﻿using Meetins.Abstractions.Services;
+using Meetins.Communication.Abstractions;
+using Meetins.Communication.Hubs;
 using Meetins.Models.Mapper;
 using Meetins.Models.Profile.Output;
 using Meetins.Models.Settings.Input;
 using Meetins.Models.User.Output;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Threading.Tasks;
 
@@ -15,10 +18,12 @@ namespace Meetins.Controllers
     {
         private IUserService _userService;
         private IProfileService _profileService;
-        public SettingsController(IUserService userService, IProfileService profileService)
+        private readonly IHubContext<MessengerHub, IMessenger> _hubContext;
+        public SettingsController(IUserService userService, IProfileService profileService, IHubContext<MessengerHub, IMessenger> hubContext)
         {
             _userService = userService;
             _profileService = profileService;
+            _hubContext = hubContext;
         }
 
         [Authorize]
@@ -48,7 +53,7 @@ namespace Meetins.Controllers
             }
 
             var result = await _userService.UpdateProfileSettingsAsync(userId, profileSettingsInput.Name, profileSettingsInput.PhoneNumber, profileSettingsInput.BirthDate);
-                       
+           
             return Ok(result.ToProfileOutput());
         }
 

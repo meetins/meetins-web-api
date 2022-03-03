@@ -44,5 +44,7 @@ namespace Meetins.Models.Messages
         public string Avatar { get; set; }
 
         public string SenderName { get; set; }
+
+        public bool IsMine { get; set; }
     }
 }
