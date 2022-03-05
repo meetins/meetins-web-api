@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Meetins.Models.Messages;
 using System.Threading.Tasks;
 
 namespace Meetins.Communication.Abstractions
@@ -11,7 +11,7 @@ namespace Meetins.Communication.Abstractions
         /// <param name="userName"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        Task Notify(string dialogId, string senderId, string senderName, string senderAvatar, string message);
+        Task Notify(MessagesOutput message);
        
     }
 }

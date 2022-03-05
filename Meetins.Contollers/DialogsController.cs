@@ -131,7 +131,7 @@ namespace Meetins.Contollers
             {
                 foreach (var connectionId in userConnections.Connections)
                 {
-                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(message.DialogId.ToString(), userId.ToString(), sender.Name, sender.Avatar, message.Content);
+                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(messages.LastOrDefault());
                 }
 
             }
@@ -185,7 +185,7 @@ namespace Meetins.Contollers
             {
                 foreach (var connectionId in userConnections.Connections)
                 {
-                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(message.DialogId.ToString(), userId.ToString(), sender.Name, sender.Avatar, message.Content);
+                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(messages.LastOrDefault());
                 }
 
             }
