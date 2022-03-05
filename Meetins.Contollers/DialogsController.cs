@@ -127,11 +127,14 @@ namespace Meetins.Contollers
             //получаем список всех подключений пользователя
             var userConnections = _messengerManager.Users.FirstOrDefault(u => u.UserName.Equals(recipient.UserId.ToString()));
 
+            var mes = messages.LastOrDefault();
+            mes.IsMine = false;
+
             if (userConnections is not null)
             {
                 foreach (var connectionId in userConnections.Connections)
                 {
-                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(messages.LastOrDefault());
+                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(mes);
                 }
 
             }
@@ -181,11 +184,14 @@ namespace Meetins.Contollers
             //получаем список всех подключений пользователя
             var userConnections = _messengerManager.Users.FirstOrDefault(u => u.UserName.Equals(recipient.UserId.ToString()));
 
+            var mes = messages.LastOrDefault();
+            mes.IsMine = false;
+
             if (userConnections is not null)
             {
                 foreach (var connectionId in userConnections.Connections)
                 {
-                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(messages.LastOrDefault());
+                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(mes);
                 }
 
             }
