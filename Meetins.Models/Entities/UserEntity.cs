@@ -77,5 +77,11 @@ namespace Meetins.Models.Entities
         /// </summary>
         [Column("Status", TypeName = "varchar")]
         public string Status { get; set; }
+
+        /// <summary>
+        /// Город.
+        /// </summary>
+        [Column("city", TypeName = "varchar")]
+        public string City { get; set; }
     }
 }
