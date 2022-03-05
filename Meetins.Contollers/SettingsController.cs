@@ -53,7 +53,9 @@ namespace Meetins.Controllers
             }
 
             var result = await _userService.UpdateProfileSettingsAsync(userId, profileSettingsInput.Name, profileSettingsInput.PhoneNumber, profileSettingsInput.BirthDate);
-           
+
+            await _hubContext.Clients.All.SendMessageAsync(rawUserId, "message for you");
+
             return Ok(result.ToProfileOutput());
         }
 

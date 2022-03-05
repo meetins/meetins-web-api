@@ -114,6 +114,8 @@ namespace Meetins.Contollers
 
             await _hubContext.Clients.All.ReceiveBroadcast($"Произошла отправка сообщения от {rawUserId} к {userId} в диалоге {message.DialogId}");
 
+            await _hubContext.Clients.All.SendMessageAsync(rawUserId, "message");
+
             return Ok(messages);
         }
     }

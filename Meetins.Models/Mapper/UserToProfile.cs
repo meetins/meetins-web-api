@@ -9,6 +9,7 @@ namespace Meetins.Models.Mapper
         {
             ProfileOutput profile= new ProfileOutput
             {
+                UserId = user.UserId,
                 Name = user.Name,
                 Status = user.Status,
                 PhoneNumber = user.PhoneNumber,

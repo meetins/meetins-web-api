@@ -77,7 +77,9 @@ namespace Meetins.WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Meetins.WebApi", Version = "v1" });
             });
-           
+
+            services.AddSingleton<MessengerManager>();
+
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddTransient<IAboutRepository, AboutRepository>();
