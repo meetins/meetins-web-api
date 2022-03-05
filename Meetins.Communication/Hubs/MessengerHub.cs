@@ -12,15 +12,13 @@ namespace Meetins.Communication.Hubs
     /// Класс хаба для мессенджера.
     /// </summary>
     [Authorize]
-    public class MessengerHub : Hub<IMessenger>
+    public class MessengerHub : Hub<IClients>
     {
         private readonly MessengerManager _chatManager;
         private const string _defaultGroupName = "General";
 
         public MessengerHub(MessengerManager chatManager)
             => _chatManager = chatManager;
-
-        #region overrides
 
         /// <summary>
         /// Called when a new connection is established with the hub.
@@ -31,8 +29,7 @@ namespace Meetins.Communication.Hubs
             var userName = Context.User?.FindFirst("userId").Value ?? "Anonymous";
             var connectionId = Context.ConnectionId;
             _chatManager.ConnectUser(userName, connectionId);
-            await Groups.AddToGroupAsync(connectionId, _defaultGroupName);
-            await UpdateUsersAsync();
+            await Groups.AddToGroupAsync(connectionId, _defaultGroupName);            
             await base.OnConnectedAsync();
             Console.WriteLine($"{userName} connected!");
         }
@@ -47,20 +44,8 @@ namespace Meetins.Communication.Hubs
                 await base.OnDisconnectedAsync(exception);
             }
 
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, _defaultGroupName);
-            await UpdateUsersAsync();
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, _defaultGroupName);            
             await base.OnDisconnectedAsync(exception);
-        }
-
-        #endregion
-
-        public async Task UpdateUsersAsync()
-        {
-            var users = _chatManager.Users.Select(x => x.UserName).ToList();
-            await Clients.All.UpdateUsersAsync(users);
-        }
-
-        public async Task SendMessageAsync(string userName, string message) =>
-            await Clients.User(userName).SendMessageAsync(userName, message);
+        }         
     }
 }

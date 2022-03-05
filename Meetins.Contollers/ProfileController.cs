@@ -1,10 +1,14 @@
 ﻿using Meetins.Abstractions.Services;
+using Meetins.Communication.Abstractions;
+using Meetins.Communication.Hubs;
 using Meetins.Models.Profile.Input;
 using Meetins.Models.Profile.Output;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Meetins.Controllers
@@ -15,10 +19,12 @@ namespace Meetins.Controllers
     {
         private IProfileService _profileService;
         private IFtpService _ftpService;
+        
+
         public ProfileController(IProfileService profileService, IFtpService ftpService)
         {
             _profileService = profileService;
-            _ftpService = ftpService;
+            _ftpService = ftpService;            
         }
 
         [Authorize]
@@ -32,7 +38,7 @@ namespace Meetins.Controllers
                 return Unauthorized();
             }
 
-            var profile = await _profileService.GetUserProfileAsync(userId);
+            var profile = await _profileService.GetUserProfileAsync(userId);            
 
             return Ok(profile);
         }

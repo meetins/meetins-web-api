@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Meetins.Communication.Abstractions
 {
-    public interface IMessenger
+    public interface IClients
     {
         /// <summary>
         /// Send message
@@ -11,14 +11,7 @@ namespace Meetins.Communication.Abstractions
         /// <param name="userName"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        Task SendMessageAsync(string userName, string message);
-
-        /// <summary>
-        /// Update user list
-        /// </summary>
-        /// <param name="users"></param>
-        Task UpdateUsersAsync(IEnumerable<string> users);
-
-        Task ReceiveBroadcast(string message);
+        Task Notify(string dialogId, string senderId, string senderName, string senderAvatar, string message);
+       
     }
 }

@@ -18,8 +18,8 @@ namespace Meetins.Controllers
     {
         private IUserService _userService;
         private IProfileService _profileService;
-        private readonly IHubContext<MessengerHub, IMessenger> _hubContext;
-        public SettingsController(IUserService userService, IProfileService profileService, IHubContext<MessengerHub, IMessenger> hubContext)
+        private readonly IHubContext<MessengerHub, IClients> _hubContext;
+        public SettingsController(IUserService userService, IProfileService profileService, IHubContext<MessengerHub, IClients> hubContext)
         {
             _userService = userService;
             _profileService = profileService;
@@ -52,9 +52,7 @@ namespace Meetins.Controllers
                 return Unauthorized();
             }
 
-            var result = await _userService.UpdateProfileSettingsAsync(userId, profileSettingsInput.Name, profileSettingsInput.PhoneNumber, profileSettingsInput.BirthDate);
-
-            await _hubContext.Clients.All.SendMessageAsync(rawUserId, "message for you");
+            var result = await _userService.UpdateProfileSettingsAsync(userId, profileSettingsInput.Name, profileSettingsInput.PhoneNumber, profileSettingsInput.BirthDate);          
 
             return Ok(result.ToProfileOutput());
         }

@@ -3,6 +3,7 @@ using Meetins.Communication;
 using Meetins.Core.Data;
 using Meetins.Models.Entities;
 using Meetins.Models.Messages;
+using Meetins.Models.User.Output;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -35,12 +36,12 @@ namespace Meetins.Services.Dialogs
                                     .ThenInclude(dialogMember => dialogMember.User)
                                 .Include(dialog => dialog.Messages)
                                     .ThenInclude(message => message.MessageContent)
-                                .Include(dialog => dialog.Messages)                                    
+                                .Include(dialog => dialog.Messages)
                                 where x.DialogMembers.Any(d => d.User.UserId.Equals(userId))
                                 select new DialogsOutput
                                 {
-                                    DialogId = x.DialogId,                                   
-                                    UserAvatar = x.DialogMembers.First().User.Avatar,                                    
+                                    DialogId = x.DialogId,
+                                    UserAvatar = x.DialogMembers.First().User.Avatar,
                                     Content = x.Messages.OrderByDescending(e => e.SendAt).Take(1).First().MessageContent.Content
                                 })
                                 .ToListAsync();
@@ -55,8 +56,8 @@ namespace Meetins.Services.Dialogs
 
         private async Task<string> GetName(Guid dialogId, Guid myId)
         {
-            var name = await _context.DialogMembers.Where(d => d.DialogId == dialogId && d.UserId != myId).Include(u => u.User).FirstOrDefaultAsync();                
-            
+            var name = await _context.DialogMembers.Where(d => d.DialogId == dialogId && d.UserId != myId).Include(u => u.User).FirstOrDefaultAsync();
+
             return name.User.Name;
         }
 
@@ -71,7 +72,7 @@ namespace Meetins.Services.Dialogs
                              .Include(d => d.Dialog)
                              .Include(d => d.MessageContent)
                              .Include(d => d.User)
-                             .OrderBy(d=>d.SendAt)
+                             .OrderBy(d => d.SendAt)
                              .Select(d => new MessagesOutput
                              {
                                  DialogId = d.DialogId,
@@ -91,12 +92,12 @@ namespace Meetins.Services.Dialogs
         {
             try
             {
-                if(String.IsNullOrEmpty(dialogId.ToString()))
+                if (String.IsNullOrEmpty(dialogId.ToString()))
                 {
                     throw new ArgumentNullException($"{dialogId} is null or empty!");
                 }
 
-                MessageEntity newMessage = new ()
+                MessageEntity newMessage = new()
                 {
                     MessageId = Guid.NewGuid(),
                     DialogId = dialogId,
@@ -148,7 +149,7 @@ namespace Meetins.Services.Dialogs
             try
             {
                 var findedUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId));
-                
+
                 if (findedUser is null)
                 {
                     throw new ArgumentNullException($"С {userId} нельзя начать диалог - такого пользователя не существует!");
@@ -199,9 +200,9 @@ namespace Meetins.Services.Dialogs
                 await _context.SaveChangesAsync();
 
                 var messages = await _context.Messages.Where(d => d.DialogId.Equals(createdDialog.DialogId))
-                            .Include(d=>d.Dialog)
-                            .Include(d=>d.MessageContent)
-                            .Include(d=>d.User)
+                            .Include(d => d.Dialog)
+                            .Include(d => d.MessageContent)
+                            .Include(d => d.User)
                             .OrderBy(d => d.SendAt)
                             .Select(d => new MessagesOutput
                             {
@@ -220,6 +221,36 @@ namespace Meetins.Services.Dialogs
             catch (Exception)
             {
 
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<UserOutput>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId)
+        {
+            try
+            {
+                var result = await _context.DialogMembers
+                    .Where(u => u.DialogId == dialogId && u.UserId != userId)
+                    .Include(u=>u.User)
+                    .Select(u => new UserOutput
+                    {
+                        UserId = u.UserId,
+                        Name = u.User.Name,
+                        Email = u.User.Email,
+                        Gender = u.User.Gender,
+                        Login = u.User.Login,
+                        DateRegister = u.User.DateRegister,
+                        Status = u.Status,
+                        Avatar = u.User.Avatar,
+                        BirthDate = u.User.BirthDate,
+                        PhoneNumber = u.User.PhoneNumber
+                    }).ToListAsync();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                //TODO: Logging here
                 throw;
             }
         }

@@ -2,6 +2,7 @@
 using Meetins.Communication;
 using Meetins.Communication.Hubs;
 using Meetins.Models.Messages;
+using Meetins.Models.User.Output;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -42,6 +43,22 @@ namespace Meetins.Services.Dialogs
             var result = await _dialogsRepository.GetMessagesOfDialogAsync(dialogId);
 
             return result;
+        }
+
+        public async Task<IEnumerable<UserOutput>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId)
+        {
+            try
+            {
+                var result = await _dialogsRepository.GetOtherDialogMembersAsync(dialogId, userId);
+
+                return result;
+
+            }
+            catch (Exception)
+            {
+                //TODO: Logging here
+                throw;
+            }
         }
 
         public async Task<IEnumerable<MessagesOutput>> SendMessageAsync(Guid dialogId, Guid senderId, string content)

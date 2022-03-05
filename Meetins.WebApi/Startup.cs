@@ -20,6 +20,7 @@ using System;
 using Meetins.Services.People;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using Meetins.Communication.Abstractions;
 
 namespace Meetins.WebApi
 {

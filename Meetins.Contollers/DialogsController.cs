@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.SignalR;
 using Meetins.Communication.Hubs;
 using Meetins.Communication.Abstractions;
 using Meetins.Communication.Models;
+using System.Linq;
+using Meetins.Models.User.Output;
+using Meetins.Abstractions.Repositories;
 
 namespace Meetins.Contollers
 {
@@ -22,12 +25,16 @@ namespace Meetins.Contollers
     public class DialogsController : ControllerBase
     {
         IDialogsService _dialogsService;
-        private readonly IHubContext<MessengerHub, IMessenger> _hubContext;
+        IUserRepository _userRepository;
+        private readonly IHubContext<MessengerHub, IClients> _hubContext;
+        private readonly MessengerManager _messengerManager;
 
-        public DialogsController(IDialogsService dialogsService, IHubContext<MessengerHub, IMessenger> hubContext)
+        public DialogsController(IDialogsService dialogsService, IHubContext<MessengerHub, IClients> hubContext, MessengerManager messengerManager, IUserRepository userRepository)
         {
             _dialogsService = dialogsService;
             _hubContext = hubContext;
+            _messengerManager = messengerManager;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -91,15 +98,54 @@ namespace Meetins.Contollers
 
             var messages = await _dialogsService.StartDialogAsync(userId, startDialog.UserId, startDialog.MessageContent);
 
+            foreach (var mess in messages)
+            {
+                mess.IsMine = userId == mess.SenderId;
+            }
+
+
+            #region notify
+            //TODO: вынести в сервис
+            //notify
+            MessagesOutput message = messages.First();
+            var sender = await _userRepository.GetUserByIdAsync(userId);
+
+            //получаем всех участников диалога
+            var recipientsAll = await _dialogsService.GetOtherDialogMembersAsync(message.DialogId, userId);
+
+            //отправлять будем одному
+            UserOutput recipient = recipientsAll.First();
+
+            //смотрим в менеджере какие юзеры подключены
+            var connectedUsers = _messengerManager.Users.ToList();
+
+            foreach (var user in connectedUsers)
+            {
+                Console.WriteLine($"{user.UserName}, {user.Connections.ToList().First().ConnectionId}, {user.ConnectedAt.Value}");
+            }
+
+            //получаем список всех подключений пользователя
+            var userConnections = _messengerManager.Users.FirstOrDefault(u => u.UserName.Equals(recipient.UserId.ToString()));
+
+            if (userConnections is not null)
+            {
+                foreach (var connectionId in userConnections.Connections)
+                {
+                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(message.DialogId.ToString(), userId.ToString(), sender.Name, sender.Avatar, message.Content);
+                }
+
+            }
+            #endregion
+
             return Ok(messages);
         }
 
         [Authorize]
-        [HttpPost,Route("send-message")]
+        [HttpPost, Route("send-message")]
         public async Task<ActionResult<IEnumerable<MessagesOutput>>> SendMessageAsync([FromBody] MessageInput message)
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
-            
+
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
                 return Unauthorized();
@@ -112,9 +158,38 @@ namespace Meetins.Contollers
                 mess.IsMine = userId == mess.SenderId;
             }
 
-            await _hubContext.Clients.All.ReceiveBroadcast($"Произошла отправка сообщения от {rawUserId} к {userId} в диалоге {message.DialogId}");
+            #region notify
+            //TODO: вынести в сервис
+            //notify
 
-            await _hubContext.Clients.All.SendMessageAsync(rawUserId, "message");
+            var sender = await _userRepository.GetUserByIdAsync(userId);
+
+            //получаем всех участников диалога
+            var recipientsAll = await _dialogsService.GetOtherDialogMembersAsync(message.DialogId, userId);
+
+            //отправлять будем одному
+            UserOutput recipient = recipientsAll.First();
+
+            //смотрим в менеджере какие юзеры подключены
+            var connectedUsers = _messengerManager.Users.ToList();
+
+            foreach (var user in connectedUsers)
+            {
+                Console.WriteLine($"{user.UserName}, {user.Connections.ToList().First().ConnectionId}, {user.ConnectedAt.Value}");
+            }
+
+            //получаем список всех подключений пользователя
+            var userConnections = _messengerManager.Users.FirstOrDefault(u => u.UserName.Equals(recipient.UserId.ToString()));
+
+            if (userConnections is not null)
+            {
+                foreach (var connectionId in userConnections.Connections)
+                {
+                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(message.DialogId.ToString(), userId.ToString(), sender.Name, sender.Avatar, message.Content);
+                }
+
+            }
+            #endregion
 
             return Ok(messages);
         }
