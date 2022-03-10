@@ -38,7 +38,7 @@ namespace Meetins.Models.Events.Output
         /// <summary>
         /// Возможно ли приглашение на событие.
         /// </summary>
-        public bool IsInvitePosiible { get; set; }
+        public bool IsInvitePossible { get; set; }
 
         /// <summary>
         /// Количество подписчиков на событие.

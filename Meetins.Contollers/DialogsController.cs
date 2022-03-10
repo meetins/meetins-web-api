@@ -67,7 +67,6 @@ namespace Meetins.Contollers
         [HttpPost, Route("messages")]
         public async Task<ActionResult<IEnumerable<MessagesOutput>>> GetMessagesOfDialog([FromBody] Guid dialogId)
         {
-            var messages = await _dialogsService.GetMessagesOfDialog(dialogId);
 
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
@@ -75,6 +74,8 @@ namespace Meetins.Contollers
             {
                 return Unauthorized();
             }
+            
+            var messages = await _dialogsService.GetMessagesOfDialog(dialogId);            
 
             foreach (var message in messages)
             {

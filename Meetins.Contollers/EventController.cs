@@ -50,19 +50,18 @@ namespace Meetins.Contollers
         }
 
         /// <summary>
-        /// Метод вернёт список всех событий.
+        /// Метод вернёт событие.
         /// </summary>
-        /// <returns>Список всех событий.</returns>
-        [AllowAnonymous]
+        /// <returns>Модель события.</returns>        
         [HttpPost]
         [Route("event-by-id")]
         [ProducesResponseType(200, Type = typeof(EventOutput))]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> GetEventAsyncById([FromBody] Guid eventId)
+        public async Task<IActionResult> GetEventAsyncByIdAsync([FromBody] Guid eventId)
         {
-            //string rawUserId = HttpContext.User.FindFirst("userId").Value;
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
-            string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
+            //string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
@@ -70,6 +69,54 @@ namespace Meetins.Contollers
             }            
 
             var result = await _eventService.GetEventByIdAsync(userId, eventId);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Метод подпишет пользователя на событие.
+        /// </summary>
+        /// <returns>Модель события.</returns>        
+        [HttpPost]
+        [Route("subscribe")]
+        [ProducesResponseType(200, Type = typeof(EventOutput))]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> SubscribeToEventIdAsync([FromBody] Guid eventId)
+        {
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+            //string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
+
+            if (!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            var result = await _eventService.SubscribeToEventAsync(userId, eventId);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Метод отменит подписку пользователя на событие.
+        /// </summary>
+        /// <returns>Модель события.</returns>        
+        [HttpPost]
+        [Route("unsubscribe")]
+        [ProducesResponseType(200, Type = typeof(EventOutput))]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> UnSubscribeToEventIdAsync([FromBody] Guid eventId)
+        {
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+            //string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
+
+            if (!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            var result = await _eventService.UnSubscribeToEventAsync(userId, eventId);
 
             return Ok(result);
         }
