@@ -3,7 +3,7 @@
 namespace Meetins.Models.Events.Output
 {
     /// <summary>
-    /// выходная модель категорий событий.
+    /// Выходная модель категорий событий.
     /// </summary>
     public class EventsCategoryOutput
     {

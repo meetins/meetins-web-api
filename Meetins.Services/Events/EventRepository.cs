@@ -22,6 +22,16 @@ namespace Meetins.Services.Events
         }
 
         /// <summary>
+        /// Метод вернёт событие по Id.
+        /// </summary>
+        /// <param name="eventId">Идентификатор события.</param>
+        /// <returns>Модель события.</returns>
+        public async Task<EventOutput> GetEventByIdAsync(Guid eventId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Метод вернёт список категорий событий.
         /// </summary>
         /// <returns>Список категорий событий.</returns>
@@ -44,6 +54,37 @@ namespace Meetins.Services.Events
                 //TODO: log
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Метод вернёт список всех событий.
+        /// </summary>
+        /// <returns>Список всех событий.</returns>
+        public async Task<IEnumerable<EventOutput>> GetEventsListAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Метод подпишет пользователя на событие.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="eventId">Идентификатор события.</param>
+        /// <returns>Модель события.</returns>
+        public async Task<EventOutput> SubscribeToEventAsync(Guid userId, Guid eventId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Метод отменит подписку пользователя на событие.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="eventId">Идентификатор события.</param>
+        /// <returns>Модель события.</returns>
+        public async Task<EventOutput> UnSubscribeToEventAsync(Guid userId, Guid eventId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
