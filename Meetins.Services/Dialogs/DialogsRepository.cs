@@ -162,6 +162,14 @@ namespace Meetins.Services.Dialogs
                     throw new ArgumentNullException($"С {userId} нельзя начать диалог - такого пользователя не существует!");
                 }
 
+                //если уже диалог существует
+                var findedDialog = await GetPrivateDialogAsync(senderId, userId);
+
+                if (findedDialog is not null)
+                {
+                    return await SendMessageAsync(findedDialog.DialogId, senderId, content);
+                }
+
                 DateTime dateTime = DateTime.Now;
 
                 DialogEntity createdDialog = new()
@@ -261,5 +269,38 @@ namespace Meetins.Services.Dialogs
                 throw;
             }
         }
+    
+        public async Task<DialogMembersEntity> GetPrivateDialogAsync(Guid userId, Guid otherUserId)
+        {
+            try
+            {
+                var userDialogs = await _context.DialogMembers                   
+                    .Where(d => d.UserId.Equals(userId))
+                    .ToListAsync();
+
+                var otherUserDialog = await _context.DialogMembers
+                    .Where(d => d.UserId.Equals(otherUserId))
+                    .ToListAsync();
+
+                foreach (var item in userDialogs)
+                {
+                    var result = otherUserDialog.FirstOrDefault(f=>f.DialogId == item.DialogId);
+
+                    if (result is not null)
+                    {
+                        return result;
+                    }
+                }
+
+                return null;
+              
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+    
     }
 }
