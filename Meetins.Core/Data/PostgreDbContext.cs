@@ -54,5 +54,10 @@ namespace Meetins.Core.Data
         /// Соответствует таблице Messenger.DialogMembers
         /// </summary>
         public DbSet<DialogMembersEntity> DialogMembers { get; set; }
+
+        /// <summary>
+        /// Соответствует таблице Events.EventsCategories
+        /// </summary>
+        public DbSet<EventsCategoryEntity> EventsCategories { get; set; }
     }
 }
