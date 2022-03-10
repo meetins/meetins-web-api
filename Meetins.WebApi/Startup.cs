@@ -18,9 +18,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using Meetins.Services.People;
-using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
-using Meetins.Communication.Abstractions;
+using Meetins.Services.Events;
 
 namespace Meetins.WebApi
 {
@@ -87,6 +86,7 @@ namespace Meetins.WebApi
             services.AddTransient<IAboutRepository, AboutRepository>();
             services.AddTransient<IDialogsRepository, DialogsRepository>();
             services.AddTransient<IPeopleRepository, PeopleRepository>();
+            services.AddTransient<IEventRepository, EventRepository>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProfileService, ProfileService>();
@@ -94,6 +94,7 @@ namespace Meetins.WebApi
             services.AddTransient<IFtpService, FtpService>();
             services.AddTransient<IDialogsService, DialogsService>();
             services.AddTransient<IPeopleService, PeopleService>();
+            services.AddTransient<IEventService, EventService>();
             services.AddCors();
             services.AddSignalR();
         }
