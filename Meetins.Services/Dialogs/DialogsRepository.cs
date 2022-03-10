@@ -41,7 +41,6 @@ namespace Meetins.Services.Dialogs
                                 select new DialogsOutput
                                 {
                                     DialogId = x.DialogId,
-                                    UserAvatar = x.DialogMembers.First().User.Avatar,
                                     Content = x.Messages.OrderByDescending(e => e.SendAt).Take(1).First().MessageContent.Content
                                 })
                                 .ToListAsync();
@@ -49,6 +48,7 @@ namespace Meetins.Services.Dialogs
             foreach (var item in result)
             {
                 item.UserName = await GetName(item.DialogId, userId);
+                item.UserAvatar = await GetAvatar(item.DialogId, userId);
             }
 
             return result;
@@ -59,6 +59,13 @@ namespace Meetins.Services.Dialogs
             var name = await _context.DialogMembers.Where(d => d.DialogId == dialogId && d.UserId != myId).Include(u => u.User).FirstOrDefaultAsync();
 
             return name.User.Name;
+        }
+
+        private async Task<string> GetAvatar(Guid dialogId, Guid myId)
+        {
+            var avatar = await _context.DialogMembers.Where(d => d.DialogId == dialogId && d.UserId != myId).Include(user => user.User).FirstOrDefaultAsync();
+
+            return avatar.User.Avatar;
         }
 
         /// <summary>
