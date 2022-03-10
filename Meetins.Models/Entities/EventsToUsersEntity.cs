@@ -14,8 +14,8 @@ namespace Meetins.Models.Entities
         /// Идентификатор связи, PK.
         /// </summary>
         [Key]
-        [Column("EventsToUsersId", TypeName = "uuid")]
-        public Guid EventsToUsersId { get; set; }
+        [Column("EventToUserId", TypeName = "uuid")]
+        public Guid EventToUserId { get; set; }
 
         /// <summary>
         /// Идентификатор события, FK.
@@ -40,7 +40,7 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Подписан ли пользователь.
         /// </summary>
-        [Column("IsSubscribed", TypeName = "boolean")]
+        [Column("IsUserSubscribed", TypeName = "boolean")]
         public bool IsUserSubscribed { get; set; }
 
         /// <summary>

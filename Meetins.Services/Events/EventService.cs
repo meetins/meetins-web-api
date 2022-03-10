@@ -22,13 +22,14 @@ namespace Meetins.Services.Events
         /// <summary>
         /// Метод вернёт событие по Id.
         /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>
-        public async Task<EventOutput> GetEventByIdAsync(Guid eventId)
+        public async Task<EventOutput> GetEventByIdAsync(Guid userId, Guid eventId)
         {
             try
             {
-                var result = await _eventRepository.GetEventByIdAsync(eventId);
+                var result = await _eventRepository.GetEventByIdAsync(userId, eventId);
 
                 return result;
             }

@@ -25,9 +25,10 @@ namespace Meetins.Abstractions.Repositories
         /// <summary>
         /// Метод вернёт событие по Id.
         /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>
-        Task<EventOutput> GetEventByIdAsync(Guid eventId);
+        Task<EventOutput> GetEventByIdAsync(Guid userId, Guid eventId);
 
         /// <summary>
         /// Метод подпишет пользователя на событие.
