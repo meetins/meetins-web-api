@@ -33,5 +33,7 @@ namespace Meetins.Abstractions.Services
         Task<IEnumerable<MessagesOutput>> StartDialogAsync(Guid senderId, Guid userId, string content);
 
         Task<IEnumerable<UserOutput>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId);
+
+        Task<Task> DeleteAllUserDialogsAsync(Guid userId);
     }
 }

@@ -86,7 +86,7 @@ namespace Meetins.Services.Dialogs
                                  MessageId = d.MessageId,
                                  Content = d.MessageContent.Content,
                                  SendAt = d.SendAt,
-                                 SenderId = d.SenderId,
+                                 SenderId = d.UserId,
                                  SenderName = d.User.Name,
                                  Avatar = d.User.Avatar
                              })
@@ -108,7 +108,7 @@ namespace Meetins.Services.Dialogs
                 {
                     MessageId = Guid.NewGuid(),
                     DialogId = dialogId,
-                    SenderId = senderId,
+                    UserId = senderId,
                     SendAt = DateTime.Now
                 };
                 await _context.AddAsync(newMessage);
@@ -136,7 +136,7 @@ namespace Meetins.Services.Dialogs
                                 MessageId = d.MessageId,
                                 Content = d.MessageContent.Content,
                                 SendAt = d.SendAt,
-                                SenderId = d.SenderId,
+                                SenderId = d.UserId,
                                 SenderName = d.User.Name,
                                 Avatar = d.User.Avatar
                             })
@@ -190,7 +190,7 @@ namespace Meetins.Services.Dialogs
                 {
                     MessageId = Guid.NewGuid(),
                     DialogId = createdDialog.DialogId,
-                    SenderId = senderId,
+                    UserId = senderId,
                     SendAt = dateTime
                 };
                 await _context.AddAsync(newMessage);
@@ -217,7 +217,7 @@ namespace Meetins.Services.Dialogs
                                 MessageId = d.MessageId,
                                 Content = d.MessageContent.Content,
                                 SendAt = d.SendAt,
-                                SenderId = d.SenderId,
+                                SenderId = d.UserId,
                                 SenderName = d.User.Name,
                                 Avatar = d.User.Avatar
                             })
@@ -260,6 +260,24 @@ namespace Meetins.Services.Dialogs
                 //TODO: Logging here
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Полное удаление диалогов и сообщений пользователя.
+        /// </summary>
+        /// <param name="userId"> Идентификатор пользователя. </param>
+        /// <returns></returns>
+        public async Task<Task> DeleteAllUserDialogsAsync(Guid userId)
+        {
+            var dialogsToDelete = await _context.Dialogs.Include(d => d.DialogMembers)
+                .Where(d => d.DialogMembers.Any(d => d.User.UserId.Equals(userId)))
+                .ToListAsync();
+
+            _context.Dialogs.RemoveRange(dialogsToDelete);
+
+            await _context.SaveChangesAsync();
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -21,16 +21,16 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Идентификатор диалога.
         /// </summary>
-        [ForeignKey("Dialog")]
+        [ForeignKey("Messages_DialogId_fkey")]
         [Column("DialogId", TypeName = "uuid")]
         public Guid DialogId { get; set; }
 
         /// <summary>
         /// Идентификатор отправителя.
         /// </summary>
-        [ForeignKey("User")]
+        [ForeignKey("Messages_UserId_fkey")]
         [Column("UserId", TypeName = "uuid")]
-        public Guid SenderId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
         /// Дата и время отправления.
@@ -51,7 +51,7 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// ChatMessageEntity для внешнего ключа
         /// </summary>
-        public ChatMessageEntity ChatMessage { get; set; }
+        public MessagePropertiesEntity MessageProperties { get; set; }
 
         /// <summary>
         /// UserEntity для внешнего ключа

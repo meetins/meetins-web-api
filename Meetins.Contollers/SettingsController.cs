@@ -18,12 +18,14 @@ namespace Meetins.Controllers
     {
         private IUserService _userService;
         private IProfileService _profileService;
+        private IDialogsService _dialogsService;
         private readonly IHubContext<MessengerHub, IClients> _hubContext;
-        public SettingsController(IUserService userService, IProfileService profileService, IHubContext<MessengerHub, IClients> hubContext)
+        public SettingsController(IUserService userService, IProfileService profileService, IHubContext<MessengerHub, IClients> hubContext, IDialogsService dialogsService)
         {
             _userService = userService;
             _profileService = profileService;
             _hubContext = hubContext;
+            _dialogsService = dialogsService;
         }
 
         [Authorize]
@@ -85,6 +87,31 @@ namespace Meetins.Controllers
             var result = await _userService.UpdateAccountSettingsAsync(userId, accountSettingsInput.Email, accountSettingsInput.Password, accountSettingsInput.Login);
 
             return Ok(result.ToProfileOutput());
+        }
+
+        /// <summary>
+        /// Полное удаление аккаунта пользователя.
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpDelete, Route("delete-user")]
+        public async Task<IActionResult> DeleteAsync()
+        {
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+            //string rawUserId = "187ac176-cb28-4456-9ab5-d3a1ef370500";
+
+            if (!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            await _dialogsService.DeleteAllUserDialogsAsync(userId);
+            await _userService.DeleteUserByUserIdAsync(userId);
+            await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
+
+
+            return NoContent();
         }
     }
 }
