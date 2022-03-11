@@ -10,10 +10,16 @@ namespace Meetins.Models.Entities
     [Table("EventsCategories", Schema = "Events")]
     public class EventsCategoryEntity
     {
+        /// <summary>
+        /// Идентификатор категории события, PK.
+        /// </summary>
         [Key]
         [Column("EventsCategoryId", TypeName = "uuid")]
         public Guid EventsCategotyId { get; set; }
 
+        /// <summary>
+        /// Название категории.
+        /// </summary>
         [Column("CategoryName", TypeName = "nvarchar(150)")]
         public string CategoryName { get; set; }
     }

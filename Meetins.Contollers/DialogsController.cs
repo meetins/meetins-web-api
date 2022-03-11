@@ -67,7 +67,6 @@ namespace Meetins.Contollers
         [HttpPost, Route("messages")]
         public async Task<ActionResult<IEnumerable<MessagesOutput>>> GetMessagesOfDialog([FromBody] Guid dialogId)
         {
-            var messages = await _dialogsService.GetMessagesOfDialog(dialogId);
 
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
@@ -75,6 +74,8 @@ namespace Meetins.Contollers
             {
                 return Unauthorized();
             }
+            
+            var messages = await _dialogsService.GetMessagesOfDialog(dialogId);            
 
             foreach (var message in messages)
             {
@@ -127,8 +128,19 @@ namespace Meetins.Contollers
             //получаем список всех подключений пользователя
             var userConnections = _messengerManager.Users.FirstOrDefault(u => u.UserName.Equals(recipient.UserId.ToString()));
 
-            var mes = messages.LastOrDefault();
-            mes.IsMine = false;
+            var mes2 = messages.LastOrDefault();
+            MessagesOutput mes = new MessagesOutput()
+            {
+                MessageId = mes2.MessageId,
+                Content = mes2.Content,
+                DialogId = mes2.DialogId,
+                Avatar = mes2.Avatar,
+                IsMine = false,
+                IsRead = false,
+                SendAt = mes2.SendAt,
+                SenderId = mes2.SenderId,
+                SenderName = mes2.SenderName
+            };
 
             if (userConnections is not null)
             {
@@ -183,9 +195,21 @@ namespace Meetins.Contollers
 
             //получаем список всех подключений пользователя
             var userConnections = _messengerManager.Users.FirstOrDefault(u => u.UserName.Equals(recipient.UserId.ToString()));
-
-            var mes = messages.LastOrDefault();
-            mes.IsMine = false;
+           
+            var mes2 = messages.LastOrDefault();
+            MessagesOutput mes = new MessagesOutput()
+            {
+                MessageId = mes2.MessageId,
+                Content = mes2.Content,
+                DialogId = mes2.DialogId,
+                Avatar = mes2.Avatar,
+                IsMine = false,
+                IsRead = false,
+                SendAt = mes2.SendAt,
+                SenderId = mes2.SenderId,
+                SenderName = mes2.SenderName
+            };      
+            
 
             if (userConnections is not null)
             {

@@ -20,6 +20,27 @@ namespace Meetins.Services.Events
         }
 
         /// <summary>
+        /// Метод вернёт событие по Id.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="eventId">Идентификатор события.</param>
+        /// <returns>Модель события.</returns>
+        public async Task<EventOutput> GetEventByIdAsync(Guid userId, Guid eventId)
+        {
+            try
+            {
+                var result = await _eventRepository.GetEventByIdAsync(userId, eventId);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Метод вернёт список категорий событий.
         /// </summary>
         /// <returns>Список категорий событий.</returns>
@@ -28,6 +49,67 @@ namespace Meetins.Services.Events
             try
             {
                 var result = await _eventRepository.GetEventsCategotiesListAsync();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод вернёт список всех событий.
+        /// </summary>
+        /// <returns>Список всех событий.</returns>
+        public async Task<IEnumerable<EventOutput>> GetEventsListAsync()
+        {
+            try
+            {
+                var result = await _eventRepository.GetEventsListAsync();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод подпишет пользователя на событие.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="eventId">Идентификатор события.</param>
+        /// <returns>Модель события.</returns>
+        public async Task<EventOutput> SubscribeToEventAsync(Guid userId, Guid eventId)
+        {
+            try
+            {
+                var result = await _eventRepository.SubscribeToEventAsync(userId, eventId);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод отменит подписку пользователя на событие.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="eventId">Идентификатор события.</param>
+        /// <returns>Модель события.</returns>
+        public async Task<EventOutput> UnSubscribeToEventAsync(Guid userId, Guid eventId)
+        {
+            try
+            {
+                var result = await _eventRepository.UnSubscribeToEventAsync(userId, eventId);
 
                 return result;
             }
