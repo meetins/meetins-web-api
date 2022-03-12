@@ -27,13 +27,13 @@ namespace Meetins.Controllers
         /// Получение списка всех существующих пользователей.
         /// </summary>
         /// <returns> Список пользователей. </returns>
-        [Authorize]
+        //[Authorize]
         [HttpGet, Route("all")]
         public async Task<ActionResult<IEnumerable<PeopleOutput>>> GetAllPeoplesAsync()
         {
-            string rawUserId = HttpContext.User.FindFirst("userId").Value;
+            //string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
-            //string rawUserId = "187ac176-cb28-4456-9ab5-d3a1ef370500";
+            string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
