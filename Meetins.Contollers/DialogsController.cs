@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.SignalR;
 using Meetins.Communication.Hubs;
 using Meetins.Communication.Abstractions;
 using Meetins.Communication.Models;
+using System.Linq;
+using Meetins.Models.User.Output;
+using Meetins.Abstractions.Repositories;
 
 namespace Meetins.Contollers
 {
@@ -22,12 +25,16 @@ namespace Meetins.Contollers
     public class DialogsController : ControllerBase
     {
         IDialogsService _dialogsService;
-        private readonly IHubContext<MessengerHub, IMessenger> _hubContext;
+        IUserRepository _userRepository;
+        private readonly IHubContext<MessengerHub, IClients> _hubContext;
+        private readonly MessengerManager _messengerManager;
 
-        public DialogsController(IDialogsService dialogsService, IHubContext<MessengerHub, IMessenger> hubContext)
+        public DialogsController(IDialogsService dialogsService, IHubContext<MessengerHub, IClients> hubContext, MessengerManager messengerManager, IUserRepository userRepository)
         {
             _dialogsService = dialogsService;
             _hubContext = hubContext;
+            _messengerManager = messengerManager;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -40,7 +47,7 @@ namespace Meetins.Contollers
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
-            //string rawUserId = "187ac176-cb28-4456-9ab5-d3a1ef370500";
+            //string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
                 return Unauthorized();
@@ -60,7 +67,6 @@ namespace Meetins.Contollers
         [HttpPost, Route("messages")]
         public async Task<ActionResult<IEnumerable<MessagesOutput>>> GetMessagesOfDialog([FromBody] Guid dialogId)
         {
-            var messages = await _dialogsService.GetMessagesOfDialog(dialogId);
 
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
@@ -68,6 +74,8 @@ namespace Meetins.Contollers
             {
                 return Unauthorized();
             }
+            
+            var messages = await _dialogsService.GetMessagesOfDialog(dialogId);            
 
             foreach (var message in messages)
             {
@@ -91,15 +99,68 @@ namespace Meetins.Contollers
 
             var messages = await _dialogsService.StartDialogAsync(userId, startDialog.UserId, startDialog.MessageContent);
 
+            foreach (var mess in messages)
+            {
+                mess.IsMine = userId == mess.SenderId;
+            }
+
+
+            #region notify
+            //TODO: вынести в сервис
+            //notify
+            MessagesOutput message = messages.First();
+            var sender = await _userRepository.GetUserByIdAsync(userId);
+
+            //получаем всех участников диалога
+            var recipientsAll = await _dialogsService.GetOtherDialogMembersAsync(message.DialogId, userId);
+
+            //отправлять будем одному
+            UserOutput recipient = recipientsAll.First();
+
+            //смотрим в менеджере какие юзеры подключены
+            var connectedUsers = _messengerManager.Users.ToList();
+
+            foreach (var user in connectedUsers)
+            {
+                Console.WriteLine($"{user.UserName}, {user.Connections.ToList().First().ConnectionId}, {user.ConnectedAt.Value}");
+            }
+
+            //получаем список всех подключений пользователя
+            var userConnections = _messengerManager.Users.FirstOrDefault(u => u.UserName.Equals(recipient.UserId.ToString()));
+
+            var mes2 = messages.LastOrDefault();
+            MessagesOutput mes = new MessagesOutput()
+            {
+                MessageId = mes2.MessageId,
+                Content = mes2.Content,
+                DialogId = mes2.DialogId,
+                Avatar = mes2.Avatar,
+                IsMine = false,
+                IsRead = false,
+                SendAt = mes2.SendAt,
+                SenderId = mes2.SenderId,
+                SenderName = mes2.SenderName
+            };
+
+            if (userConnections is not null)
+            {
+                foreach (var connectionId in userConnections.Connections)
+                {
+                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(mes);
+                }
+
+            }
+            #endregion
+
             return Ok(messages);
         }
 
         [Authorize]
-        [HttpPost,Route("send-message")]
+        [HttpPost, Route("send-message")]
         public async Task<ActionResult<IEnumerable<MessagesOutput>>> SendMessageAsync([FromBody] MessageInput message)
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
-            
+
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
                 return Unauthorized();
@@ -112,7 +173,53 @@ namespace Meetins.Contollers
                 mess.IsMine = userId == mess.SenderId;
             }
 
-            await _hubContext.Clients.All.ReceiveBroadcast($"Произошла отправка сообщения от {rawUserId} к {userId} в диалоге {message.DialogId}");
+            #region notify
+            //TODO: вынести в сервис
+            //notify
+
+            var sender = await _userRepository.GetUserByIdAsync(userId);
+
+            //получаем всех участников диалога
+            var recipientsAll = await _dialogsService.GetOtherDialogMembersAsync(message.DialogId, userId);
+
+            //отправлять будем одному
+            UserOutput recipient = recipientsAll.First();
+
+            //смотрим в менеджере какие юзеры подключены
+            var connectedUsers = _messengerManager.Users.ToList();
+
+            foreach (var user in connectedUsers)
+            {
+                Console.WriteLine($"{user.UserName}, {user.Connections.ToList().First().ConnectionId}, {user.ConnectedAt.Value}");
+            }
+
+            //получаем список всех подключений пользователя
+            var userConnections = _messengerManager.Users.FirstOrDefault(u => u.UserName.Equals(recipient.UserId.ToString()));
+           
+            var mes2 = messages.LastOrDefault();
+            MessagesOutput mes = new MessagesOutput()
+            {
+                MessageId = mes2.MessageId,
+                Content = mes2.Content,
+                DialogId = mes2.DialogId,
+                Avatar = mes2.Avatar,
+                IsMine = false,
+                IsRead = false,
+                SendAt = mes2.SendAt,
+                SenderId = mes2.SenderId,
+                SenderName = mes2.SenderName
+            };      
+            
+
+            if (userConnections is not null)
+            {
+                foreach (var connectionId in userConnections.Connections)
+                {
+                    await _hubContext.Clients.Client(connectionId.ConnectionId).Notify(mes);
+                }
+
+            }
+            #endregion
 
             return Ok(messages);
         }

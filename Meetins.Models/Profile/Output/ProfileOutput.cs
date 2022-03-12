@@ -4,6 +4,8 @@ namespace Meetins.Models.Profile.Output
 {
     public class ProfileOutput
     {
+        public Guid UserId { get; set; }
+
         public string Name { get; set; }        
 
         public string Status { get; set; }

@@ -1,9 +1,8 @@
 ﻿using Meetins.Communication;
 using Meetins.Models.Messages;
+using Meetins.Models.User.Output;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Meetins.Abstractions.Services
@@ -30,5 +29,7 @@ namespace Meetins.Abstractions.Services
         Task<IEnumerable<MessagesOutput>> SendMessageAsync(Guid dialogId, Guid senderId, string content);
 
         Task<IEnumerable<MessagesOutput>> StartDialogAsync(Guid senderId, Guid userId, string content);
+
+        Task<IEnumerable<UserOutput>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId);
     }
 }

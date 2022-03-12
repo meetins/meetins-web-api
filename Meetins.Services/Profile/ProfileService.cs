@@ -2,7 +2,6 @@
 using Meetins.Abstractions.Services;
 using Meetins.Models.Mapper;
 using Meetins.Models.Profile.Output;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 
