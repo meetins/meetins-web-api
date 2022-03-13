@@ -32,7 +32,7 @@ namespace Meetins.Controllers
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
-            //string rawUserId = "187ac176-cb28-4456-9ab5-d3a1ef370500";
+            //string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {

@@ -32,11 +32,11 @@ namespace Meetins.Services.People
             var result = await _context.Users.Where(d => d.UserId != userId)
                            .Select(d => new PeopleOutput
                            {
-                               UserId = d.UserId,
+                               Login = d.Login,
                                UserName = d.Name,
                                UserAvatar = d.Avatar,
                                Status = d.Status,
-                               Age = DateTime.Now.Year - d.BirthDate.Value.Year,
+                               Age = d.BirthDate.HasValue ? DateTime.Now.Year - d.BirthDate.Value.Year : 0,
                                City = d.City
                            })
                            .ToListAsync();

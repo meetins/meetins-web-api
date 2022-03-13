@@ -10,7 +10,7 @@ namespace Meetins.Models.People
         /// <summary>
         /// Идентификатор пользователя.
         /// </summary>
-        public Guid UserId { get; set; }
+        public string Login { get; set; }
 
         /// <summary>
         /// Имя пользователя.
