@@ -18,7 +18,7 @@ using Meetins.Abstractions.Repositories;
 namespace Meetins.Contollers
 {
     /// <summary>
-    /// В контроллере содержится функционал для получения всех диалогов авторизованного пользователя и получения всех сообщений, принадлежащих диалогу.
+    /// В контроллере содержится функционал дял мессенджера.
     /// </summary>
     [Route("dialogs")]
     [ApiController]
@@ -220,6 +220,41 @@ namespace Meetins.Contollers
 
             }
             #endregion
+
+            return Ok(messages);
+        }
+
+        /// <summary>
+        /// Метод получает сообщения личного диалога с пользователем.
+        /// </summary>
+        /// <param name="otherUserId">Идентификатор пользователя.</param>
+        /// <returns>Сообщения в диалоге.</returns>
+        [Authorize]
+        [HttpPost]
+        [Route("private-dialog")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<MessagesOutput>))]
+        public async Task<ActionResult<IEnumerable<MessagesOutput>>> GetMessagesOfPrivateDialogAsync([FromBody] Guid otherUserId)
+        {
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+            if (!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            var findedDialog = await _dialogsService.GetPrivateDialogAsync(userId, otherUserId);
+
+            IEnumerable<MessagesOutput> messages = null;
+
+            if (findedDialog is not null)
+            {
+                messages = await _dialogsService.GetMessagesOfDialog(findedDialog.DialogId);
+
+                foreach (var message in messages)
+                {
+                    message.IsMine = userId == message.SenderId;
+                }
+            }
 
             return Ok(messages);
         }

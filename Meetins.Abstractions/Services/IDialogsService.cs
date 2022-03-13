@@ -1,4 +1,5 @@
 ﻿using Meetins.Communication;
+using Meetins.Models.Dialogs.Output;
 using Meetins.Models.Messages;
 using Meetins.Models.User.Output;
 using System;
@@ -31,5 +32,13 @@ namespace Meetins.Abstractions.Services
         Task<IEnumerable<MessagesOutput>> StartDialogAsync(Guid senderId, Guid userId, string content);
 
         Task<IEnumerable<UserOutput>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId);
+
+        /// <summary>
+        /// Метод вернет информацию о диалоге, если он существует.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="otherUserId">Идентификатор пользователя, с которым ищется диалог.</param>
+        /// <returns>Выходная модель свойств диалога.</returns>
+        Task<DialogPropretiesOutput> GetPrivateDialogAsync(Guid userId, Guid otherUserId);
     }
 }
