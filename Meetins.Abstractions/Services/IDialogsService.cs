@@ -32,6 +32,11 @@ namespace Meetins.Abstractions.Services
 
         Task<IEnumerable<UserOutput>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId);
 
-        Task<Task> DeleteAllUserDialogsAsync(Guid userId);
+        /// <summary>
+        /// Полное удаление диалогов и сообщений пользователя.
+        /// </summary>
+        /// <param name="userId"> Идентификатор пользователя. </param>
+        /// <returns></returns>
+        Task<bool> DeleteAllUserDialogsAndMessagesAsync(Guid userId);
     }
 }

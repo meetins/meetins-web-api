@@ -80,11 +80,11 @@ namespace Meetins.Services.Dialogs
         /// </summary>
         /// <param name="userId"> Идентификатор пользователя. </param>
         /// <returns></returns>
-        public async Task<Task> DeleteAllUserDialogsAsync(Guid userId)
+        public async Task<bool> DeleteAllUserDialogsAndMessagesAsync(Guid userId)
         {
-            await _dialogsRepository.DeleteAllUserDialogsAsync(userId);
+            await _dialogsRepository.DeleteAllUserDialogsAndMessagesAsync(userId);
 
-            return Task.CompletedTask;
+            return true;
         }
     }
 }

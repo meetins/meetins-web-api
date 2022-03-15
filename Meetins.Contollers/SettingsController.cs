@@ -95,23 +95,22 @@ namespace Meetins.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpDelete, Route("delete-user")]
-        public async Task<IActionResult> DeleteAsync()
+        public async Task<ActionResult<bool>> DeleteAsync()
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
-            //string rawUserId = "187ac176-cb28-4456-9ab5-d3a1ef370500";
+           //string rawUserId = "187ac176-cb28-4456-9ab5-d3a1ef370542";
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
                 return Unauthorized();
             }
 
-            await _dialogsService.DeleteAllUserDialogsAsync(userId);
-            await _userService.DeleteUserByUserIdAsync(userId);
-            await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
+            await _dialogsService.DeleteAllUserDialogsAndMessagesAsync(userId);
+            //await _userService.DeleteUserByUserIdAsync(userId);
+            //await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
 
-
-            return NoContent();
+            return Ok(true);
         }
     }
 }

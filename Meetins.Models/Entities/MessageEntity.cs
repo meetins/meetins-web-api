@@ -30,13 +30,21 @@ namespace Meetins.Models.Entities
         /// </summary>
         [ForeignKey("Messages_UserId_fkey")]
         [Column("UserId", TypeName = "uuid")]
-        public Guid UserId { get; set; }
+        public Guid SenderId { get; set; }
 
         /// <summary>
         /// Дата и время отправления.
         /// </summary>
         [Column("SendAt", TypeName = "timestamp")]
         public DateTime SendAt { get; set; }
+
+        /// <summary>
+        /// Прочитано или нет.
+        /// </summary>
+        [Column("IsRead", TypeName = "bool")]
+        public bool IsRead { get; set; }
+
+        public MessageEntity Message { get; set; }
 
         /// <summary>
         /// DialogEntity для внешнего ключа
@@ -47,11 +55,6 @@ namespace Meetins.Models.Entities
         /// MessageContentsEntity для внешнего ключа
         /// </summary>
         public MessageContentsEntity MessageContent { get; set; }
-
-        /// <summary>
-        /// ChatMessageEntity для внешнего ключа
-        /// </summary>
-        public MessagePropertiesEntity MessageProperties { get; set; }
 
         /// <summary>
         /// UserEntity для внешнего ключа

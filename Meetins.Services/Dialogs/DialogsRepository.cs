@@ -86,7 +86,7 @@ namespace Meetins.Services.Dialogs
                                  MessageId = d.MessageId,
                                  Content = d.MessageContent.Content,
                                  SendAt = d.SendAt,
-                                 SenderId = d.UserId,
+                                 SenderId = d.SenderId,
                                  SenderName = d.User.Name,
                                  Avatar = d.User.Avatar
                              })
@@ -108,7 +108,7 @@ namespace Meetins.Services.Dialogs
                 {
                     MessageId = Guid.NewGuid(),
                     DialogId = dialogId,
-                    UserId = senderId,
+                    SenderId = senderId,
                     SendAt = DateTime.Now
                 };
                 await _context.AddAsync(newMessage);
@@ -136,7 +136,7 @@ namespace Meetins.Services.Dialogs
                                 MessageId = d.MessageId,
                                 Content = d.MessageContent.Content,
                                 SendAt = d.SendAt,
-                                SenderId = d.UserId,
+                                SenderId = d.SenderId,
                                 SenderName = d.User.Name,
                                 Avatar = d.User.Avatar
                             })
@@ -198,7 +198,7 @@ namespace Meetins.Services.Dialogs
                 {
                     MessageId = Guid.NewGuid(),
                     DialogId = createdDialog.DialogId,
-                    UserId = senderId,
+                    SenderId = senderId,
                     SendAt = dateTime
                 };
                 await _context.AddAsync(newMessage);
@@ -225,7 +225,7 @@ namespace Meetins.Services.Dialogs
                                 MessageId = d.MessageId,
                                 Content = d.MessageContent.Content,
                                 SendAt = d.SendAt,
-                                SenderId = d.UserId,
+                                SenderId = d.SenderId,
                                 SenderName = d.User.Name,
                                 Avatar = d.User.Avatar
                             })
@@ -275,7 +275,7 @@ namespace Meetins.Services.Dialogs
         /// </summary>
         /// <param name="userId"> Идентификатор пользователя. </param>
         /// <returns></returns>
-        public async Task<Task> DeleteAllUserDialogsAsync(Guid userId)
+        public async Task<bool> DeleteAllUserDialogsAndMessagesAsync(Guid userId)
         {
             var dialogsToDelete = await _context.Dialogs.Include(d => d.DialogMembers)
                 .Where(d => d.DialogMembers.Any(d => d.User.UserId.Equals(userId)))
@@ -285,7 +285,7 @@ namespace Meetins.Services.Dialogs
 
             await _context.SaveChangesAsync();
 
-            return Task.CompletedTask;
+            return true;
         }
     
         public async Task<DialogMembersEntity> GetPrivateDialogAsync(Guid userId, Guid otherUserId)

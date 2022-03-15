@@ -22,7 +22,6 @@ namespace Meetins.Models.Entities
         /// </summary>
         [ForeignKey("MessageContents_MessageId_fkey")]
         [Column("MessageId", TypeName = "uuid")]
-        //[ForeignKey("Message")]
         public Guid MessageId { get; set; }
 
         /// <summary>

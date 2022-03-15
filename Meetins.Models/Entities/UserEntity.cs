@@ -83,5 +83,7 @@ namespace Meetins.Models.Entities
         /// </summary>
         [Column("city", TypeName = "varchar")]
         public string City { get; set; }
+
+        public ICollection<MessageEntity> Messages { get; set; }
     }
 }
