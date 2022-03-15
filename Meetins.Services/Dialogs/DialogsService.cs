@@ -83,9 +83,7 @@ namespace Meetins.Services.Dialogs
         /// <returns></returns>
         public async Task<bool> DeleteAllUserDialogsAndMessagesAsync(Guid userId)
         {
-            await _dialogsRepository.DeleteAllUserDialogsAndMessagesAsync(userId);
-
-            return true;
+            return await _dialogsRepository.DeleteAllUserDialogsAndMessagesAsync(userId);
         }
 
         /// Метод вернет информацию о диалоге, если он существует.

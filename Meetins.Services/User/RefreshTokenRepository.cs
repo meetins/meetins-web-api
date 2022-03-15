@@ -19,19 +19,26 @@ namespace Meetins.Services.User
             _db = db;
         }
 
-        public async Task<Task> DeleteAllAsync(Guid userId)
+        public async Task<bool> DeleteAllAsync(Guid userId)
         {
-            List<RefreshTokenEntity> refreshTokens = await _db.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
-
-            foreach (var item in refreshTokens)
+            try
             {
-                _db.RefreshTokens.Remove(item);
+                List<RefreshTokenEntity> refreshTokens = await _db.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
 
+                foreach (var item in refreshTokens)
+                {
+                    _db.RefreshTokens.Remove(item);
+
+                }
+
+                await _db.SaveChangesAsync();
+
+                return true;
             }
-
-            await _db.SaveChangesAsync();
-
-            return Task.CompletedTask;
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<RefreshTokenOutput> CreateAsync(string refreshToken, Guid userId)

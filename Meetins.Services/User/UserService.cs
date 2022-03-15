@@ -89,11 +89,9 @@ namespace Meetins.Services.User
             return loginOutput;
         }
 
-        public async Task<Task> DeleteAllRefreshTokensByUserIdAsync(Guid userId)
+        public async Task<bool> DeleteAllRefreshTokensByUserIdAsync(Guid userId)
         {
-            await _refreshTokenRepository.DeleteAllAsync(userId);
-
-            return Task.CompletedTask;
+            return await _refreshTokenRepository.DeleteAllAsync(userId);
         }
 
         /// <summary>
@@ -101,11 +99,9 @@ namespace Meetins.Services.User
         /// </summary>
         /// <param name="userId"> Id пользователя. </param>
         /// <returns> CompletedTask. </returns>
-        public async Task<Task> DeleteUserByUserIdAsync(Guid userId)
+        public async Task<bool> DeleteUserByUserIdAsync(Guid userId)
         {
-            await _userRepository.DeleteAsync(userId);
-
-            return Task.CompletedTask;
+            return await _userRepository.DeleteAsync(userId);
         }
 
         public async Task<AuthenticateOutput> RefreshAccessTokenAsync(string refreshToken)

@@ -278,15 +278,22 @@ namespace Meetins.Services.Dialogs
         /// <returns></returns>
         public async Task<bool> DeleteAllUserDialogsAndMessagesAsync(Guid userId)
         {
-            var dialogsToDelete = await _context.Dialogs.Include(d => d.DialogMembers)
+            try
+            {
+                var dialogsToDelete = await _context.Dialogs.Include(d => d.DialogMembers)
                 .Where(d => d.DialogMembers.Any(d => d.User.UserId.Equals(userId)))
                 .ToListAsync();
 
-            _context.Dialogs.RemoveRange(dialogsToDelete);
+                _context.Dialogs.RemoveRange(dialogsToDelete);
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-            return true;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }            
         }
   
         /// Метод вернет информацию о диалоге, если он существует.

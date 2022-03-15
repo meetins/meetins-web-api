@@ -298,16 +298,23 @@ namespace Meetins.Services.User
         /// </summary>
         /// <param name="userId"> Id пользователя. </param>
         /// <returns> CompletedTask. </returns>
-        public async Task<Task> DeleteAsync(Guid userId)
+        public async Task<bool> DeleteAsync(Guid userId)
         {
-            var userToDelete = await _db.Users
+            try
+            {
+                var userToDelete = await _db.Users
                 .Where(b => b.UserId.Equals(userId))
                 .FirstOrDefaultAsync();
 
-            _db.Users.Remove(userToDelete);
-            await _db.SaveChangesAsync();
+                _db.Users.Remove(userToDelete);
+                await _db.SaveChangesAsync();
 
-            return Task.CompletedTask;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

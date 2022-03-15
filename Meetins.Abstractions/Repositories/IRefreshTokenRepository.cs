@@ -36,6 +36,6 @@ namespace Meetins.Abstractions.Repositories
         /// </summary>
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <returns></returns>
-        Task<Task> DeleteAllAsync(Guid userId);        
+        Task<bool> DeleteAllAsync(Guid userId);        
     }
 }

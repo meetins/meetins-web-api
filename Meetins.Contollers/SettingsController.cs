@@ -99,18 +99,18 @@ namespace Meetins.Controllers
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
-           //string rawUserId = "187ac176-cb28-4456-9ab5-d3a1ef370542";
+            //string rawUserId = "39b8dd6f-37b1-4235-8f51-9dcb313f46d3";
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
                 return Unauthorized();
             }
 
-            await _dialogsService.DeleteAllUserDialogsAndMessagesAsync(userId);
-            //await _userService.DeleteUserByUserIdAsync(userId);
-            //await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
+            var deleteDialogStatus = await _dialogsService.DeleteAllUserDialogsAndMessagesAsync(userId);
+            var deleteUserStatus = await _userService.DeleteUserByUserIdAsync(userId);
+            var deleteTokenStatus = await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
 
-            return Ok(true);
+            return Ok(deleteDialogStatus && deleteUserStatus && deleteTokenStatus);
         }
     }
 }

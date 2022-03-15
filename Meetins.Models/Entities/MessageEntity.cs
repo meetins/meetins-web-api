@@ -28,7 +28,7 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Идентификатор отправителя.
         /// </summary>
-        [ForeignKey("Messages_UserId_fkey")]
+        [ForeignKey("User")]
         [Column("UserId", TypeName = "uuid")]
         public Guid SenderId { get; set; }
 
