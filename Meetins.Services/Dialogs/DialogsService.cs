@@ -1,6 +1,7 @@
 ﻿using Meetins.Abstractions.Services;
 using Meetins.Communication;
 using Meetins.Communication.Hubs;
+using Meetins.Models.Dialogs.Output;
 using Meetins.Models.Messages;
 using Meetins.Models.User.Output;
 using System;
@@ -64,7 +65,7 @@ namespace Meetins.Services.Dialogs
         public async Task<IEnumerable<MessagesOutput>> SendMessageAsync(Guid dialogId, Guid senderId, string content)
         {
             var result = await _dialogsRepository.SendMessageAsync(dialogId, senderId, content);
-           
+
             return result;
         }
 
@@ -85,6 +86,26 @@ namespace Meetins.Services.Dialogs
             await _dialogsRepository.DeleteAllUserDialogsAndMessagesAsync(userId);
 
             return true;
+        }
+
+        /// Метод вернет информацию о диалоге, если он существует.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="otherUserId">Идентификатор пользователя, с которым ищется диалог.</param>
+        /// <returns>Выходная модель свойств диалога.</returns>
+        public async Task<DialogPropretiesOutput> GetPrivateDialogAsync(Guid userId, Guid otherUserId)
+        {
+            try
+            {
+                var result = await _dialogsRepository.GetPrivateDialogAsync(userId, otherUserId);
+
+                return result;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
         }
     }
 }

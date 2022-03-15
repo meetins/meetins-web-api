@@ -1,6 +1,7 @@
 ﻿using Meetins.Abstractions.Services;
 using Meetins.Communication;
 using Meetins.Core.Data;
+using Meetins.Models.Dialogs.Output;
 using Meetins.Models.Entities;
 using Meetins.Models.Messages;
 using Meetins.Models.User.Output;
@@ -246,7 +247,7 @@ namespace Meetins.Services.Dialogs
             {
                 var result = await _context.DialogMembers
                     .Where(u => u.DialogId == dialogId && u.UserId != userId)
-                    .Include(u=>u.User)
+                    .Include(u => u.User)
                     .Select(u => new UserOutput
                     {
                         UserId = u.UserId,
@@ -287,12 +288,18 @@ namespace Meetins.Services.Dialogs
 
             return true;
         }
-    
-        public async Task<DialogMembersEntity> GetPrivateDialogAsync(Guid userId, Guid otherUserId)
+  
+        /// Метод вернет информацию о диалоге, если он существует.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="otherUserId">Идентификатор пользователя, с которым ищется диалог.</param>
+        /// <returns>Выходная модель свойств диалога.</returns>
+        public async Task<DialogPropretiesOutput> GetPrivateDialogAsync(Guid userId, Guid otherUserId)
         {
             try
             {
-                var userDialogs = await _context.DialogMembers                   
+                //TODO: добавить ещё свойтсва в выходную модель или ОТРЕФАКТОРИТЬ ЭТОТ БЛОК, тут вообще хуйня какая-то если групповые чаты то это не сработает.
+                var userDialogs = await _context.DialogMembers
                     .Where(d => d.UserId.Equals(userId))
                     .ToListAsync();
 
@@ -302,7 +309,7 @@ namespace Meetins.Services.Dialogs
 
                 foreach (var item in userDialogs)
                 {
-                    var result = otherUserDialog.FirstOrDefault(f=>f.DialogId == item.DialogId);
+                    var result = otherUserDialog.Select(f => new DialogPropretiesOutput { DialogId = f.DialogId }).FirstOrDefault(f => f.DialogId == item.DialogId);
 
                     if (result is not null)
                     {
@@ -311,7 +318,7 @@ namespace Meetins.Services.Dialogs
                 }
 
                 return null;
-              
+
             }
             catch (Exception)
             {

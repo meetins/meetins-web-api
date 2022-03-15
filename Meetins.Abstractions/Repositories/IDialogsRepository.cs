@@ -1,4 +1,6 @@
 ﻿using Meetins.Communication;
+using Meetins.Models.Dialogs.Output;
+using Meetins.Models.Entities;
 using Meetins.Models.Messages;
 using Meetins.Models.User.Output;
 using System;
@@ -40,5 +42,11 @@ namespace Meetins.Abstractions.Services
         /// <param name="userId"> Идентификатор пользователя. </param>
         /// <returns></returns>
         Task<bool> DeleteAllUserDialogsAndMessagesAsync(Guid userId);
+        /// Метод вернет информацию о диалоге, если он существует.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="otherUserId">Идентификатор пользователя, с которым ищется диалог.</param>
+        /// <returns>Выходная модель свойств диалога.</returns>
+        Task<DialogPropretiesOutput> GetPrivateDialogAsync(Guid userId, Guid otherUserId);
     }
 }
