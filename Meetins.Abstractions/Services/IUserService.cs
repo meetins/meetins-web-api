@@ -32,7 +32,7 @@ namespace Meetins.Abstractions.Services
         /// </summary>
         /// <param name="userId">Идетификатор пользователя.</param>
         /// <returns></returns>
-        Task<Task> DeleteAllRefreshTokensByUserIdAsync(Guid userId);
+        Task<bool> DeleteAllRefreshTokensByUserIdAsync(Guid userId);
 
         /// <summary>
         /// Метод обновит токен доступа по рефреш токену.
@@ -87,6 +87,6 @@ namespace Meetins.Abstractions.Services
         /// </summary>
         /// <param name="userId"> Идентификатор пользователя. </param>
         /// <returns></returns>
-        Task<Task> DeleteUserByUserIdAsync(Guid userId);
+        Task<bool> DeleteUserByUserIdAsync(Guid userId);
     }
 }

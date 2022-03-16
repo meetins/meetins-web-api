@@ -77,6 +77,15 @@ namespace Meetins.Services.Dialogs
         }
 
         /// <summary>
+        /// Полное удаление диалогов и сообщений пользователя.
+        /// </summary>
+        /// <param name="userId"> Идентификатор пользователя. </param>
+        /// <returns></returns>
+        public async Task<bool> DeleteAllUserDialogsAndMessagesAsync(Guid userId)
+        {
+            return await _dialogsRepository.DeleteAllUserDialogsAndMessagesAsync(userId);
+        }
+
         /// Метод вернет информацию о диалоге, если он существует.
         /// </summary>
         /// <param name="userId">Идентификатор пользователя.</param>
@@ -96,6 +105,5 @@ namespace Meetins.Services.Dialogs
                 throw;
             }
         }
-
     }
 }

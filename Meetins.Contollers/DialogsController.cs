@@ -67,7 +67,7 @@ namespace Meetins.Contollers
         [HttpPost, Route("messages")]
         public async Task<ActionResult<IEnumerable<MessagesOutput>>> GetMessagesOfDialog([FromBody] Guid dialogId)
         {
-
+            //string rawUserId = "c76e4f1a-d519-4400-b2c4-f95ad7dbc8a0";
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
             if (!Guid.TryParse(rawUserId, out Guid userId))

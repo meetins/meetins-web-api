@@ -272,6 +272,30 @@ namespace Meetins.Services.Dialogs
         }
 
         /// <summary>
+        /// Полное удаление диалогов и сообщений пользователя.
+        /// </summary>
+        /// <param name="userId"> Идентификатор пользователя. </param>
+        /// <returns></returns>
+        public async Task<bool> DeleteAllUserDialogsAndMessagesAsync(Guid userId)
+        {
+            try
+            {
+                var dialogsToDelete = await _context.Dialogs.Include(d => d.DialogMembers)
+                .Where(d => d.DialogMembers.Any(d => d.User.UserId.Equals(userId)))
+                .ToListAsync();
+
+                _context.Dialogs.RemoveRange(dialogsToDelete);
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }            
+        }
+  
         /// Метод вернет информацию о диалоге, если он существует.
         /// </summary>
         /// <param name="userId">Идентификатор пользователя.</param>
@@ -309,6 +333,5 @@ namespace Meetins.Services.Dialogs
                 throw;
             }
         }
-
     }
 }

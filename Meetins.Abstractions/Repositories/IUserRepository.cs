@@ -96,6 +96,6 @@ namespace Meetins.Abstractions.Repositories
         /// </summary>
         /// <param name="userId"> Идентификатор пользователя. </param>
         /// <returns></returns>
-        Task<Task> DeleteAsync(Guid userId);
+        Task<bool> DeleteAsync(Guid userId);
     }
 }

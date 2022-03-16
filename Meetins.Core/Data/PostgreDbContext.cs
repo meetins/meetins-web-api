@@ -44,11 +44,6 @@ namespace Meetins.Core.Data
         public DbSet<MessageContentsEntity> MessageContents { get; set; }
 
         /// <summary>
-        /// Соответствует таблице Messenger.ChatMessage.
-        /// </summary>
-        public DbSet<ChatMessageEntity> ChatMessage { get; set; }
-
-        /// <summary>
         /// Соответствует таблице Messenger.DialogMembers.
         /// </summary>
         public DbSet<DialogMembersEntity> DialogMembers { get; set; }

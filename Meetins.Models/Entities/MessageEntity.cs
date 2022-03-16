@@ -21,7 +21,7 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Идентификатор диалога.
         /// </summary>
-        [ForeignKey("Dialog")]
+        [ForeignKey("Messages_DialogId_fkey")]
         [Column("DialogId", TypeName = "uuid")]
         public Guid DialogId { get; set; }
 
@@ -39,6 +39,14 @@ namespace Meetins.Models.Entities
         public DateTime SendAt { get; set; }
 
         /// <summary>
+        /// Прочитано или нет.
+        /// </summary>
+        [Column("IsRead", TypeName = "bool")]
+        public bool IsRead { get; set; }
+
+        public MessageEntity Message { get; set; }
+
+        /// <summary>
         /// DialogEntity для внешнего ключа
         /// </summary>
         public DialogEntity Dialog { get; set; }
@@ -47,11 +55,6 @@ namespace Meetins.Models.Entities
         /// MessageContentsEntity для внешнего ключа
         /// </summary>
         public MessageContentsEntity MessageContent { get; set; }
-
-        /// <summary>
-        /// ChatMessageEntity для внешнего ключа
-        /// </summary>
-        public ChatMessageEntity ChatMessage { get; set; }
 
         /// <summary>
         /// UserEntity для внешнего ключа
