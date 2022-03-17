@@ -62,5 +62,10 @@ namespace Meetins.Core.Data
         /// Соответствует таблице Events.EventsToUsers.
         /// </summary>
         public DbSet<EventsToUsersEntity> EventsToUsers { get; set; }
+
+        /// <summary>
+        /// Соответствует таблице dbo.Cities.
+        /// </summary>
+        public DbSet<CityEntity> Cities { get; set; }
     }
 }
