@@ -20,6 +20,7 @@ using System;
 using Meetins.Services.People;
 using System.Threading.Tasks;
 using Meetins.Services.Events;
+using Meetins.Services.Common;
 
 namespace Meetins.WebApi
 {
@@ -87,6 +88,7 @@ namespace Meetins.WebApi
             services.AddTransient<IDialogsRepository, DialogsRepository>();
             services.AddTransient<IPeopleRepository, PeopleRepository>();
             services.AddTransient<IEventRepository, EventRepository>();
+            services.AddTransient<ICommonRepository, CommonRepository>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProfileService, ProfileService>();
@@ -95,6 +97,7 @@ namespace Meetins.WebApi
             services.AddTransient<IDialogsService, DialogsService>();
             services.AddTransient<IPeopleService, PeopleService>();
             services.AddTransient<IEventService, EventService>();
+            services.AddTransient<ICommonService, CommonService>();
             services.AddCors();
             services.AddSignalR();
         }
