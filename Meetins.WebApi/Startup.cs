@@ -72,7 +72,8 @@ namespace Meetins.WebApi
                         };
                     });
 
-            services.AddEntityFrameworkNpgsql().AddDbContext<PostgreDbContext>();
+            //services.AddEntityFrameworkNpgsql().AddDbContext<PostgreDbContext>();
+            services.AddEntityFrameworkInMemoryDatabase().AddDbContext<InMemoryContext>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

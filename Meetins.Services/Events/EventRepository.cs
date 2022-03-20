@@ -15,9 +15,9 @@ namespace Meetins.Services.Events
     /// </summary>
     public class EventRepository : IEventRepository
     {
-        private PostgreDbContext _context;
+        private InMemoryContext _context;
 
-        public EventRepository(PostgreDbContext context)
+        public EventRepository(InMemoryContext context)
         {
             _context = context;
         }

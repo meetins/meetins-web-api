@@ -18,9 +18,9 @@ namespace Meetins.Services.Dialogs
     /// </summary>
     public class DialogsRepository : IDialogsRepository
     {
-        private PostgreDbContext _context;
+        private InMemoryContext _context;
 
-        public DialogsRepository(PostgreDbContext context)
+        public DialogsRepository(InMemoryContext context)
         {
             _context = context;
         }

@@ -15,9 +15,9 @@ namespace Meetins.Services.People
     /// </summary>
     public class PeopleRepository : IPeopleRepository
     {
-        private PostgreDbContext _context;
+        private InMemoryContext _context;
 
-        public PeopleRepository(PostgreDbContext context)
+        public PeopleRepository(InMemoryContext context)
         {
             _context = context;
         }

@@ -13,9 +13,9 @@ namespace Meetins.Services.Common
     /// </summary>
     public class CommonRepository : ICommonRepository
     {
-        private PostgreDbContext _context;
+        private InMemoryContext _context;
 
-        public CommonRepository(PostgreDbContext context)
+        public CommonRepository(InMemoryContext context)
         {
             _context = context;
         }
