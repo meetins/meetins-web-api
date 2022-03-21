@@ -47,6 +47,7 @@ namespace Meetins.Services.User
                     DateRegister = DateTime.Now,
                     Status = "Дефолтный статус",
                     Login = guid.ToString("N"),
+                    PhoneNumber = "телефон не добавлен",
                     BirthDate = DateTime.Parse(birthDate),
                     CityId = Guid.Parse(cityId)
                 };
