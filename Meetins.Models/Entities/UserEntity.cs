@@ -79,10 +79,15 @@ namespace Meetins.Models.Entities
         public string Status { get; set; }
 
         /// <summary>
-        /// Город.
+        /// Идентификатор города.
         /// </summary>
-        [Column("city", TypeName = "varchar")]
-        public string City { get; set; }
+        [Column("CityId", TypeName = "uuid")]
+        public Guid CityId { get; set; }
+
+        /// <summary>
+        /// Навигационное свойство для Города.
+        /// </summary>
+        public CityEntity City { get; set; }
 
         public ICollection<MessageEntity> Messages { get; set; }
     }

@@ -29,7 +29,7 @@ namespace Meetins.Services.People
         /// <returns> Список всех существующих пользователей. </returns>
         public async Task<IEnumerable<PeopleOutput>> GetAllPeoplesAsync(Guid userId)
         {
-            var result = await _context.Users.Where(d => d.UserId != userId)
+            var result = await _context.Users.Where(d => d.UserId != userId).Include(d =>d.City)                        
                            .Select(d => new PeopleOutput
                            {
                                Login = d.Login,
@@ -37,7 +37,7 @@ namespace Meetins.Services.People
                                UserAvatar = d.Avatar,
                                Status = d.Status,
                                Age = d.BirthDate.HasValue ? DateTime.Now.Year - d.BirthDate.Value.Year : 0,
-                               City = d.City
+                               City = d.City.CityName
                            })
                            .ToListAsync();
 

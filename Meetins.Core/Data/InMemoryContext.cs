@@ -88,7 +88,9 @@ namespace Meetins.Core.Data
                     Gender = "M",
                     Avatar = "/images/no-photo.png",
                     DateRegister = new DateTime(2021,03,14),
-                    Login = "id_test_user_1"
+                    Login = "id_test_user_1",
+                    BirthDate = new DateTime(2000,01,01),
+                    CityId = Guid.Parse("187AC176-CB22-4216-9AB5-D3A1EF123456")
                 },
                 new UserEntity {
                     UserId=new Guid("187AC176-CB28-4456-9AB5-D3A1EF370542"),
@@ -100,7 +102,9 @@ namespace Meetins.Core.Data
                     Gender = "F",
                     Avatar = "/images/no-photo.png",
                     DateRegister = new DateTime(2021,11,12),
-                    Login = "id_test_user_2"
+                    Login = "id_test_user_2",
+                    BirthDate = new DateTime(2000,01,01),
+                    CityId = Guid.Parse("187AC345-CB22-4216-9AB5-D3A1EF370542")
                 },
                 new UserEntity {
                     UserId=new Guid("5BB1C998-E1DA-4E0D-88F8-E1EA1CE2C251"),
@@ -112,7 +116,9 @@ namespace Meetins.Core.Data
                     Gender = "M",
                     Avatar = "/images/no-photo.png",
                     DateRegister = new DateTime(2021,12,19),
-                    Login = "id_test_user_3"
+                    Login = "id_test_user_3",
+                    BirthDate = new DateTime(2000,01,01),
+                    CityId = Guid.Parse("187AC176-CB22-4216-9AB5-D3A1EF123456")
                 },
                 new UserEntity {
                     UserId=new Guid("15847892-12EB-4382-9905-FA5F097E60B0"),
@@ -124,9 +130,25 @@ namespace Meetins.Core.Data
                     Gender = "F",
                     Avatar = "/images/no-photo.png",
                     DateRegister = new DateTime(2021,12,19),
-                    Login = "id_test_user_4"
+                    Login = "id_test_user_4",
+                    BirthDate = new DateTime(2000,01,01),
+                    CityId = Guid.Parse("187AC176-CB22-4216-9AB5-D3A1EF370542")
                 },
-                });
+                new UserEntity {
+                    UserId=new Guid("22247892-12EB-4382-4598-FA5F097E60B0"),
+                    Name="Саша",
+                    Status = @"\_(O_O)_/",
+                    PhoneNumber = "+375298999956",
+                    Email = "bigdick666@gmail.com",
+                    Password = "1",
+                    Gender = "M",
+                    Avatar = "/images/no-photo.png",
+                    DateRegister = new DateTime(2022,03,21),
+                    Login = "sashok",
+                    BirthDate = new DateTime(1995,07,17),
+                    CityId = Guid.Parse("187AC176-CB22-4216-9AB5-D3A1EF123456")
+                },
+                });;
 
             modelBuilder.Entity<AboutEntity>().HasData(
                 new AboutEntity[]
