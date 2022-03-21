@@ -5,19 +5,18 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Meetins.Services.People
 {
     /// <summary>
-    /// В реппозитории содержится функционал для получения списка пользователей.
+    /// В репозитории содержится функционал для работы с людьми.
     /// </summary>
     public class PeopleRepository : IPeopleRepository
     {
-        private InMemoryContext _context;
+        private PostgreDbContext _context;
 
-        public PeopleRepository(InMemoryContext context)
+        public PeopleRepository(PostgreDbContext context)
         {
             _context = context;
         }
@@ -36,7 +35,7 @@ namespace Meetins.Services.People
                                UserName = d.Name,
                                UserAvatar = d.Avatar,
                                Status = d.Status,
-                               Age = d.BirthDate.HasValue ? DateTime.Now.Year - d.BirthDate.Value.Year : 0,
+                               Age = DateTime.Now.Year - d.BirthDate.Year,
                                City = d.City.CityName
                            })
                            .ToListAsync();

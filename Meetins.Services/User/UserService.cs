@@ -2,18 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Meetins.Abstractions.Services;
 using Meetins.Abstractions.Repositories;
 using Meetins.Core.Options;
 using Meetins.Models.User.Output;
 using Meetins.Models.Mapper;
+using Meetins.Models.Entities;
 
 namespace Meetins.Services.User
 {
+    /// <summary>
+    /// Класс сервиса пользователей.
+    /// </summary>
     public class UserService : IUserService
     {
         private IUserRepository _userRepository;
@@ -25,9 +27,19 @@ namespace Meetins.Services.User
             _refreshTokenRepository = refreshTokenRepository;
         }
 
-        public async Task<LoginOutput> RegisterUserAsync(string name, string email, string password, string gender)
+        /// <summary>
+        /// Метод зарегистрирует пользователя.
+        /// </summary>
+        /// <param name="name">Имя.</param>
+        /// <param name="email">Емейл.</param>
+        /// <param name="password">Пароль.</param>
+        /// <param name="gender">Пол.</param>
+        /// <param name="birthDate">Дата рождения.</param>
+        /// <param name="cityId">Идентификатор города.</param>
+        /// <returns>Данные пользователя после аутентификации: профиль и токены.</returns>
+        public async Task<LoginOutput> RegisterUserAsync(string name, string email, string password, string gender, string birthDate, string cityId)
         {
-            var user = await _userRepository.AddUserAsync(name, email, password, gender);
+            var user = await _userRepository.AddUserAsync(name, email, password, gender, birthDate, cityId);
 
             if (user is null)
             {
@@ -57,6 +69,12 @@ namespace Meetins.Services.User
             return loginOutput;
         }
 
+        /// <summary>
+        /// Метод проведёт аутентификацию пользователя.
+        /// </summary>
+        /// <param name="email">Емейл.</param>
+        /// <param name="password">Пароль.</param>
+        /// <returns>Данные пользователя после аутентификации: профиль и токены.</returns>
         public async Task<LoginOutput> AuthenticateUserAsync(string email, string password)
         {
             var user = await _userRepository.IdentityUserAsync(email, password);
@@ -89,21 +107,39 @@ namespace Meetins.Services.User
             return loginOutput;
         }
 
+        /// <summary>
+        /// Метод удалит все рефреш токены пользователя.
+        /// </summary>
+        /// <param name="userId">Идетификатор пользователя.</param>
+        /// <returns>Статус удаления.</returns>
         public async Task<bool> DeleteAllRefreshTokensByUserIdAsync(Guid userId)
         {
-            return await _refreshTokenRepository.DeleteAllAsync(userId);
+            try
+            {
+                return await _refreshTokenRepository.DeleteAllAsync(userId);
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
         }
 
         /// <summary>
         /// Удаление аккаунта пользователя.
         /// </summary>
         /// <param name="userId"> Id пользователя. </param>
-        /// <returns> CompletedTask. </returns>
+        /// <returns> Статус удаления. </returns>
         public async Task<bool> DeleteUserByUserIdAsync(Guid userId)
         {
             return await _userRepository.DeleteAsync(userId);
         }
 
+        /// <summary>
+        /// Метод обновит токен доступа по рефреш токену.
+        /// </summary>
+        /// <param name="refreshToken">Рефреш токен.</param>
+        /// <returns>Данные дял доступа: токены.</returns>
         public async Task<AuthenticateOutput> RefreshAccessTokenAsync(string refreshToken)
         {
             //валидируем рефреш токен
@@ -151,40 +187,192 @@ namespace Meetins.Services.User
             return auth;
         }
 
-        public async Task<UserOutput> CheckUserByEmailAsync(string email)
+        /// <summary>
+        /// Метод найдёт пользователя по емейлу.
+        /// </summary>
+        /// <param name="email">Емейл.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> GetUserByEmailAsync(string email)
         {
-            var res = await _userRepository.GetUserByEmailAsync(email);
+            try
+            {
+                var user = await _userRepository.GetUserByEmailAsync(email);
 
-            return res;
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
         }
 
-        public async Task<UserOutput> CheckUserByLoginAsync(string login)
+        /// <summary>
+        /// Метод найдёт пользователя по логину.
+        /// </summary>
+        /// <param name="login">Логин.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> GetUserByLoginAsync(string login)
         {
-            var res = await _userRepository.GetUserByLoginAsync(login);
+            try
+            {
+                var user = await _userRepository.GetUserByLoginAsync(login);
 
-            return res;
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
         }
 
-        public async Task<UserOutput> CheckUserByPhoneAsync(string phone)
+        /// <summary>
+        /// Метод найдёт пользователя по телефону.
+        /// </summary>
+        /// <param name="phone">Номер телефона.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> GetUserByPhoneAsync(string phone)
         {
-            var res = await _userRepository.GetUserByPhoneAsync(phone);
+            try
+            {
+                var user = await _userRepository.GetUserByPhoneAsync(phone);
 
-            return res;
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
         }
 
-        public async Task<UserOutput> UpdateAccountSettingsAsync(Guid userId, string email, string password, string login)
+        /// <summary>
+        /// Метод обновит емейл.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="email">Новая почта.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> UpdateEmailAsync(Guid userId, string email)
         {
-            var res = await _userRepository.UpdateAccountSettingsAsync(userId, email, password, login);
+            try
+            {
+                var user = await _userRepository.UpdateEmailAsync(userId, email);
 
-            return res;
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
         }
 
-        public async Task<UserOutput> UpdateProfileSettingsAsync(Guid userId, string name, string phone, string birthDate)
+        /// <summary>
+        /// Метод обновит пароль.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="password">Новый пароль.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> UpdatePasswordAsync(Guid userId, string password)
         {
-            var res = await _userRepository.UpdateProfileSettingsAsync(userId, name, phone, birthDate);
+            try
+            {
+                var user = await _userRepository.UpdatePasswordAsync(userId, password);
 
-            return res;
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
         }
+
+        /// <summary>
+        /// Метод обновит логин.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="login">Новый логин.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> UpdateLoginAsync(Guid userId, string login)
+        {
+            try
+            {
+                var user = await _userRepository.UpdateLoginAsync(userId, login);
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод обновит имя пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="name">Новое имя.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> UpdateNameAsync(Guid userId, string name)
+        {
+            try
+            {
+                var user = await _userRepository.UpdateNameAsync(userId, name);
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод обновит телефон пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="phone">Новый телефон.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> UpdatePhoneNumberAsync(Guid userId, string phone)
+        {
+            try
+            {
+                var user = await _userRepository.UpdatePhoneNumberAsync(userId, phone);
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод обновит дату рождения пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="birthDate">Новая дата рождения.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> UpdateBirthDateAsync(Guid userId, DateTime birthDate)
+        {
+            try
+            {
+                var user = await _userRepository.UpdateBirthDateAsync(userId, birthDate);
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
+
 
         #region PRIVATE-методы
         private bool ValidateRefreshToken(string refreshToken)
@@ -215,7 +403,7 @@ namespace Meetins.Services.User
             }
         }
 
-        private ClaimsIdentity GetClaimsIdentity(UserOutput user)
+        private ClaimsIdentity GetClaimsIdentity(UserEntity user)
         {
             var claims = new List<Claim>
                 {

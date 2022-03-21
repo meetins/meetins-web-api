@@ -24,7 +24,8 @@ namespace Meetins.Controllers
             _profileService = profileService;
         }
 
-        [HttpPost, Route("login")]
+        [HttpPost]
+        [Route("login")]
         public async Task<ActionResult<LoginOutput>> Login([FromBody] LoginInput loginInput)
         {
             LoginOutput authResult = await _userService.AuthenticateUserAsync(loginInput.Email, loginInput.Password);
@@ -37,7 +38,8 @@ namespace Meetins.Controllers
             return Ok(authResult);
         }
 
-        [HttpPost, Route("refresh-token")]
+        [HttpPost]
+        [Route("refresh-token")]
         public async Task<ActionResult<AuthenticateOutput>> RefreshTokenAsync([FromBody] string refreshToken)
         {
 
@@ -51,17 +53,23 @@ namespace Meetins.Controllers
             return Ok(refreshTokenResults);
         }
 
-        [HttpPost, Route("register-user")]
+        /// <summary>
+        /// Метод зарегистрирует пользователя.
+        /// </summary>
+        /// <param name="registerUserInput">Входная модель регистрации пользователя.</param>
+        /// <returns>Выходные данные: токены и профиль. </returns>
+        [HttpPost]
+        [Route("register-user")]
         public async Task<ActionResult<LoginOutput>> RegisterUserAsync([FromBody] RegisterUserInput registerUserInput)
         {
-            var user = await _userService.CheckUserByEmailAsync(registerUserInput.Email);
+            var user = await _userService.GetUserByEmailAsync(registerUserInput.Email);
 
             if (user != null)
             {
-                return BadRequest(new { errortext = "User already exists." });
+                return BadRequest(new { message = "User already exists." });
             }
 
-            var result = await _userService.RegisterUserAsync(registerUserInput.Name, registerUserInput.Email, registerUserInput.Password, registerUserInput.Gender);            
+            var result = await _userService.RegisterUserAsync(registerUserInput.Name, registerUserInput.Email, registerUserInput.Password, registerUserInput.Gender, registerUserInput.BirthDate, registerUserInput.CityId);
 
             return Ok(result);
         }
@@ -74,7 +82,7 @@ namespace Meetins.Controllers
                 return BadRequest(new { errorText = "Email cannot be null or empty." });
             }
 
-            var user = await _userService.CheckUserByEmailAsync(email);
+            var user = await _userService.GetUserByEmailAsync(email);
 
             return Ok(user);
         }
@@ -87,7 +95,7 @@ namespace Meetins.Controllers
                 return BadRequest(new { errorText = "Email cannot be null or empty." });
             }
 
-            var user = await _userService.CheckUserByPhoneAsync(phone);
+            var user = await _userService.GetUserByPhoneAsync(phone);
 
             return Ok(user);
         }

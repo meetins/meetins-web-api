@@ -18,7 +18,7 @@ namespace Meetins.Models.User.Output
         
         public DateTime DateRegister { get; set; }
         
-        public DateTime? BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
         
         public string Login { get; set; }
 

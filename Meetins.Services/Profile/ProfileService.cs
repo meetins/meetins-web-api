@@ -19,7 +19,6 @@ namespace Meetins.Services.Profile
         public async Task<ProfileOutput> GetUserProfileAsync(Guid userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-
             
             return user.ToProfileOutput();
         }

@@ -64,7 +64,7 @@ namespace Meetins.Models.Entities
         /// Дата рождения
         /// </summary>
         [Column("BirthDate", TypeName = "date")]
-        public DateTime? BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
 
         /// <summary>
         /// Логин пользователя
