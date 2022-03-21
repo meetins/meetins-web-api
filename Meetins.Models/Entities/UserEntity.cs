@@ -57,19 +57,19 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Дата регистрации пользователя.
         /// </summary>
-        [Column("DateRegister", TypeName = "date")]
+        [Column("DateRegister", TypeName = "timestamp")]
         public DateTime DateRegister { get; set; }
 
         /// <summary>
         /// Дата рождения
         /// </summary>
-        [Column("BirthDate", TypeName = "date")]
+        [Column("BirthDate", TypeName = "timestamp")]
         public DateTime BirthDate { get; set; }
 
         /// <summary>
         /// Логин пользователя
         /// </summary>
-        [Column("LoginUrl", TypeName = "varchar")]
+        [Column("Login", TypeName = "varchar")]
         public string Login { get; set; }
 
         /// <summary>
