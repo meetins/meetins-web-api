@@ -14,6 +14,7 @@ using Meetins.Communication.Models;
 using System.Linq;
 using Meetins.Models.User.Output;
 using Meetins.Abstractions.Repositories;
+using Meetins.Models.Entities;
 
 namespace Meetins.Contollers
 {
@@ -115,7 +116,7 @@ namespace Meetins.Contollers
             var recipientsAll = await _dialogsService.GetOtherDialogMembersAsync(message.DialogId, userId);
 
             //отправлять будем одному
-            UserOutput recipient = recipientsAll.First();
+            UserEntity recipient = recipientsAll.First();
 
             //смотрим в менеджере какие юзеры подключены
             var connectedUsers = _messengerManager.Users.ToList();
@@ -183,7 +184,7 @@ namespace Meetins.Contollers
             var recipientsAll = await _dialogsService.GetOtherDialogMembersAsync(message.DialogId, userId);
 
             //отправлять будем одному
-            UserOutput recipient = recipientsAll.First();
+            UserEntity recipient = recipientsAll.First();
 
             //смотрим в менеджере какие юзеры подключены
             var connectedUsers = _messengerManager.Users.ToList();

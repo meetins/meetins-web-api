@@ -15,7 +15,12 @@ namespace Meetins.Models.Mapper
         /// <returns>Модель профиля.</returns>
         public static ProfileOutput ToProfileOutput(this UserEntity user)
         {
-            ProfileOutput profile= new ProfileOutput
+            if (user is null)
+            {
+                return null;
+            }
+
+            ProfileOutput profile= new()
             {
                 UserId = user.UserId,
                 Name = user.Name,

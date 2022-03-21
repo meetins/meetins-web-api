@@ -1,7 +1,6 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Core.Data;
 using Meetins.Models.Entities;
-using Meetins.Models.User.Output;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -82,7 +81,7 @@ namespace Meetins.Services.User
             {
                 //TODO: log
                 throw;
-            }   
+            }
         }
 
         /// <summary>
@@ -122,7 +121,7 @@ namespace Meetins.Services.User
             {
                 //TODO: log
                 throw;
-            }           
+            }
         }
 
         /// <summary>
@@ -142,7 +141,7 @@ namespace Meetins.Services.User
             {
                 //TODO: log
                 throw;
-            }           
+            }
         }
 
         /// <summary>
@@ -173,7 +172,7 @@ namespace Meetins.Services.User
         /// <param name="newAvatarPath">Новый путь к аватару.</param>
         /// <returns>Данные пользователя.</returns>
         public async Task<UserEntity> UpdateAvatarPathAsync(Guid userId, string newAvatarPath)
-        {           
+        {
             try
             {
                 var user = await _db.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId));
@@ -210,7 +209,7 @@ namespace Meetins.Services.User
                 {
                     user.Status = status;
 
-                    await _db.SaveChangesAsync();                    
+                    await _db.SaveChangesAsync();
                 }
 
                 return user;
@@ -252,9 +251,33 @@ namespace Meetins.Services.User
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="email">Новая почта.</param>
         /// <returns>Данные пользователя.</returns>
-        public Task<UserEntity> UpdateEmailAsync(Guid userId, string email)
+        public async Task<UserEntity> UpdateEmailAsync(Guid userId, string email)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var findedEmail = await GetUserByEmailAsync(email);
+
+                if (findedEmail is not null)
+                {
+                    throw new ArgumentException($"Пользователь с емейлом {email} уже существует!", nameof(email));
+                }
+
+                var findedUser = await GetUserByIdAsync(userId);
+
+                if (findedUser != null)
+                {
+                    findedUser.Email = email;
+
+                    await _db.SaveChangesAsync();
+                }
+
+                return findedUser;
+            }
+            catch (Exception)
+            {
+                //TODO: Log
+                throw;
+            }
         }
 
         /// <summary>
@@ -263,9 +286,26 @@ namespace Meetins.Services.User
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="password">Новый пароль.</param>
         /// <returns>Данные пользователя.</returns>
-        public Task<UserEntity> UpdatePasswordAsync(Guid userId, string password)
+        public async Task<UserEntity> UpdatePasswordAsync(Guid userId, string password)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await GetUserByIdAsync(userId);
+
+                if (user != null)
+                {
+                    user.Password = password;
+
+                    await _db.SaveChangesAsync();
+                }
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: Log
+                throw;
+            }
         }
 
         /// <summary>
@@ -274,9 +314,33 @@ namespace Meetins.Services.User
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="login">Новый логин.</param>
         /// <returns>Данные пользователя.</returns>
-        public Task<UserEntity> UpdateLoginAsync(Guid userId, string login)
+        public async Task<UserEntity> UpdateLoginAsync(Guid userId, string login)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var findedLogin = await GetUserByLoginAsync(login);
+
+                if (findedLogin is not null)
+                {
+                    throw new ArgumentException($"Пользователь с логиином {login} уже существует!", nameof(login));
+                }
+
+                var findedUser = await GetUserByIdAsync(userId);
+
+                if (findedUser != null)
+                {
+                    findedUser.Login = login;
+
+                    await _db.SaveChangesAsync();
+                }
+
+                return findedUser;
+            }
+            catch (Exception)
+            {
+                //TODO: Log
+                throw;
+            }
         }
 
         /// <summary>
@@ -285,9 +349,26 @@ namespace Meetins.Services.User
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="name">Новое имя.</param>
         /// <returns>Данные пользователя.</returns>
-        public Task<UserEntity> UpdateNameAsync(Guid userId, string name)
+        public async Task<UserEntity> UpdateNameAsync(Guid userId, string name)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await GetUserByIdAsync(userId);
+
+                if (user != null)
+                {
+                    user.Name = name;
+
+                    await _db.SaveChangesAsync();
+                }
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: Log
+                throw;
+            }
         }
 
         /// <summary>
@@ -296,19 +377,61 @@ namespace Meetins.Services.User
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="phone">Новый телефон.</param>
         /// <returns>Данные пользователя.</returns>
-        public Task<UserEntity> UpdatePhoneNumberAsync(Guid userId, string phone)
+        public async Task<UserEntity> UpdatePhoneNumberAsync(Guid userId, string phone)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var findedPhone = await GetUserByPhoneAsync(phone);
+
+                if (findedPhone is not null)
+                {
+                    throw new ArgumentException($"Пользователь с телефоном {phone} уже существует!", nameof(phone));
+                }
+
+                var findedUser = await GetUserByIdAsync(userId);
+
+                if (findedUser != null)
+                {
+                    findedUser.PhoneNumber = phone;
+
+                    await _db.SaveChangesAsync();
+                }
+
+                return findedUser;
+            }
+            catch (Exception)
+            {
+                //TODO: Log
+                throw;
+            }
         }
+        
         /// <summary>
         /// Метод обновит дату рождения пользователя.
         /// </summary>
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="birthDate">Новая дата рождения.</param>
         /// <returns>Данные пользователя.</returns>
-        public Task<UserEntity> UpdateBirthDateAsync(Guid userId, DateTime birthDate)
+        public async Task<UserEntity> UpdateBirthDateAsync(Guid userId, DateTime birthDate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await GetUserByIdAsync(userId);
+
+                if (user != null)
+                {
+                    user.BirthDate = birthDate;
+
+                    await _db.SaveChangesAsync();
+                }
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: Log
+                throw;
+            }
         }
     }
 }

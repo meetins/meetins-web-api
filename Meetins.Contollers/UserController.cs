@@ -1,4 +1,6 @@
 ﻿using Meetins.Abstractions.Services;
+using Meetins.Models.Mapper;
+using Meetins.Models.Profile.Output;
 using Meetins.Models.User.Input;
 using Meetins.Models.User.Output;
 using Microsoft.AspNetCore.Authorization;
@@ -13,19 +15,24 @@ namespace Meetins.Controllers
     /// </summary>
     [Route("user")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
-        IUserService _userService;
-        IProfileService _profileService;
+        IUserService _userService;        
 
-        public UserController(IUserService userService, IProfileService profileService)
+        public UserController(IUserService userService)
         {
-            _userService = userService;
-            _profileService = profileService;
+            _userService = userService;            
         }
 
+        /// <summary>
+        /// Метод проводит аутентификацию пользователя.
+        /// </summary>
+        /// <param name="loginInput">Входная модель для аутентификации.</param>
+        /// <returns>Выходная модель после аутентификации.</returns>
         [HttpPost]
         [Route("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<LoginOutput>> Login([FromBody] LoginInput loginInput)
         {
             LoginOutput authResult = await _userService.AuthenticateUserAsync(loginInput.Email, loginInput.Password);
@@ -38,11 +45,16 @@ namespace Meetins.Controllers
             return Ok(authResult);
         }
 
+        /// <summary>
+        /// Метод обновит токен доступа по рефреш токену.
+        /// </summary>
+        /// <param name="refreshToken">Рефреш токен.</param>
+        /// <returns>Токен доступа и рефреш токен.</returns>
         [HttpPost]
         [Route("refresh-token")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthenticateOutput>> RefreshTokenAsync([FromBody] string refreshToken)
         {
-
             AuthenticateOutput refreshTokenResults = await _userService.RefreshAccessTokenAsync(refreshToken);
 
             if (refreshTokenResults is null)
@@ -60,6 +72,7 @@ namespace Meetins.Controllers
         /// <returns>Выходные данные: токены и профиль. </returns>
         [HttpPost]
         [Route("register-user")]
+        [AllowAnonymous]
         public async Task<ActionResult<LoginOutput>> RegisterUserAsync([FromBody] RegisterUserInput registerUserInput)
         {
             var user = await _userService.GetUserByEmailAsync(registerUserInput.Email);
@@ -74,8 +87,15 @@ namespace Meetins.Controllers
             return Ok(result);
         }
 
-        [HttpGet, Route("check-email")]
-        public async Task<ActionResult<UserOutput>> CheckEmailAsync(string email)
+        /// <summary>
+        /// Метод вернёт профиль пользователя по емейлу, если таков существует.
+        /// </summary>
+        /// <param name="email">Почта.</param>
+        /// <returns>Данные профиля пользователя.</returns>
+        [HttpGet]
+        [Route("check-email")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ProfileOutput>> CheckEmailAsync(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -84,11 +104,18 @@ namespace Meetins.Controllers
 
             var user = await _userService.GetUserByEmailAsync(email);
 
-            return Ok(user);
+            return Ok(user.ToProfileOutput());
         }
 
-        [HttpGet, Route("check-phone")]
-        public async Task<ActionResult<UserOutput>> CheckPhoneAsync(string phone)
+        /// <summary>
+        /// Метод вернёт профиль пользователя по телефону, если таков существует.
+        /// </summary>
+        /// <param name="phone">Телефон.</param>
+        /// <returns>Данные профиля пользователя.</returns>
+        [HttpGet]
+        [Route("check-phone")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ProfileOutput>> CheckPhoneAsync(string phone)
         {
             if (string.IsNullOrEmpty(phone))
             {
@@ -97,11 +124,15 @@ namespace Meetins.Controllers
 
             var user = await _userService.GetUserByPhoneAsync(phone);
 
-            return Ok(user);
+            return Ok(user.ToProfileOutput());
         }
-
-        [Authorize]
-        [HttpDelete, Route("logout")]
+        
+        /// <summary>
+        /// Метод удалит все рефреш токены пользователя.
+        /// </summary>
+        /// <returns>Статус удаления.</returns>
+        [HttpDelete]
+        [Route("logout")]
         public async Task<IActionResult> Logout()
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
@@ -111,9 +142,9 @@ namespace Meetins.Controllers
                 return Unauthorized();
             }
 
-            await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
+            var status = await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
 
-            return NoContent();
+            return Ok(status);
         }
     }
 }

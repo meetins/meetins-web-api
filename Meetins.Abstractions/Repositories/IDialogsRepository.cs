@@ -2,11 +2,8 @@
 using Meetins.Models.Dialogs.Output;
 using Meetins.Models.Entities;
 using Meetins.Models.Messages;
-using Meetins.Models.User.Output;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Meetins.Abstractions.Services
@@ -34,7 +31,7 @@ namespace Meetins.Abstractions.Services
 
         Task<IEnumerable<MessagesOutput>> StartDialogAsync(Guid senderId, Guid userId, string content);
 
-        Task<IEnumerable<UserOutput>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId);
+        Task<IEnumerable<UserEntity>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId);
 
         /// <summary>
         /// Полное удаление диалогов и сообщений пользователя.

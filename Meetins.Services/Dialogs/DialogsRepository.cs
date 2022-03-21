@@ -241,14 +241,14 @@ namespace Meetins.Services.Dialogs
             }
         }
 
-        public async Task<IEnumerable<UserOutput>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId)
+        public async Task<IEnumerable<UserEntity>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId)
         {
             try
             {
                 var result = await _context.DialogMembers
                     .Where(u => u.DialogId == dialogId && u.UserId != userId)
                     .Include(u => u.User)
-                    .Select(u => new UserOutput
+                    .Select(u => new UserEntity
                     {
                         UserId = u.UserId,
                         Name = u.User.Name,

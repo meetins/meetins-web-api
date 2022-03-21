@@ -2,6 +2,7 @@
 using Meetins.Communication;
 using Meetins.Communication.Hubs;
 using Meetins.Models.Dialogs.Output;
+using Meetins.Models.Entities;
 using Meetins.Models.Messages;
 using Meetins.Models.User.Output;
 using System;
@@ -46,7 +47,7 @@ namespace Meetins.Services.Dialogs
             return result;
         }
 
-        public async Task<IEnumerable<UserOutput>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId)
+        public async Task<IEnumerable<UserEntity>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId)
         {
             try
             {
