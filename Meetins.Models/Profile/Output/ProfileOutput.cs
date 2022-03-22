@@ -56,7 +56,7 @@ namespace Meetins.Models.Profile.Output
         /// Дата рождения.
         /// </summary>
         public DateTime BirthDate { get; set; }
-
+                
         /// <summary>
         /// Город.
         /// </summary>
