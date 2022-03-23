@@ -24,7 +24,7 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Токен.
         /// </summary>
-        [Column("Token")]
+        [Column("RefreshToken")]
         public string Token { get; set; }
 
         /// <summary>
