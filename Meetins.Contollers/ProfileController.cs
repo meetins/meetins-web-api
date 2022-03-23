@@ -45,7 +45,7 @@ namespace Meetins.Controllers
 
         [Authorize]
         [HttpPost, Route("by-login")]
-        public async Task<ActionResult<ProfileOutput>> GetProfileByLoginUrl(string login)
+        public async Task<ActionResult<ProfileOutput>> GetProfileByLoginUrl([FromBody] string login)
         {
 
             var profile = await _profileService.GetUserProfileByLoginAsync(login);
@@ -76,7 +76,7 @@ namespace Meetins.Controllers
 
         [Authorize]
         [HttpPost, Route("update-avatar")]
-        public async Task<ActionResult<ProfileOutput>> UpdateAvatarAsync(IFormFile uploadedFile)
+        public async Task<ActionResult<ProfileOutput>> UpdateAvatarAsync([FromBody] IFormFile uploadedFile)
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 

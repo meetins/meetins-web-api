@@ -10,7 +10,7 @@ namespace Meetins.Core.Data
     {        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=b6ltcpjb8ddnlq1egevk-postgresql.services.clever-cloud.com;Port=5432;Database=b6ltcpjb8ddnlq1egevk;Username=ubrb4sipuq0tngivshjz;Password=nxhNfLVOlmibydXZLQgb");
+            optionsBuilder.UseNpgsql("Host=62.84.123.131;Port=5432;Database=meetins_test;Username=meetinsadmin;Password=1");
         }
 
         /// <summary>

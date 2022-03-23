@@ -92,10 +92,10 @@ namespace Meetins.Controllers
         /// </summary>
         /// <param name="email">Почта.</param>
         /// <returns>Данные профиля пользователя.</returns>
-        [HttpGet]
+        [HttpPost]
         [Route("check-email")]
         [AllowAnonymous]
-        public async Task<ActionResult<ProfileOutput>> CheckEmailAsync(string email)
+        public async Task<ActionResult<ProfileOutput>> CheckEmailAsync([FromBody] string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -112,10 +112,10 @@ namespace Meetins.Controllers
         /// </summary>
         /// <param name="phone">Телефон.</param>
         /// <returns>Данные профиля пользователя.</returns>
-        [HttpGet]
+        [HttpPost]
         [Route("check-phone")]
         [AllowAnonymous]
-        public async Task<ActionResult<ProfileOutput>> CheckPhoneAsync(string phone)
+        public async Task<ActionResult<ProfileOutput>> CheckPhoneAsync([FromBody] string phone)
         {
             if (string.IsNullOrEmpty(phone))
             {
