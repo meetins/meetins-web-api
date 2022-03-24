@@ -434,5 +434,33 @@ namespace Meetins.Services.User
                 throw;
             }
         }
+
+        /// <summary>
+        /// Метод обновит город пользователя
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="cityId">Идентификатор нового города</param>
+        /// <returns></returns>
+        public async Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId)
+        {
+            try
+            {
+                var user = await GetUserByIdAsync(userId);
+
+                if (user != null)
+                {
+                    user.CityId = cityId;
+
+                    await _db.SaveChangesAsync();
+                }
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
     }
 }
