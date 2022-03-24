@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace Meetins.Controllers
 {
+    /// <summary>
+    /// В контроллере содержится функционал для получения профиля пользователя.
+    /// </summary>
     [Route("profile")]
     [ApiController]
     public class ProfileController : ControllerBase
@@ -27,6 +30,10 @@ namespace Meetins.Controllers
             _ftpService = ftpService;            
         }
 
+        /// <summary>
+        /// Получить профиль пользователя с помощью идентификатора пользователя.
+        /// </summary>
+        /// <returns> Выходная модель пользователя. </returns>
         [Authorize]
         [HttpGet, Route("my-profile")]
         public async Task<ActionResult<ProfileOutput>> GetUserProfileAsync()
@@ -43,6 +50,11 @@ namespace Meetins.Controllers
             return Ok(profile);
         }
 
+        /// <summary>
+        /// Получить профиль пользователя по логину.
+        /// </summary>
+        /// <param name="login"> Логин. </param>
+        /// <returns> Выходная модель профиля. </returns>
         [Authorize]
         [HttpPost, Route("by-login")]
         public async Task<ActionResult<ProfileOutput>> GetProfileByLoginUrl([FromBody] string login)
@@ -58,6 +70,11 @@ namespace Meetins.Controllers
             return Ok(profile);
         }
 
+        /// <summary>
+        /// Обновить статус.
+        /// </summary>
+        /// <param name="statusInput"> Обновленный статус. </param>
+        /// <returns> Выходная моедль профиля. </returns>
         [Authorize]
         [HttpPost, Route("update-status")]
         public async Task<ActionResult<ProfileOutput>> UpdateStatusAsync([FromBody] UpdateStatusInput statusInput)
@@ -74,9 +91,14 @@ namespace Meetins.Controllers
             return Ok(profile);
         }
 
+        /// <summary>
+        /// Обновить автарку.
+        /// </summary>
+        /// <param name="uploadedFile"> Загружаемый файл. </param>
+        /// <returns> Выходная модель профиля. </returns>
         [Authorize]
         [HttpPost, Route("update-avatar")]
-        public async Task<ActionResult<ProfileOutput>> UpdateAvatarAsync([FromBody] IFormFile uploadedFile)
+        public async Task<ActionResult<ProfileOutput>> UpdateAvatarAsync([FromForm] IFormFile uploadedFile)
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
