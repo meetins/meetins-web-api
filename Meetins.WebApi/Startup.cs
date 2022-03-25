@@ -21,6 +21,7 @@ using Meetins.Services.People;
 using System.Threading.Tasks;
 using Meetins.Services.Events;
 using Meetins.Services.Common;
+using Meetins.Services.KudaGo;
 
 namespace Meetins.WebApi
 {
@@ -90,6 +91,7 @@ namespace Meetins.WebApi
             services.AddTransient<IPeopleRepository, PeopleRepository>();
             services.AddTransient<IEventRepository, EventRepository>();
             services.AddTransient<ICommonRepository, CommonRepository>();
+            services.AddTransient<IKudaGoRepository, KudaGoRepository>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProfileService, ProfileService>();
@@ -99,6 +101,7 @@ namespace Meetins.WebApi
             services.AddTransient<IPeopleService, PeopleService>();
             services.AddTransient<IEventService, EventService>();
             services.AddTransient<ICommonService, CommonService>();
+            services.AddTransient<IKudaGoService, KudaGoService>();
             services.AddCors();
             services.AddSignalR();
         }
