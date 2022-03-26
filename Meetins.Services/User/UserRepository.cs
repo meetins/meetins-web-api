@@ -77,6 +77,11 @@ namespace Meetins.Services.User
         {
             try
             {
+                if (String.IsNullOrEmpty(email))
+                {
+                    throw new ArgumentNullException(nameof(email), $"Емейл не может быть пустым или null");
+                }
+
                 var user = await _db.Users.FirstOrDefaultAsync(b => b.NormalizedEmail.Equals(email.ToUpperInvariant()));
 
                 return user;

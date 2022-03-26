@@ -39,34 +39,50 @@ namespace Meetins.Services.User
         /// <returns>Данные пользователя после аутентификации: профиль и токены.</returns>
         public async Task<LoginOutput> RegisterUserAsync(string name, string email, string password, string gender, string birthDate, string cityId)
         {
-            var user = await _userRepository.AddUserAsync(name, email, password, gender, birthDate, cityId);
-
-            if (user is null)
+            try
             {
-                return null;
+                //ищем пользователя в БД по емейлу
+                var findedUser = await _userRepository.GetUserByEmailAsync(email.ToUpperInvariant());
+
+                if (findedUser is not null)
+                {
+                    throw new ArgumentException($"Пользователь с емейлом {email} уже существует! ", nameof(email));
+                }
+
+                //Добавляем нового пользователя в БД
+                var user = await _userRepository.AddUserAsync(name, email, password, gender, birthDate, cityId);                
+
+                //Получаем клеймы
+                var claimsIdentity = GetClaimsIdentity(user);
+
+                //Генерируем токен доступа
+                string accessToken = GenerateAccessToken(claimsIdentity.Claims);
+
+                //Генерируем рефреш токен
+                string refreshToken = GenerateRerfreshToken();
+
+                //Сохраняем рефреш токен в БД
+                await _refreshTokenRepository.CreateAsync(refreshToken, user.UserId);
+
+                AuthenticateOutput authenticateOutput = new()
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+                LoginOutput loginOutput = new LoginOutput
+                {
+                    auth = authenticateOutput,
+                    profile = user.ToProfileOutput()
+                };
+
+                return loginOutput;
             }
-
-            var claimsIdentity = GetClaimsIdentity(user);
-
-            string accessToken = GenerateAccessToken(claimsIdentity.Claims);
-
-            string refreshToken = GenerateRerfreshToken();
-
-            await _refreshTokenRepository.CreateAsync(refreshToken, user.UserId);
-
-            AuthenticateOutput authenticateOutput = new()
+            catch (Exception)
             {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
-
-            LoginOutput loginOutput = new LoginOutput
-            {
-                auth = authenticateOutput,
-                profile = user.ToProfileOutput()
-            };
-
-            return loginOutput;
+                //TODO: log
+                throw;
+            }            
         }
 
         /// <summary>
@@ -77,34 +93,42 @@ namespace Meetins.Services.User
         /// <returns>Данные пользователя после аутентификации: профиль и токены.</returns>
         public async Task<LoginOutput> AuthenticateUserAsync(string email, string password)
         {
-            var user = await _userRepository.IdentityUserAsync(email, password);
-
-            if (user is null)
+            try
             {
-                return null;
+                var user = await _userRepository.IdentityUserAsync(email, password);
+
+                if (user is null)
+                {
+                    throw new ArgumentException($"Пользователя с таким емейлом и паролем не найдено!");
+                }
+
+                var claimsIdentity = GetClaimsIdentity(user);
+
+                string accessToken = GenerateAccessToken(claimsIdentity.Claims);
+
+                string refreshToken = GenerateRerfreshToken();
+
+                await _refreshTokenRepository.CreateAsync(refreshToken, user.UserId);
+
+                AuthenticateOutput authenticateOutput = new()
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+                LoginOutput loginOutput = new LoginOutput
+                {
+                    auth = authenticateOutput,
+                    profile = user.ToProfileOutput()
+                };
+
+                return loginOutput;
             }
-
-            var claimsIdentity = GetClaimsIdentity(user);
-
-            string accessToken = GenerateAccessToken(claimsIdentity.Claims);
-
-            string refreshToken = GenerateRerfreshToken();
-
-            await _refreshTokenRepository.CreateAsync(refreshToken, user.UserId);
-
-            AuthenticateOutput authenticateOutput = new()
+            catch (Exception)
             {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
-
-            LoginOutput loginOutput = new LoginOutput
-            {
-                auth = authenticateOutput,
-                profile = user.ToProfileOutput()
-            };
-
-            return loginOutput;
+                //TODO: log
+                throw;
+            }           
         }
 
         /// <summary>
