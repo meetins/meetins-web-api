@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Meetins.Services.KudaGo
 {
     /// <summary>
-    /// Получение списка всех доступных городов.
+    /// Получение информации из сервиса KudaGo.
     /// </summary>
     public class KudaGoService : IKudaGoService
     {
@@ -25,10 +25,7 @@ namespace Meetins.Services.KudaGo
         /// <returns> Список всех доступных городов. </returns>
         public async Task<IEnumerable<KudaGoOutput>> GetAllAvailableCitiesAsync()
         {
-            using (HttpClient client = new HttpClient())
-            {
-                return await _kudaGoRepository.GetAllAvailableCitiesAsync();
-            }
+            return await _kudaGoRepository.GetAllAvailableCitiesAsync();
         }
     }
 }

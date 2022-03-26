@@ -9,16 +9,14 @@ using System.Threading.Tasks;
 namespace Meetins.Services.KudaGo
 {
     /// <summary>
-    /// В реппозитории содержится функционал для получения списка всех доступных городов.
+    /// В репозитории содержится функционал для получения информации из сервиса KudaGo.
     /// </summary>
     public class KudaGoRepository : IKudaGoRepository
     {
-        private PostgreDbContext _context;
-        private string url = "https://kudago.com/public-api/v";
+        private string url = "https://kudago.com/public-api/v1.4/locations/?lang=ru";
 
-        public KudaGoRepository(PostgreDbContext context)
+        public KudaGoRepository()
         {
-            _context = context;
         }
 
         /// <summary>
@@ -31,7 +29,7 @@ namespace Meetins.Services.KudaGo
             {
                 try
                 {
-                    var response = await client.GetAsync(url + "1.4/locations/?lang=ru");
+                    var response = await client.GetAsync(url);
 
 
                     if (response.IsSuccessStatusCode)

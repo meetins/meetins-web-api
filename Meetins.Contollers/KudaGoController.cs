@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Meetins.Contollers
 {
     /// <summary>
-    /// В контроллере содержится функционал для получения списка всех доступных городов.
+    /// В контроллере содержится функционал для получения информации из сервиса KudaGo.
     /// </summary>
     [Route("kudago")]
     [ApiController]
@@ -29,10 +29,7 @@ namespace Meetins.Contollers
         [Route("cities")]
         public async Task<ActionResult<IEnumerable<KudaGoOutput>>> GetAllAvailableCitiesAsync()
         {
-            using (HttpClient client = new HttpClient())
-            {
-                return Ok(await _kudaGoService.GetAllAvailableCitiesAsync());
-            }
+            return Ok(await _kudaGoService.GetAllAvailableCitiesAsync());
         }
     }
 }
