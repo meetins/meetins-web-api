@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Meetins.Services.Common
 {
     /// <summary>
-    /// Получение списка всех городов пользователей.
+    /// Сервис общего функционала.
     /// </summary>
     public class CommonService : ICommonService
     {

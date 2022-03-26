@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Meetins.Services.Common
 {
     /// <summary>
-    /// В реппозитории содержится функционал для получения списка всех городов пользователей.
+    /// В реппозитории содержится общий функционал.
     /// </summary>
     public class CommonRepository : ICommonRepository
     {

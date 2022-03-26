@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace Meetins.Abstractions.Repositories
 {
+    /// <summary>
+    /// Абстракция для общего репозитория.
+    /// </summary>
     public interface ICommonRepository
     {
         /// <summary>
