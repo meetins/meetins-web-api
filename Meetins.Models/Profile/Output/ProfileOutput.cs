@@ -61,5 +61,10 @@ namespace Meetins.Models.Profile.Output
         /// Город.
         /// </summary>
         public string City { get; set; }
+
+        /// <summary>
+        /// Подтверждён ли емейл.
+        /// </summary>
+        public bool EmailConfirmed { get; set; }
     }
 }

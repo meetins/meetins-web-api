@@ -22,5 +22,23 @@ namespace Meetins.Models.Entities
         /// </summary>
         [Column("CityName", TypeName = "varchar")]
         public string CityName { get; set; }
+
+        /// <summary>
+        /// Нормализованное имя.
+        /// </summary>
+        [Column("NormalizedName", TypeName ="varchar")]
+        public string NormalizedName { get; set; }
+
+        /// <summary>
+        /// Слаг.
+        /// </summary>
+        [Column("Slug", TypeName = "varchar")]
+        public string Slug { get; set; }
+
+        /// <summary>
+        /// Имеет ли события на Kudago.
+        /// </summary>
+        [Column("HasKudagoEvents", TypeName = "boolean")]
+        public bool HasKudagoEvents { get; set; }
     }
 }

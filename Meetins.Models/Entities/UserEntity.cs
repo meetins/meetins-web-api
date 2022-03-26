@@ -85,6 +85,54 @@ namespace Meetins.Models.Entities
         public Guid CityId { get; set; }
 
         /// <summary>
+        /// Нормализованная почта.
+        /// </summary>
+        [Column("NormalizedEmail", TypeName = "varchar")]
+        public string NormalizedEmail { get; set; }
+
+        /// <summary>
+        /// Нормализованный логин.
+        /// </summary>
+        [Column("NormalizedLogin", TypeName = "varchar")]
+        public string NormalizedLogin { get; set; }
+
+        /// <summary>
+        /// Хэш пароля.
+        /// </summary>
+        [Column("PasswordHash", TypeName = "text")]
+        public string PasswordHash { get; set; }
+
+        /// <summary>
+        /// Подтверждён ли емейл.
+        /// </summary>
+        [Column("EmailConfirmed", TypeName = "boolean")]
+        public bool EmailConfirmed { get; set; }
+
+        /// <summary>
+        /// Код подтверждения емейла.
+        /// </summary>
+        [Column("ConfirmEmailCode", TypeName = "varchar")]
+        public string ConfirmEmailCode { get; set; }
+
+        /// <summary>
+        /// Счётчик ошибочных вводов пароля.
+        /// </summary>
+        [Column("AccessFailedCount", TypeName = "int4")]
+        public int AccessFailedCount { get; set; }
+
+        /// <summary>
+        /// Конец блокировки пользователя.
+        /// </summary>
+        [Column("LockoutEnd", TypeName = "timestamp")]
+        public DateTime? LockoutEnd { get; set; }
+
+        /// <summary>
+        /// Заблокирован ли пользователь.
+        /// </summary>
+        [Column("LockoutEnabled", TypeName = "boolean")]
+        public bool LockoutEnabled { get; set; }
+
+        /// <summary>
         /// Навигационное свойство для Города.
         /// </summary>
         public CityEntity City { get; set; }

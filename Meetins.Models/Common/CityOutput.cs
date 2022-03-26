@@ -13,5 +13,10 @@ namespace Meetins.Models.Common
         /// Название города.
         /// </summary>
         public string CityName { get; set; }
+
+        /// <summary>
+        /// Есть ли события на Kudago.
+        /// </summary>
+        public bool HasKudagoEvents { get; set; }
     }
 }
