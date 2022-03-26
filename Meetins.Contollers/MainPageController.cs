@@ -28,5 +28,12 @@ namespace Meetins.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("test")]
+        public ActionResult<string> Test()
+        {
+            return Ok("ci/cd passed successfully");
+        }
     }
 }
