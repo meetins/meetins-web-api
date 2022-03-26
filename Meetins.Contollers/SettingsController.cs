@@ -218,24 +218,19 @@ namespace Meetins.Controllers
         }
 
         /// <summary>
-        /// Метод обновит город пользователя
+        /// Метод обновит город пользователя.
         /// </summary>
-        /// <param name="city">Идентификатор нового города</param>
-        /// <returns></returns>
+        /// <param name="city">Идентификатор нового города.</param>
+        /// <returns>Данные профиля пользователя.</returns>
         [HttpPost]
         [Route("update-city")]
-        public async Task<ActionResult<ProfileOutput>> UpdateCityIdAsync(string city)
+        public async Task<ActionResult<ProfileOutput>> UpdateCityIdAsync([FromBody] Guid cityId)
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
             if (!Guid.TryParse(rawUserId, out Guid userId))
             {
                 return Unauthorized();
-            }
-
-            if (Guid.TryParse(city, out Guid cityId))
-            {
-                return BadRequest(new { message = "Ошибка. Неправильный формат id города (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)" });
             }
 
             try

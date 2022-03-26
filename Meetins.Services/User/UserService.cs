@@ -374,11 +374,11 @@ namespace Meetins.Services.User
         }
 
         /// <summary>
-        /// Метод обновит город пользователя
+        /// Метод обновит город пользователя.
         /// </summary>
-        /// <param name="userId">Идентификатор пользователя</param>
-        /// <param name="cityId">Идентификатор нового города</param>
-        /// <returns></returns>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="cityId">Идентификатор нового города.</param>
+        /// <returns>Данные пользователя.</returns>
         public async Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId)
         {
             try
