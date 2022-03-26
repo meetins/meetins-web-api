@@ -373,6 +373,26 @@ namespace Meetins.Services.User
             }
         }
 
+        /// <summary>
+        /// Метод обновит город пользователя
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="cityId">Идентификатор нового города</param>
+        /// <returns></returns>
+        public async Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId)
+        {
+            try
+            {
+                var user = await _userRepository.UpdateCityIdAsync(userId, cityId);
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
 
         #region PRIVATE-методы
         private bool ValidateRefreshToken(string refreshToken)
