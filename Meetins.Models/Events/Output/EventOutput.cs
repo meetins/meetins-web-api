@@ -8,7 +8,7 @@ namespace Meetins.Models.Events.Output
         /// <summary>
         /// Идентификатор события.
         /// </summary>
-        public Guid EventId { get; set; }
+        public long EventId { get; set; }
 
         /// <summary>
         /// Категория события.

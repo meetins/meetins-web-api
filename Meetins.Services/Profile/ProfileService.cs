@@ -66,7 +66,7 @@ namespace Meetins.Services.Profile
         /// </summary>
         /// <param name="userId"> Идентификатор пользователя. </param>
         /// <param name="status"> Обновленный статус. </param>
-        /// <returns> Выходная моедль профиля. </returns>
+        /// <returns> Выходная модель профиля. </returns>
         public async Task<ProfileOutput> UpdateProfileStatusAsync(Guid userId, string status)
         {
             var user = await _userRepository.UpdateStatusAsync(userId, status);

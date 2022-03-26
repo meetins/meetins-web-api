@@ -28,7 +28,7 @@ namespace Meetins.Abstractions.Repositories
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>
-        Task<EventOutput> GetEventByIdAsync(Guid userId, Guid eventId);
+        Task<EventOutput> GetEventByIdAsync(Guid userId, long eventId);
 
         /// <summary>
         /// Метод подпишет пользователя на событие.
@@ -36,7 +36,7 @@ namespace Meetins.Abstractions.Repositories
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>
-        Task<EventOutput> SubscribeToEventAsync(Guid userId, Guid eventId);
+        Task<EventOutput> SubscribeToEventAsync(Guid userId, long eventId);
 
         /// <summary>
         /// Метод отменит подписку пользователя на событие.
@@ -44,6 +44,6 @@ namespace Meetins.Abstractions.Repositories
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>
-        Task<EventOutput> UnSubscribeToEventAsync(Guid userId, Guid eventId);
+        Task<EventOutput> UnSubscribeToEventAsync(Guid userId, long eventId);
     }
 }

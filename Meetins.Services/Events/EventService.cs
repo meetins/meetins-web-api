@@ -25,7 +25,7 @@ namespace Meetins.Services.Events
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>
-        public async Task<EventOutput> GetEventByIdAsync(Guid userId, Guid eventId)
+        public async Task<EventOutput> GetEventByIdAsync(Guid userId, long eventId)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace Meetins.Services.Events
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>
-        public async Task<EventOutput> SubscribeToEventAsync(Guid userId, Guid eventId)
+        public async Task<EventOutput> SubscribeToEventAsync(Guid userId, long eventId)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace Meetins.Services.Events
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>
-        public async Task<EventOutput> UnSubscribeToEventAsync(Guid userId, Guid eventId)
+        public async Task<EventOutput> UnSubscribeToEventAsync(Guid userId, long eventId)
         {
             try
             {

@@ -21,8 +21,8 @@ namespace Meetins.Models.Entities
         /// Идентификатор события, FK.
         /// </summary>
         [ForeignKey("EventsToUsers_EventId_fkey")]
-        [Column("EventId", TypeName = "uuid")]
-        public Guid EventId { get; set; }
+        [Column("EventId", TypeName = "int8")]
+        public long EventId { get; set; }
 
         /// <summary>
         /// Идентификатор пользователя, FK.

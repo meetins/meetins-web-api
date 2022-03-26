@@ -14,8 +14,8 @@ namespace Meetins.Models.Entities
         /// Идентификатор события, PK.
         /// </summary>
         [Key]
-        [Column("EventId", TypeName = "uuid")]
-        public Guid EventId { get; set; }
+        [Column("EventId", TypeName = "bigserial")]
+        public long EventId { get; set; }
 
         /// <summary>
         /// Идентификатор категории события, FK.
