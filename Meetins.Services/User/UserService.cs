@@ -101,6 +101,9 @@ namespace Meetins.Services.User
                 {
                     throw new ArgumentException($"Пользователя с таким емейлом и паролем не найдено!");
                 }
+                
+                //удалим все старые токены пользователя
+                await _refreshTokenRepository.DeleteAllAsync(user.UserId);
 
                 var claimsIdentity = GetClaimsIdentity(user);
 

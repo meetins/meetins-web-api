@@ -44,6 +44,7 @@ namespace Meetins.Services.User
                     NormalizedEmail = email.ToUpperInvariant(),
                     Password = password,
                     //TODO: calculate passwordhash
+                    PasswordHash = "Gt9Yc4AiIvmsC1QQbe2RZsCIqvoYlst2xbz0Fs8aHnw=",
                     Gender = gender,
                     Avatar = "/images/no-photo.png",
                     DateRegister = DateTime.Now,
@@ -52,7 +53,8 @@ namespace Meetins.Services.User
                     Login = guid.ToString("N"),
                     PhoneNumber = "телефон не добавлен",
                     BirthDate = DateTime.Parse(birthDate),
-                    CityId = Guid.Parse(cityId)
+                    CityId = Guid.Parse(cityId),
+                    ConfirmEmailCode = "123456"
                 };
 
                 await _db.Users.AddAsync(user);
@@ -61,7 +63,7 @@ namespace Meetins.Services.User
                 return user;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //TODO: log
                 throw;
