@@ -41,11 +41,14 @@ namespace Meetins.Services.User
                     UserId = guid,
                     Name = name,
                     Email = email,
+                    NormalizedEmail = email.ToUpperInvariant(),
                     Password = password,
+                    //TODO: calculate passwordhash
                     Gender = gender,
                     Avatar = "/images/no-photo.png",
                     DateRegister = DateTime.Now,
                     Status = "Дефолтный статус",
+                    NormalizedLogin = guid.ToString("N").ToUpperInvariant(),
                     Login = guid.ToString("N"),
                     PhoneNumber = "телефон не добавлен",
                     BirthDate = DateTime.Parse(birthDate),
@@ -74,7 +77,7 @@ namespace Meetins.Services.User
         {
             try
             {
-                var user = await _db.Users.FirstOrDefaultAsync(b => b.Email.Equals(email));
+                var user = await _db.Users.FirstOrDefaultAsync(b => b.NormalizedEmail.Equals(email.ToUpperInvariant()));
 
                 return user;
             }
@@ -114,7 +117,7 @@ namespace Meetins.Services.User
         {
             try
             {
-                var user = await _db.Users.FirstOrDefaultAsync(b => b.Login.Equals(login));
+                var user = await _db.Users.FirstOrDefaultAsync(b => b.NormalizedLogin.Equals(login.ToUpperInvariant()));
 
                 return user;
             }

@@ -299,6 +299,13 @@ namespace Meetins.Services.User
         {
             try
             {
+                var findedUser = await _userRepository.GetUserByLoginAsync(login);
+
+                if (findedUser is not null)
+                {
+                    throw new ArgumentException($"Пользователь с логином {login} уже существует!", nameof(login));
+                }
+
                 var user = await _userRepository.UpdateLoginAsync(userId, login);
 
                 return user;
