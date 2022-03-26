@@ -58,15 +58,17 @@ namespace Meetins.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<AuthenticateOutput>> RefreshTokenAsync([FromBody] string refreshToken)
         {
-            //TODO: отрефакторить
-            AuthenticateOutput refreshTokenResults = await _userService.RefreshAccessTokenAsync(refreshToken);
-
-            if (refreshTokenResults is null)
+            try
             {
-                return BadRequest(new { errortext = "Invalid refresh token." });
-            }
+                AuthenticateOutput refreshTokenResults = await _userService.RefreshAccessTokenAsync(refreshToken);
 
-            return Ok(refreshTokenResults);
+                return Ok(refreshTokenResults);
+            }
+            catch (Exception e)
+            {
+                //TODO: log
+                return BadRequest(new { message = e.Message });
+            }            
         }
 
         /// <summary>
@@ -141,12 +143,12 @@ namespace Meetins.Controllers
         }
 
         /// <summary>
-        /// Метод удалит все рефреш токены пользователя.
+        /// Метод удалит все рефреш токены пользователя и выйдет из системы.
         /// </summary>
         /// <returns>Статус удаления.</returns>
         [HttpDelete]
         [Route("logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<ActionResult<bool>> Logout()
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
@@ -155,6 +157,7 @@ namespace Meetins.Controllers
                 return Unauthorized();
             }
 
+            //TODO: запомнить непротухший токен доступа, по которому ещё можно получить доступ.
             var status = await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
 
             return Ok(status);
