@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Meetins.Contollers
 {
     /// <summary>
-    /// В контроллере содержится функционал для получения списка всех городов пользователей.
+    /// В контроллере содержится общий функционал.
     /// </summary>
     [Route("common")]
     [ApiController]
@@ -24,7 +24,9 @@ namespace Meetins.Contollers
         /// Получение списка всех городов пользователей.
         /// </summary>
         /// <returns> Список всех городов пользователей. </returns>
-        [HttpGet, Route("cities")]
+        [HttpGet]
+        [Route("cities")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<CityOutput>))]
         public async Task<ActionResult<IEnumerable<CityOutput>>> GetAllCitiesAsync()
         {
             var result = await _commonService.GetAllCitiesAsync();

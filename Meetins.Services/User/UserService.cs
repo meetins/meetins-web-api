@@ -39,34 +39,50 @@ namespace Meetins.Services.User
         /// <returns>Данные пользователя после аутентификации: профиль и токены.</returns>
         public async Task<LoginOutput> RegisterUserAsync(string name, string email, string password, string gender, string birthDate, string cityId)
         {
-            var user = await _userRepository.AddUserAsync(name, email, password, gender, birthDate, cityId);
-
-            if (user is null)
+            try
             {
-                return null;
+                //ищем пользователя в БД по емейлу
+                var findedUser = await _userRepository.GetUserByEmailAsync(email.ToUpperInvariant());
+
+                if (findedUser is not null)
+                {
+                    throw new ArgumentException($"Пользователь с емейлом {email} уже существует! ", nameof(email));
+                }
+
+                //Добавляем нового пользователя в БД
+                var user = await _userRepository.AddUserAsync(name, email, password, gender, birthDate, cityId);                
+
+                //Получаем клеймы
+                var claimsIdentity = GetClaimsIdentity(user);
+
+                //Генерируем токен доступа
+                string accessToken = GenerateAccessToken(claimsIdentity.Claims);
+
+                //Генерируем рефреш токен
+                string refreshToken = GenerateRerfreshToken();
+
+                //Сохраняем рефреш токен в БД
+                await _refreshTokenRepository.CreateAsync(refreshToken, user.UserId);
+
+                AuthenticateOutput authenticateOutput = new()
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+                LoginOutput loginOutput = new LoginOutput
+                {
+                    auth = authenticateOutput,
+                    profile = user.ToProfileOutput()
+                };
+
+                return loginOutput;
             }
-
-            var claimsIdentity = GetClaimsIdentity(user);
-
-            string accessToken = GenerateAccessToken(claimsIdentity.Claims);
-
-            string refreshToken = GenerateRerfreshToken();
-
-            await _refreshTokenRepository.CreateAsync(refreshToken, user.UserId);
-
-            AuthenticateOutput authenticateOutput = new()
+            catch (Exception)
             {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
-
-            LoginOutput loginOutput = new LoginOutput
-            {
-                auth = authenticateOutput,
-                profile = user.ToProfileOutput()
-            };
-
-            return loginOutput;
+                //TODO: log
+                throw;
+            }            
         }
 
         /// <summary>
@@ -77,34 +93,45 @@ namespace Meetins.Services.User
         /// <returns>Данные пользователя после аутентификации: профиль и токены.</returns>
         public async Task<LoginOutput> AuthenticateUserAsync(string email, string password)
         {
-            var user = await _userRepository.IdentityUserAsync(email, password);
-
-            if (user is null)
+            try
             {
-                return null;
+                var user = await _userRepository.IdentityUserAsync(email, password);
+
+                if (user is null)
+                {
+                    throw new ArgumentException($"Пользователя с таким емейлом и паролем не найдено!");
+                }
+                
+                //удалим все старые токены пользователя
+                await _refreshTokenRepository.DeleteAllAsync(user.UserId);
+
+                var claimsIdentity = GetClaimsIdentity(user);
+
+                string accessToken = GenerateAccessToken(claimsIdentity.Claims);
+
+                string refreshToken = GenerateRerfreshToken();
+
+                await _refreshTokenRepository.CreateAsync(refreshToken, user.UserId);
+
+                AuthenticateOutput authenticateOutput = new()
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+                LoginOutput loginOutput = new LoginOutput
+                {
+                    auth = authenticateOutput,
+                    profile = user.ToProfileOutput()
+                };
+
+                return loginOutput;
             }
-
-            var claimsIdentity = GetClaimsIdentity(user);
-
-            string accessToken = GenerateAccessToken(claimsIdentity.Claims);
-
-            string refreshToken = GenerateRerfreshToken();
-
-            await _refreshTokenRepository.CreateAsync(refreshToken, user.UserId);
-
-            AuthenticateOutput authenticateOutput = new()
+            catch (Exception)
             {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
-
-            LoginOutput loginOutput = new LoginOutput
-            {
-                auth = authenticateOutput,
-                profile = user.ToProfileOutput()
-            };
-
-            return loginOutput;
+                //TODO: log
+                throw;
+            }           
         }
 
         /// <summary>
@@ -142,49 +169,62 @@ namespace Meetins.Services.User
         /// <returns>Данные дял доступа: токены.</returns>
         public async Task<AuthenticateOutput> RefreshAccessTokenAsync(string refreshToken)
         {
-            //валидируем рефреш токен
-            bool isValidRefreshToken = ValidateRefreshToken(refreshToken);
-
-            if (!isValidRefreshToken)
+            try
             {
-                return null;
+                if (String.IsNullOrEmpty(refreshToken))
+                {
+                    throw new ArgumentNullException(nameof(refreshToken), $"Рефреш токен не может быть пустым или null.");
+                }
+
+                //валидируем рефреш токен
+                bool isValidRefreshToken = ValidateRefreshToken(refreshToken);
+
+                if (!isValidRefreshToken)
+                {
+                    throw new ArgumentException($"Рефреш токен не валиден.", nameof(refreshToken));
+                }
+
+                //ищем рефреш токен в бд
+                var token = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
+
+                if (token is null)
+                {
+                    throw new ArgumentException($"Рефреш токен отсутствует в БД.", nameof(refreshToken));
+                }
+
+                //ищем юзера по юзер айди из рефреш токена
+                var user = await _userRepository.GetUserByIdAsync(token.UserId);
+
+                if (user is null)
+                {
+                    throw new ArgumentException($"С рефреш токеном не ассоциируется ни один пользователь.", nameof(refreshToken));
+                }
+
+                //удаляем все рефреш токены юзера
+                await _refreshTokenRepository.DeleteAllAsync(user.UserId);
+
+                //получаем клеймы
+                var claimsIdentity = GetClaimsIdentity(user);
+
+                //генерим новые токены
+                string newAccessToken = GenerateAccessToken(claimsIdentity.Claims);
+                string newRefreshToken = GenerateRerfreshToken();
+
+                var newToken = await _refreshTokenRepository.CreateAsync(newRefreshToken, user.UserId);
+
+                AuthenticateOutput auth = new AuthenticateOutput
+                {
+                    AccessToken = newAccessToken,
+                    RefreshToken = newToken.Token
+                };
+
+                return auth;
             }
-
-            //иищем рефреш токен в бд
-            var token = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
-
-            if (token is null)
+            catch (Exception)
             {
-                return null;
+                //TODO: log
+                throw;
             }
-
-            //ищем юзера по юзер айди из рефреш токена
-            var user = await _userRepository.GetUserByIdAsync(token.UserId);
-
-            if (user is null)
-            {
-                return null;
-            }
-
-            //удаляем все рефреш токены юзера
-            await _refreshTokenRepository.DeleteAllAsync(user.UserId);
-
-
-            var claimsIdentity = GetClaimsIdentity(user);
-
-            //генерим новые токены
-            string newAccessToken = GenerateAccessToken(claimsIdentity.Claims);
-            string newRefreshToken = GenerateRerfreshToken();
-
-            var newToken = await _refreshTokenRepository.CreateAsync(newRefreshToken, user.UserId);
-
-            AuthenticateOutput auth = new AuthenticateOutput
-            {
-                AccessToken = newAccessToken,
-                RefreshToken = newToken.Token
-            };
-
-            return auth;
         }
 
         /// <summary>
@@ -299,6 +339,13 @@ namespace Meetins.Services.User
         {
             try
             {
+                var findedUser = await _userRepository.GetUserByLoginAsync(login);
+
+                if (findedUser is not null)
+                {
+                    throw new ArgumentException($"Пользователь с логином {login} уже существует!", nameof(login));
+                }
+
                 var user = await _userRepository.UpdateLoginAsync(userId, login);
 
                 return user;
@@ -373,6 +420,26 @@ namespace Meetins.Services.User
             }
         }
 
+        /// <summary>
+        /// Метод обновит город пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="cityId">Идентификатор нового города.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId)
+        {
+            try
+            {
+                var user = await _userRepository.UpdateCityIdAsync(userId, cityId);
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
+                throw;
+            }
+        }
 
         #region PRIVATE-методы
         private bool ValidateRefreshToken(string refreshToken)

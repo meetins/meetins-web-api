@@ -31,7 +31,8 @@ namespace Meetins.Models.Mapper
                 Avatar = user.Avatar,
                 DateRegister = user.DateRegister,
                 Login = user.Login,
-                BirthDate = user.BirthDate                
+                BirthDate = user.BirthDate,
+                EmailConfirmed = user.EmailConfirmed
             };
 
             return profile;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Meetins.Services.Common
 {
     /// <summary>
-    /// В реппозитории содержится функционал для получения списка всех городов пользователей.
+    /// В реппозитории содержится общий функционал.
     /// </summary>
     public class CommonRepository : ICommonRepository
     {
@@ -21,16 +21,17 @@ namespace Meetins.Services.Common
         }
 
         /// <summary>
-        /// Получение списка всех городов пользователей.
+        /// Получение списка всех городов.
         /// </summary>
-        /// <returns> Список всех городов пользователей. </returns>
+        /// <returns> Список всех городов. </returns>
         public async Task<IEnumerable<CityOutput>> GetAllCitiesAsync()
         {
             var result = await _context.Cities
                 .Select(city => new CityOutput
                 {
                     CityId = city.CityId,
-                    CityName = city.CityName
+                    CityName = city.CityName,
+                    HasKudagoEvents = city.HasKudagoEvents
                 })
                 .ToListAsync();
 

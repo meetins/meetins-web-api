@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace Meetins.Abstractions.Services
 {
+    /// <summary>
+    /// Абстракия для общего сервиса.
+    /// </summary>
     public interface ICommonService
     {
         /// <summary>

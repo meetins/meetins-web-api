@@ -41,15 +41,20 @@ namespace Meetins.Services.User
                     UserId = guid,
                     Name = name,
                     Email = email,
+                    NormalizedEmail = email.ToUpperInvariant(),
                     Password = password,
+                    //TODO: calculate passwordhash
+                    PasswordHash = "Gt9Yc4AiIvmsC1QQbe2RZsCIqvoYlst2xbz0Fs8aHnw=",
                     Gender = gender,
                     Avatar = "/images/no-photo.png",
                     DateRegister = DateTime.Now,
                     Status = "Дефолтный статус",
+                    NormalizedLogin = guid.ToString("N").ToUpperInvariant(),
                     Login = guid.ToString("N"),
                     PhoneNumber = "телефон не добавлен",
                     BirthDate = DateTime.Parse(birthDate),
-                    CityId = Guid.Parse(cityId)
+                    CityId = Guid.Parse(cityId),
+                    ConfirmEmailCode = "123456"
                 };
 
                 await _db.Users.AddAsync(user);
@@ -58,7 +63,7 @@ namespace Meetins.Services.User
                 return user;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //TODO: log
                 throw;
@@ -74,7 +79,12 @@ namespace Meetins.Services.User
         {
             try
             {
-                var user = await _db.Users.FirstOrDefaultAsync(b => b.Email.Equals(email));
+                if (String.IsNullOrEmpty(email))
+                {
+                    throw new ArgumentNullException(nameof(email), $"Емейл не может быть пустым или null");
+                }
+
+                var user = await _db.Users.FirstOrDefaultAsync(b => b.NormalizedEmail.Equals(email.ToUpperInvariant()));
 
                 return user;
             }
@@ -114,7 +124,7 @@ namespace Meetins.Services.User
         {
             try
             {
-                var user = await _db.Users.FirstOrDefaultAsync(b => b.Login.Equals(login));
+                var user = await _db.Users.FirstOrDefaultAsync(b => b.NormalizedLogin.Equals(login.ToUpperInvariant()));
 
                 return user;
             }
@@ -431,6 +441,34 @@ namespace Meetins.Services.User
             catch (Exception)
             {
                 //TODO: Log
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод обновит город пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="cityId">Идентификатор нового города.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId)
+        {
+            try
+            {
+                var user = await GetUserByIdAsync(userId);
+
+                if (user != null)
+                {
+                    user.CityId = cityId;
+
+                    await _db.SaveChangesAsync();
+                }
+
+                return user;
+            }
+            catch (Exception)
+            {
+                //TODO: log
                 throw;
             }
         }

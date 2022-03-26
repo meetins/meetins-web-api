@@ -57,7 +57,7 @@ namespace Meetins.Contollers
         [Route("event-by-id")]
         [ProducesResponseType(200, Type = typeof(EventOutput))]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> GetEventAsyncByIdAsync([FromBody] Guid eventId)
+        public async Task<IActionResult> GetEventAsyncByIdAsync([FromBody] long eventId)
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
@@ -81,7 +81,7 @@ namespace Meetins.Contollers
         [Route("subscribe")]
         [ProducesResponseType(200, Type = typeof(EventOutput))]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> SubscribeToEventIdAsync([FromBody] Guid eventId)
+        public async Task<IActionResult> SubscribeToEventIdAsync([FromBody] long eventId)
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
@@ -105,7 +105,7 @@ namespace Meetins.Contollers
         [Route("unsubscribe")]
         [ProducesResponseType(200, Type = typeof(EventOutput))]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> UnSubscribeToEventIdAsync([FromBody] Guid eventId)
+        public async Task<IActionResult> UnSubscribeToEventIdAsync([FromBody] long eventId)
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 

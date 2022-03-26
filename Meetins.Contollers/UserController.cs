@@ -18,11 +18,11 @@ namespace Meetins.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        IUserService _userService;        
+        IUserService _userService;
 
         public UserController(IUserService userService)
         {
-            _userService = userService;            
+            _userService = userService;
         }
 
         /// <summary>
@@ -35,14 +35,17 @@ namespace Meetins.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<LoginOutput>> Login([FromBody] LoginInput loginInput)
         {
-            LoginOutput authResult = await _userService.AuthenticateUserAsync(loginInput.Email, loginInput.Password);
-
-            if (authResult is null)
+            try
             {
-                return BadRequest(new { errorText = "Invalid email or password." });
-            }
+                LoginOutput authResult = await _userService.AuthenticateUserAsync(loginInput.Email, loginInput.Password);
 
-            return Ok(authResult);
+                return Ok(authResult);
+            }
+            catch (Exception e)
+            {
+                //TODO: log
+                return BadRequest(new { message = e.Message});
+            }
         }
 
         /// <summary>
@@ -55,14 +58,17 @@ namespace Meetins.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<AuthenticateOutput>> RefreshTokenAsync([FromBody] string refreshToken)
         {
-            AuthenticateOutput refreshTokenResults = await _userService.RefreshAccessTokenAsync(refreshToken);
-
-            if (refreshTokenResults is null)
+            try
             {
-                return BadRequest(new { errortext = "Invalid refresh token." });
-            }
+                AuthenticateOutput refreshTokenResults = await _userService.RefreshAccessTokenAsync(refreshToken);
 
-            return Ok(refreshTokenResults);
+                return Ok(refreshTokenResults);
+            }
+            catch (Exception e)
+            {
+                //TODO: log
+                return BadRequest(new { message = e.Message });
+            }            
         }
 
         /// <summary>
@@ -75,16 +81,22 @@ namespace Meetins.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<LoginOutput>> RegisterUserAsync([FromBody] RegisterUserInput registerUserInput)
         {
-            var user = await _userService.GetUserByEmailAsync(registerUserInput.Email);
-
-            if (user != null)
+            try
             {
-                return BadRequest(new { message = "User already exists." });
+                var result = await _userService.RegisterUserAsync(registerUserInput.Name,
+                                                              registerUserInput.Email,
+                                                              registerUserInput.Password,
+                                                              registerUserInput.Gender,
+                                                              registerUserInput.BirthDate,
+                                                              registerUserInput.CityId);
+
+                return Ok(result);
             }
-
-            var result = await _userService.RegisterUserAsync(registerUserInput.Name, registerUserInput.Email, registerUserInput.Password, registerUserInput.Gender, registerUserInput.BirthDate, registerUserInput.CityId);
-
-            return Ok(result);
+            catch (Exception e)
+            {
+                //TODO: log
+                return BadRequest(new { message = e.Message });                
+            }            
         }
 
         /// <summary>
@@ -97,14 +109,17 @@ namespace Meetins.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<ProfileOutput>> CheckEmailAsync([FromBody] string email)
         {
-            if (string.IsNullOrEmpty(email))
+            try
             {
-                return BadRequest(new { errorText = "Email cannot be null or empty." });
+                var user = await _userService.GetUserByEmailAsync(email);
+
+                return Ok(user.ToProfileOutput());
             }
-
-            var user = await _userService.GetUserByEmailAsync(email);
-
-            return Ok(user.ToProfileOutput());
+            catch (Exception e)
+            {
+                //TODO: log
+                return BadRequest(new { message = e.Message });
+            }
         }
 
         /// <summary>
@@ -126,14 +141,14 @@ namespace Meetins.Controllers
 
             return Ok(user.ToProfileOutput());
         }
-        
+
         /// <summary>
-        /// Метод удалит все рефреш токены пользователя.
+        /// Метод удалит все рефреш токены пользователя и выйдет из системы.
         /// </summary>
         /// <returns>Статус удаления.</returns>
         [HttpDelete]
         [Route("logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<ActionResult<bool>> Logout()
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
@@ -142,6 +157,7 @@ namespace Meetins.Controllers
                 return Unauthorized();
             }
 
+            //TODO: запомнить непротухший токен доступа, по которому ещё можно получить доступ.
             var status = await _userService.DeleteAllRefreshTokensByUserIdAsync(userId);
 
             return Ok(status);

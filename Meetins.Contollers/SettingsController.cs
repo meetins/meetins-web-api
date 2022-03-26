@@ -218,6 +218,34 @@ namespace Meetins.Controllers
         }
 
         /// <summary>
+        /// Метод обновит город пользователя.
+        /// </summary>
+        /// <param name="city">Идентификатор нового города.</param>
+        /// <returns>Данные профиля пользователя.</returns>
+        [HttpPost]
+        [Route("update-city")]
+        public async Task<ActionResult<ProfileOutput>> UpdateCityIdAsync([FromBody] Guid cityId)
+        {
+            string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+            if (!Guid.TryParse(rawUserId, out Guid userId))
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var result = await _userService.UpdateCityIdAsync(userId, cityId);
+
+                return Ok(result.ToProfileOutput());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
+        }
+
+        /// <summary>
         /// Полное удаление аккаунта пользователя.
         /// </summary>
         /// <returns></returns>        
