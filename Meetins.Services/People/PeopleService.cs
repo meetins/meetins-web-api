@@ -1,10 +1,10 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Abstractions.Services;
+using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.People;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Meetins.Services.People
@@ -15,10 +15,12 @@ namespace Meetins.Services.People
     public class PeopleService : IPeopleService
     {
         private IPeopleRepository _peopleRepository;
+        private PostgreDbContext _postgreDbContext;
 
-        public PeopleService(IPeopleRepository peopleRepository)
+        public PeopleService(IPeopleRepository peopleRepository, PostgreDbContext postgreDbContext)
         {
             _peopleRepository = peopleRepository;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -28,9 +30,19 @@ namespace Meetins.Services.People
         /// <returns> Список всех существующих пользователей. </returns>
         public async Task<IEnumerable<PeopleOutput>> GetAllPeoplesAsync(Guid userId)
         {
-            var result = await _peopleRepository.GetAllPeoplesAsync(userId);
+            try
+            {
+                var result = await _peopleRepository.GetAllPeoplesAsync(userId);
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
     }
 }

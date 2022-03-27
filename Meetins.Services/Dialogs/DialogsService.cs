@@ -1,10 +1,10 @@
 ﻿using Meetins.Abstractions.Services;
 using Meetins.Communication;
-using Meetins.Communication.Hubs;
+using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.Dialogs.Output;
 using Meetins.Models.Entities;
 using Meetins.Models.Messages;
-using Meetins.Models.User.Output;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,10 +17,12 @@ namespace Meetins.Services.Dialogs
     public class DialogsService : IDialogsService
     {
         private IDialogsRepository _dialogsRepository;
+        private PostgreDbContext _postgreDbContext;
 
-        public DialogsService(IDialogsRepository dialogsRepository)
+        public DialogsService(IDialogsRepository dialogsRepository, PostgreDbContext postgreDbContext)
         {
             _dialogsRepository = dialogsRepository;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -30,9 +32,19 @@ namespace Meetins.Services.Dialogs
         /// <returns> Список всех диалогов пользователя. </returns>
         public async Task<IEnumerable<DialogsOutput>> GetDialogsAsync(Guid userId)
         {
-            var result = await _dialogsRepository.GetDialogsAsync(userId);
+            try
+            {
+                var result = await _dialogsRepository.GetDialogsAsync(userId);
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
         /// <summary>
@@ -42,9 +54,19 @@ namespace Meetins.Services.Dialogs
         /// <returns> Список всех сообщений, принадлежащих диалогу. </returns>
         public async Task<IEnumerable<MessagesOutput>> GetMessagesOfDialog(Guid dialogId)
         {
-            var result = await _dialogsRepository.GetMessagesOfDialogAsync(dialogId);
+            try
+            {
+                var result = await _dialogsRepository.GetMessagesOfDialogAsync(dialogId);
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
         public async Task<IEnumerable<UserEntity>> GetOtherDialogMembersAsync(Guid dialogId, Guid userId)
@@ -56,25 +78,47 @@ namespace Meetins.Services.Dialogs
                 return result;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: Logging here
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
 
         public async Task<IEnumerable<MessagesOutput>> SendMessageAsync(Guid dialogId, Guid senderId, string content)
         {
-            var result = await _dialogsRepository.SendMessageAsync(dialogId, senderId, content);
+            try
+            {
+                var result = await _dialogsRepository.SendMessageAsync(dialogId, senderId, content);
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
         public async Task<IEnumerable<MessagesOutput>> StartDialogAsync(Guid senderId, Guid userId, string content)
         {
-            var result = await _dialogsRepository.StartDialogAsync(senderId, userId, content);
+            try
+            {
+                var result = await _dialogsRepository.StartDialogAsync(senderId, userId, content);
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
         /// <summary>
@@ -84,7 +128,17 @@ namespace Meetins.Services.Dialogs
         /// <returns></returns>
         public async Task<bool> DeleteAllUserDialogsAndMessagesAsync(Guid userId)
         {
-            return await _dialogsRepository.DeleteAllUserDialogsAndMessagesAsync(userId);
+            try
+            {
+                return await _dialogsRepository.DeleteAllUserDialogsAndMessagesAsync(userId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
         /// Метод вернет информацию о диалоге, если он существует.
@@ -100,9 +154,11 @@ namespace Meetins.Services.Dialogs
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }

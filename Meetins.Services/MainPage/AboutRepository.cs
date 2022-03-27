@@ -5,29 +5,42 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Meetins.Core.Logger;
+using System;
 
 namespace Meetins.Services.MainPage
 {
+    //TODO: переименовать в MainPageRepository
     public class AboutRepository : IAboutRepository
     {
-        private readonly PostgreDbContext _context;
+        private PostgreDbContext _postgreDbContext;
 
-        public AboutRepository(PostgreDbContext context)
+        public AboutRepository(PostgreDbContext postgreDbContext)
         {
-            _context = context;
+            _postgreDbContext = postgreDbContext;
         }
 
         public async Task<IEnumerable<AboutsOutput>> GetAboutsAsync()
         {
-            var result = await (from a in _context.Abouts
-                                select new AboutsOutput
-                                {
-                                   MainText = a.MainText,
-                                   Description = a.Description
-                                })
+            try
+            {
+                var result = await (from a in _postgreDbContext.Abouts
+                                    select new AboutsOutput
+                                    {
+                                        MainText = a.MainText,
+                                        Description = a.Description
+                                    })
                      .ToListAsync();
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
     }
 }

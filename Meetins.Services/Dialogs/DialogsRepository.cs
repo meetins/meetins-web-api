@@ -1,10 +1,10 @@
 ﻿using Meetins.Abstractions.Services;
 using Meetins.Communication;
 using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.Dialogs.Output;
 using Meetins.Models.Entities;
 using Meetins.Models.Messages;
-using Meetins.Models.User.Output;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,11 +18,11 @@ namespace Meetins.Services.Dialogs
     /// </summary>
     public class DialogsRepository : IDialogsRepository
     {
-        private PostgreDbContext _context;
+        private PostgreDbContext _postgreDbContext;
 
-        public DialogsRepository(PostgreDbContext context)
+        public DialogsRepository(PostgreDbContext postgreDbContext)
         {
-            _context = context;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -32,39 +32,49 @@ namespace Meetins.Services.Dialogs
         /// <returns> Список всех диалогов пользователя. </returns>
         public async Task<IEnumerable<DialogsOutput>> GetDialogsAsync(Guid userId)
         {
-            var result = await (from x in _context.Dialogs
-                                .Include(dialog => dialog.DialogMembers)
-                                    .ThenInclude(dialogMember => dialogMember.User)
-                                .Include(dialog => dialog.Messages)
-                                    .ThenInclude(message => message.MessageContent)
-                                .Include(dialog => dialog.Messages)
-                                where x.DialogMembers.Any(d => d.User.UserId.Equals(userId))
-                                select new DialogsOutput
-                                {
-                                    DialogId = x.DialogId,
-                                    Content = x.Messages.OrderByDescending(e => e.SendAt).Take(1).First().MessageContent.Content
-                                })
-                                .ToListAsync();
-
-            foreach (var item in result)
+            try
             {
-                item.UserName = await GetName(item.DialogId, userId);
-                item.UserAvatar = await GetAvatar(item.DialogId, userId);
-            }
+                var result = await (from x in _postgreDbContext.Dialogs
+                                   .Include(dialog => dialog.DialogMembers)
+                                       .ThenInclude(dialogMember => dialogMember.User)
+                                   .Include(dialog => dialog.Messages)
+                                       .ThenInclude(message => message.MessageContent)
+                                   .Include(dialog => dialog.Messages)
+                                    where x.DialogMembers.Any(d => d.User.UserId.Equals(userId))
+                                    select new DialogsOutput
+                                    {
+                                        DialogId = x.DialogId,
+                                        Content = x.Messages.OrderByDescending(e => e.SendAt).Take(1).First().MessageContent.Content
+                                    })
+                                   .ToListAsync();
 
-            return result;
+                foreach (var item in result)
+                {
+                    item.UserName = await GetName(item.DialogId, userId);
+                    item.UserAvatar = await GetAvatar(item.DialogId, userId);
+                }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }            
         }
 
         private async Task<string> GetName(Guid dialogId, Guid myId)
         {
-            var name = await _context.DialogMembers.Where(d => d.DialogId == dialogId && d.UserId != myId).Include(u => u.User).FirstOrDefaultAsync();
+            var name = await _postgreDbContext.DialogMembers.Where(d => d.DialogId == dialogId && d.UserId != myId).Include(u => u.User).FirstOrDefaultAsync();
 
             return name.User.Name;
         }
 
         private async Task<string> GetAvatar(Guid dialogId, Guid myId)
         {
-            var avatar = await _context.DialogMembers.Where(d => d.DialogId == dialogId && d.UserId != myId).Include(user => user.User).FirstOrDefaultAsync();
+            var avatar = await _postgreDbContext.DialogMembers.Where(d => d.DialogId == dialogId && d.UserId != myId).Include(user => user.User).FirstOrDefaultAsync();
 
             return avatar.User.Avatar;
         }
@@ -76,7 +86,9 @@ namespace Meetins.Services.Dialogs
         /// <returns> Список всех сообщений, принадлежащих диалогу. </returns>
         public async Task<IEnumerable<MessagesOutput>> GetMessagesOfDialogAsync(Guid dialogId)
         {
-            var messages = await _context.Messages.Where(d => d.DialogId.Equals(dialogId))
+            try
+            {
+                var messages = await _postgreDbContext.Messages.Where(d => d.DialogId.Equals(dialogId))
                              .Include(d => d.Dialog)
                              .Include(d => d.MessageContent)
                              .Include(d => d.User)
@@ -93,7 +105,15 @@ namespace Meetins.Services.Dialogs
                              })
                              .ToListAsync();
 
-            return messages;
+                return messages;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }            
         }
 
         public async Task<IEnumerable<MessagesOutput>> SendMessageAsync(Guid dialogId, Guid senderId, string content)
@@ -112,8 +132,8 @@ namespace Meetins.Services.Dialogs
                     SenderId = senderId,
                     SendAt = DateTime.Now
                 };
-                await _context.AddAsync(newMessage);
-                await _context.SaveChangesAsync();
+                await _postgreDbContext.AddAsync(newMessage);
+                await _postgreDbContext.SaveChangesAsync();
 
                 MessageContentsEntity messageContents = new()
                 {
@@ -122,11 +142,11 @@ namespace Meetins.Services.Dialogs
                     Content = content,
                     Type = "text"
                 };
-                await _context.AddAsync(messageContents);
+                await _postgreDbContext.AddAsync(messageContents);
 
-                await _context.SaveChangesAsync();
+                await _postgreDbContext.SaveChangesAsync();
 
-                var messages = await _context.Messages.Where(d => d.DialogId.Equals(dialogId))
+                var messages = await _postgreDbContext.Messages.Where(d => d.DialogId.Equals(dialogId))
                             .Include(d => d.Dialog)
                             .Include(d => d.MessageContent)
                             .Include(d => d.User)
@@ -145,9 +165,11 @@ namespace Meetins.Services.Dialogs
 
                 return messages;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //логируем
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -156,7 +178,7 @@ namespace Meetins.Services.Dialogs
         {
             try
             {
-                var findedUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId));
+                var findedUser = await _postgreDbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId));
 
                 if (findedUser is null)
                 {
@@ -179,8 +201,8 @@ namespace Meetins.Services.Dialogs
                     CreatedAt = dateTime
                 };
 
-                await _context.AddAsync(createdDialog);
-                await _context.SaveChangesAsync();
+                await _postgreDbContext.AddAsync(createdDialog);
+                await _postgreDbContext.SaveChangesAsync();
                 DialogMembersEntity dialogSender = new()
                 {
                     DialogId = createdDialog.DialogId,
@@ -192,9 +214,9 @@ namespace Meetins.Services.Dialogs
                     UserId = userId
                 };
 
-                await _context.AddAsync(dialogSender);
-                await _context.AddAsync(dialogMember);
-                await _context.SaveChangesAsync();
+                await _postgreDbContext.AddAsync(dialogSender);
+                await _postgreDbContext.AddAsync(dialogMember);
+                await _postgreDbContext.SaveChangesAsync();
                 MessageEntity newMessage = new()
                 {
                     MessageId = Guid.NewGuid(),
@@ -202,8 +224,8 @@ namespace Meetins.Services.Dialogs
                     SenderId = senderId,
                     SendAt = dateTime
                 };
-                await _context.AddAsync(newMessage);
-                await _context.SaveChangesAsync();
+                await _postgreDbContext.AddAsync(newMessage);
+                await _postgreDbContext.SaveChangesAsync();
                 MessageContentsEntity messageContents = new()
                 {
                     MessageContentId = Guid.NewGuid(),
@@ -211,11 +233,11 @@ namespace Meetins.Services.Dialogs
                     Content = content,
                     Type = "text"
                 };
-                await _context.AddAsync(messageContents);
+                await _postgreDbContext.AddAsync(messageContents);
 
-                await _context.SaveChangesAsync();
+                await _postgreDbContext.SaveChangesAsync();
 
-                var messages = await _context.Messages.Where(d => d.DialogId.Equals(createdDialog.DialogId))
+                var messages = await _postgreDbContext.Messages.Where(d => d.DialogId.Equals(createdDialog.DialogId))
                             .Include(d => d.Dialog)
                             .Include(d => d.MessageContent)
                             .Include(d => d.User)
@@ -234,9 +256,11 @@ namespace Meetins.Services.Dialogs
 
                 return messages;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -245,7 +269,7 @@ namespace Meetins.Services.Dialogs
         {
             try
             {
-                var result = await _context.DialogMembers
+                var result = await _postgreDbContext.DialogMembers
                     .Where(u => u.DialogId == dialogId && u.UserId != userId)
                     .Include(u => u.User)
                     .Select(u => new UserEntity
@@ -264,9 +288,11 @@ namespace Meetins.Services.Dialogs
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: Logging here
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -280,20 +306,23 @@ namespace Meetins.Services.Dialogs
         {
             try
             {
-                var dialogsToDelete = await _context.Dialogs.Include(d => d.DialogMembers)
+                var dialogsToDelete = await _postgreDbContext.Dialogs.Include(d => d.DialogMembers)
                 .Where(d => d.DialogMembers.Any(d => d.User.UserId.Equals(userId)))
                 .ToListAsync();
 
-                _context.Dialogs.RemoveRange(dialogsToDelete);
+                _postgreDbContext.Dialogs.RemoveRange(dialogsToDelete);
 
-                await _context.SaveChangesAsync();
+                await _postgreDbContext.SaveChangesAsync();
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
-            }            
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
   
         /// Метод вернет информацию о диалоге, если он существует.
@@ -306,11 +335,11 @@ namespace Meetins.Services.Dialogs
             try
             {
                 //TODO: добавить ещё свойтсва в выходную модель или ОТРЕФАКТОРИТЬ ЭТОТ БЛОК, тут вообще хуйня какая-то если групповые чаты то это не сработает.
-                var userDialogs = await _context.DialogMembers
+                var userDialogs = await _postgreDbContext.DialogMembers
                     .Where(d => d.UserId.Equals(userId))
                     .ToListAsync();
 
-                var otherUserDialog = await _context.DialogMembers
+                var otherUserDialog = await _postgreDbContext.DialogMembers
                     .Where(d => d.UserId.Equals(otherUserId))
                     .ToListAsync();
 
@@ -324,12 +353,15 @@ namespace Meetins.Services.Dialogs
                     }
                 }
 
+                //TODO: throw custom exception
                 return null;
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }

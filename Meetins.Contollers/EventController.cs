@@ -41,8 +41,7 @@ namespace Meetins.Contollers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });    
-                //TODO: log
+                return BadRequest(new { message = e.Message }); 
             }            
         }
 
@@ -65,11 +64,9 @@ namespace Meetins.Contollers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
-                //TODO: log
+                return BadRequest(new { message = e.Message });                
             }
         }
-
 
         /// <summary>
         /// Метод вернёт событие по идентификатору.
@@ -98,8 +95,7 @@ namespace Meetins.Contollers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
-                //TODO: log
+                return BadRequest(new { message = e.Message });               
             }
         }
 
@@ -130,8 +126,7 @@ namespace Meetins.Contollers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
-                //TODO: log
+                return BadRequest(new { message = e.Message });                
             }
         }
 
@@ -162,8 +157,7 @@ namespace Meetins.Contollers
             }
             catch (Exception e)
             {
-                return BadRequest(new { message = e.Message });
-                //TODO: log
+                return BadRequest(new { message = e.Message });                
             }
         }
     }

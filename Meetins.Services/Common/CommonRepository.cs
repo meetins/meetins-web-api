@@ -1,7 +1,9 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.Common;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,11 +15,11 @@ namespace Meetins.Services.Common
     /// </summary>
     public class CommonRepository : ICommonRepository
     {
-        private PostgreDbContext _context;
+        private PostgreDbContext _postgreDbContext;
 
-        public CommonRepository(PostgreDbContext context)
+        public CommonRepository(PostgreDbContext postgreDbContext)
         {
-            _context = context;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -26,7 +28,9 @@ namespace Meetins.Services.Common
         /// <returns> Список всех городов. </returns>
         public async Task<IEnumerable<CityOutput>> GetAllCitiesAsync()
         {
-            var result = await _context.Cities
+            try
+            {
+                var result = await _postgreDbContext.Cities
                 .Select(city => new CityOutput
                 {
                     CityId = city.CityId,
@@ -35,7 +39,15 @@ namespace Meetins.Services.Common
                 })
                 .ToListAsync();
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
     }
 }

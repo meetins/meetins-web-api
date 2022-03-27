@@ -1,6 +1,9 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Abstractions.Services;
+using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.Common;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,10 +15,12 @@ namespace Meetins.Services.Common
     public class CommonService : ICommonService
     {
         private ICommonRepository _commonRepository;
+        private PostgreDbContext _postgreDbContext;
 
-        public CommonService(ICommonRepository commonService)
+        public CommonService(ICommonRepository commonService, PostgreDbContext postgreDbContext)
         {
             _commonRepository = commonService;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -24,9 +29,19 @@ namespace Meetins.Services.Common
         /// <returns> Список все городов пользователей. </returns>
         public async Task<IEnumerable<CityOutput>> GetAllCitiesAsync()
         {
-            var result = await _commonRepository.GetAllCitiesAsync();
+            try
+            {
+                var result = await _commonRepository.GetAllCitiesAsync();
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
     }
 }

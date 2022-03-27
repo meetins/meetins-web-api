@@ -1,5 +1,6 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.People;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,11 +15,11 @@ namespace Meetins.Services.People
     /// </summary>
     public class PeopleRepository : IPeopleRepository
     {
-        private PostgreDbContext _context;
+        private PostgreDbContext _postgreDbContext;
 
-        public PeopleRepository(PostgreDbContext context)
+        public PeopleRepository(PostgreDbContext postgreDbContext)
         {
-            _context = context;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -28,7 +29,9 @@ namespace Meetins.Services.People
         /// <returns> Список всех существующих пользователей. </returns>
         public async Task<IEnumerable<PeopleOutput>> GetAllPeoplesAsync(Guid userId)
         {
-            var result = await _context.Users.Where(d => d.UserId != userId).Include(d =>d.City)                        
+            try
+            {
+                var result = await _postgreDbContext.Users.Where(d => d.UserId != userId).Include(d => d.City)
                            .Select(d => new PeopleOutput
                            {
                                Login = d.Login,
@@ -40,7 +43,15 @@ namespace Meetins.Services.People
                            })
                            .ToListAsync();
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
     }
 }
