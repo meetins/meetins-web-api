@@ -67,5 +67,10 @@ namespace Meetins.Core.Data
         /// Соответствует таблице dbo.Cities.
         /// </summary>
         public DbSet<CityEntity> Cities { get; set; }
+
+        /// <summary>
+        /// Соответствует таблице dbo.Logs.
+        /// </summary>
+        public DbSet<LogEntity> Logs { get; set; }
     }
 }
