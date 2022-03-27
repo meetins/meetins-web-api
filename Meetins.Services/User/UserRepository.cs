@@ -63,7 +63,7 @@ namespace Meetins.Services.User
                 return user;
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //TODO: log
                 throw;

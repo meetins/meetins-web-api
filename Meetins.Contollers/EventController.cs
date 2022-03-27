@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Meetins.Contollers
 {
+    /// <summary>
+    /// В контроллере содержатся методы для работы с событиями.
+    /// </summary>
     [Route("events")]
     [ApiController]
     [Authorize]
@@ -27,11 +30,20 @@ namespace Meetins.Contollers
         [HttpGet]
         [Route("categories")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<EventsCategoryOutput>))]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> GetEventsCategotiesListAsync()
         {
-            var result = await _eventService.GetEventsCategotiesListAsync();
+            try
+            {
+                var result = await _eventService.GetEventsCategotiesListAsync();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });    
+                //TODO: log
+            }            
         }
 
         /// <summary>
@@ -42,83 +54,117 @@ namespace Meetins.Contollers
         [HttpGet]
         [Route("list")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<EventOutput>))]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> GetEventsListAsync()
         {
-            var result = await _eventService.GetEventsListAsync();
+            try
+            {
+                var result = await _eventService.GetEventsListAsync();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+                //TODO: log
+            }
         }
 
+
         /// <summary>
-        /// Метод вернёт событие.
+        /// Метод вернёт событие по идентификатору.
         /// </summary>
-        /// <returns>Модель события.</returns>        
+        /// <param name="eventId">Идентификатор события.</param>
+        /// <returns>Модель события.</returns>
         [HttpPost]
         [Route("event-by-id")]
         [ProducesResponseType(200, Type = typeof(EventOutput))]
+        [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> GetEventAsyncByIdAsync([FromBody] long eventId)
         {
-            string rawUserId = HttpContext.User.FindFirst("userId").Value;
-
-            //string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
-
-            if (!Guid.TryParse(rawUserId, out Guid userId))
+            try
             {
-                return Unauthorized();
-            }            
+                string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
-            var result = await _eventService.GetEventByIdAsync(userId, eventId);
+                if (!Guid.TryParse(rawUserId, out Guid userId))
+                {
+                    return Unauthorized();
+                }
 
-            return Ok(result);
+                var result = await _eventService.GetEventByIdAsync(userId, eventId);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+                //TODO: log
+            }
         }
 
         /// <summary>
         /// Метод подпишет пользователя на событие.
         /// </summary>
+        /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>        
         [HttpPost]
         [Route("subscribe")]
         [ProducesResponseType(200, Type = typeof(EventOutput))]
+        [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> SubscribeToEventIdAsync([FromBody] long eventId)
         {
-            string rawUserId = HttpContext.User.FindFirst("userId").Value;
-
-            //string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
-
-            if (!Guid.TryParse(rawUserId, out Guid userId))
+            try
             {
-                return Unauthorized();
+                string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+                if (!Guid.TryParse(rawUserId, out Guid userId))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _eventService.SubscribeToEventAsync(userId, eventId);
+
+                return Ok(result);
             }
-
-            var result = await _eventService.SubscribeToEventAsync(userId, eventId);
-
-            return Ok(result);
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+                //TODO: log
+            }
         }
 
         /// <summary>
         /// Метод отменит подписку пользователя на событие.
         /// </summary>
+        /// <param name="eventId">Идентификатор события.</param>
         /// <returns>Модель события.</returns>        
         [HttpPost]
         [Route("unsubscribe")]
         [ProducesResponseType(200, Type = typeof(EventOutput))]
+        [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> UnSubscribeToEventIdAsync([FromBody] long eventId)
         {
-            string rawUserId = HttpContext.User.FindFirst("userId").Value;
-
-            //string rawUserId = "5db1031e-ca48-46d1-b9ea-d9e7ebb8c6e6";
-
-            if (!Guid.TryParse(rawUserId, out Guid userId))
+            try
             {
-                return Unauthorized();
+                string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+                if (!Guid.TryParse(rawUserId, out Guid userId))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _eventService.UnSubscribeToEventAsync(userId, eventId);
+
+                return Ok(result);
             }
-
-            var result = await _eventService.UnSubscribeToEventAsync(userId, eventId);
-
-            return Ok(result);
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+                //TODO: log
+            }
         }
     }
 }
