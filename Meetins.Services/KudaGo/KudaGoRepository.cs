@@ -1,10 +1,14 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Core.Data;
+using Meetins.Core.Exceptions;
 using Meetins.Models.KudaGo;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Mvc;
 
 namespace Meetins.Services.KudaGo
 {
@@ -13,7 +17,8 @@ namespace Meetins.Services.KudaGo
     /// </summary>
     public class KudaGoRepository : IKudaGoRepository
     {
-        private string url = "https://kudago.com/public-api/v1.4/locations/?lang=ru";
+        private string ApiUrl = "https://kudago.com/public-api/";
+        private string ApiVersion = "1.4";
 
         public KudaGoRepository()
         {
@@ -27,22 +32,21 @@ namespace Meetins.Services.KudaGo
         {
             using (HttpClient client = new HttpClient())
             {
-                try
+
+                var response = await client.GetAsync(ApiUrl + ApiVersion + "/locationss/?lang=ru");
+
+
+                if (response.IsSuccessStatusCode)
                 {
-                    var response = await client.GetAsync(url);
-
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return await response.Content.ReadAsAsync<IEnumerable<KudaGoOutput>>();
-                    }
-
-                    return null;
-
+                    return await response.Content.ReadAsAsync<IEnumerable<KudaGoOutput>>();
                 }
-                catch (Exception)
+                else if (response.StatusCode.Equals(HttpStatusCode.NotFound))
                 {
-                    throw;
+                    throw new NotFoundException("KudaGo Api locations notfound result code");
+                }
+                else
+                {
+                    throw new Exception("KudaGo Api locations " + response.StatusCode.ToString() + " result code");
                 }
             }
         }

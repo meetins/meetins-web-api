@@ -1,6 +1,8 @@
 ﻿using Meetins.Abstractions.Services;
+using Meetins.Core.Exceptions;
 using Meetins.Models.KudaGo;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -29,7 +31,18 @@ namespace Meetins.Contollers
         [Route("cities")]
         public async Task<ActionResult<IEnumerable<KudaGoOutput>>> GetAllAvailableCitiesAsync()
         {
-            return Ok(await _kudaGoService.GetAllAvailableCitiesAsync());
+            try
+            {
+                return Ok(await _kudaGoService.GetAllAvailableCitiesAsync());
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { message = e.Message });
+            }
         }
     }
 }
