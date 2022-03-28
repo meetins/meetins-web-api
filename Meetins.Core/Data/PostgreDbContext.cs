@@ -7,10 +7,12 @@ namespace Meetins.Core.Data
     /// Класс контекста PostgreSql
     /// </summary>
     public class PostgreDbContext : DbContext
-    {        
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        private readonly DbContextOptions<PostgreDbContext> _options;
+
+        public PostgreDbContext(DbContextOptions<PostgreDbContext> options) : base(options)
         {
-            optionsBuilder.UseNpgsql("Host=62.84.123.131;Port=5432;Database=meetins_test;Username=meetinsadmin;Password=1");
+            _options = options;
         }
 
         /// <summary>
@@ -67,5 +69,10 @@ namespace Meetins.Core.Data
         /// Соответствует таблице dbo.Cities.
         /// </summary>
         public DbSet<CityEntity> Cities { get; set; }
+
+        /// <summary>
+        /// Соответствует таблице dbo.Logs.
+        /// </summary>
+        public DbSet<LogEntity> Logs { get; set; }
     }
 }

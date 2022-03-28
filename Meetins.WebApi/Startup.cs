@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Meetins.Services.Events;
 using Meetins.Services.Common;
 using Meetins.Services.KudaGo;
+using Microsoft.EntityFrameworkCore;
 
 namespace Meetins.WebApi
 {
@@ -73,8 +74,9 @@ namespace Meetins.WebApi
                         };
                     });
 
-            services.AddEntityFrameworkNpgsql().AddDbContext<PostgreDbContext>();
-            //services.AddEntityFrameworkInMemoryDatabase().AddDbContext<InMemoryContext>();
+            
+            services.AddDbContext<PostgreDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("NpgTestSqlConnection")));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

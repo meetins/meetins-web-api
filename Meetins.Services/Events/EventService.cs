@@ -1,5 +1,7 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Abstractions.Services;
+using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.Events.Output;
 using System;
 using System.Collections.Generic;
@@ -13,10 +15,12 @@ namespace Meetins.Services.Events
     public class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
+        private PostgreDbContext _postgreDbContext;
 
-        public EventService(IEventRepository eventRepository)
+        public EventService(IEventRepository eventRepository, PostgreDbContext postgreDbContext)
         {
             _eventRepository = eventRepository;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -33,9 +37,11 @@ namespace Meetins.Services.Events
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -52,9 +58,11 @@ namespace Meetins.Services.Events
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -71,9 +79,11 @@ namespace Meetins.Services.Events
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -92,9 +102,11 @@ namespace Meetins.Services.Events
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -113,9 +125,11 @@ namespace Meetins.Services.Events
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }

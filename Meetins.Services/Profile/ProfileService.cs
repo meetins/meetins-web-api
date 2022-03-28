@@ -1,5 +1,7 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Abstractions.Services;
+using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.Mapper;
 using Meetins.Models.Profile.Output;
 using System;
@@ -13,10 +15,12 @@ namespace Meetins.Services.Profile
     public class ProfileService : IProfileService
     {
         private IUserRepository _userRepository;
+        private PostgreDbContext _postgreDbContext;
 
-        public ProfileService(IUserRepository userRepository)
+        public ProfileService(IUserRepository userRepository, PostgreDbContext postgreDbContext)
         {
             _userRepository = userRepository;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -26,9 +30,19 @@ namespace Meetins.Services.Profile
         /// <returns> Выходная модель пользователя. </returns>
         public async Task<ProfileOutput> GetUserProfileAsync(Guid userId)
         {
-            var user = await _userRepository.GetUserByIdAsync(userId);
-            
-            return user.ToProfileOutput();
+            try
+            {
+                var user = await _userRepository.GetUserByIdAsync(userId);
+
+                return user.ToProfileOutput();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
         /// <summary>
@@ -38,14 +52,25 @@ namespace Meetins.Services.Profile
         /// <returns> Выходная модель профиля. </returns>
         public async Task<ProfileOutput> GetUserProfileByLoginAsync(string login)
         {
-            var user = await _userRepository.GetUserByLoginAsync(login);
-            
-            if (user is null)
+            try
             {
-                return null;
-            }
+                var user = await _userRepository.GetUserByLoginAsync(login);
 
-            return user.ToProfileOutput();
+                if (user is null)
+                {
+                    //TODO: бросить кастомное исключение
+                    return null;
+                }
+
+                return user.ToProfileOutput();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
         /// <summary>
@@ -56,9 +81,19 @@ namespace Meetins.Services.Profile
         /// <returns> Выходная модель профиля. </returns>
         public async Task<ProfileOutput> UpdateAvatarPathAsync(Guid userId, string newAvatarPath)
         {
-            var user = await _userRepository.UpdateAvatarPathAsync(userId, newAvatarPath);         
+            try
+            {
+                var user = await _userRepository.UpdateAvatarPathAsync(userId, newAvatarPath);
 
-            return user.ToProfileOutput();
+                return user.ToProfileOutput();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
         /// <summary>
@@ -69,9 +104,19 @@ namespace Meetins.Services.Profile
         /// <returns> Выходная модель профиля. </returns>
         public async Task<ProfileOutput> UpdateProfileStatusAsync(Guid userId, string status)
         {
-            var user = await _userRepository.UpdateStatusAsync(userId, status);
+            try
+            {
+                var user = await _userRepository.UpdateStatusAsync(userId, status);
 
-            return user.ToProfileOutput();
+                return user.ToProfileOutput();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.Entities;
 using Meetins.Models.User.Output;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,11 @@ namespace Meetins.Services.User
     /// </summary>
     public class RefreshTokenRepository : IRefreshTokenRepository
     {
-        private PostgreDbContext _db;
+        private PostgreDbContext _postgreDbContext;
 
-        public RefreshTokenRepository(PostgreDbContext db)
+        public RefreshTokenRepository(PostgreDbContext postgreDbContext)
         {
-            _db = db;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -31,20 +32,23 @@ namespace Meetins.Services.User
         {
             try
             {
-                List<RefreshTokenEntity> refreshTokens = await _db.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
+                List<RefreshTokenEntity> refreshTokens = await _postgreDbContext.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
 
                 foreach (var item in refreshTokens)
                 {
-                    _db.RefreshTokens.Remove(item);
+                    _postgreDbContext.RefreshTokens.Remove(item);
                 }
 
-                await _db.SaveChangesAsync();
+                await _postgreDbContext.SaveChangesAsync();
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
             }
         }
 
@@ -64,9 +68,9 @@ namespace Meetins.Services.User
                     UserId = userId
                 };
 
-                await _db.RefreshTokens.AddAsync(newRefreshToken);
+                await _postgreDbContext.RefreshTokens.AddAsync(newRefreshToken);
 
-                await _db.SaveChangesAsync();
+                await _postgreDbContext.SaveChangesAsync();
 
                 RefreshTokenOutput result = new()
                 {
@@ -76,9 +80,11 @@ namespace Meetins.Services.User
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -92,7 +98,7 @@ namespace Meetins.Services.User
         {
             try
             {
-                var result = await _db.RefreshTokens
+                var result = await _postgreDbContext.RefreshTokens
                     .Where(b => b.Token.Equals(refreshToken))
                     .Select(b => new RefreshTokenOutput
                     {
@@ -104,9 +110,11 @@ namespace Meetins.Services.User
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -120,20 +128,23 @@ namespace Meetins.Services.User
         {
             try
             {
-                var deletedToken = await _db.RefreshTokens
+                var deletedToken = await _postgreDbContext.RefreshTokens
                    .Where(b => b.RefreshTokenId.Equals(refreshTokenId))
                    .FirstOrDefaultAsync();
 
-                _db.RefreshTokens.Remove(deletedToken);
+                _postgreDbContext.RefreshTokens.Remove(deletedToken);
 
-                await _db.SaveChangesAsync();
+                await _postgreDbContext.SaveChangesAsync();
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
-            }           
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
     }
 }

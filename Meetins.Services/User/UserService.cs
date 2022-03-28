@@ -10,6 +10,8 @@ using Meetins.Core.Options;
 using Meetins.Models.User.Output;
 using Meetins.Models.Mapper;
 using Meetins.Models.Entities;
+using Meetins.Core.Logger;
+using Meetins.Core.Data;
 
 namespace Meetins.Services.User
 {
@@ -18,13 +20,15 @@ namespace Meetins.Services.User
     /// </summary>
     public class UserService : IUserService
     {
+        private PostgreDbContext _postgreDbContext;
         private IUserRepository _userRepository;
         private IRefreshTokenRepository _refreshTokenRepository;
 
-        public UserService(IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository)
+        public UserService(IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository, PostgreDbContext postgreDbContext)
         {
             _userRepository = userRepository;
             _refreshTokenRepository = refreshTokenRepository;
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -78,11 +82,13 @@ namespace Meetins.Services.User
 
                 return loginOutput;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
-            }            
+            }
         }
 
         /// <summary>
@@ -127,11 +133,13 @@ namespace Meetins.Services.User
 
                 return loginOutput;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
-            }           
+            }
         }
 
         /// <summary>
@@ -145,9 +153,11 @@ namespace Meetins.Services.User
             {
                 return await _refreshTokenRepository.DeleteAllAsync(userId);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -159,7 +169,17 @@ namespace Meetins.Services.User
         /// <returns> Статус удаления. </returns>
         public async Task<bool> DeleteUserByUserIdAsync(Guid userId)
         {
-            return await _userRepository.DeleteAsync(userId);
+            try
+            {
+                return await _userRepository.DeleteAsync(userId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
         /// <summary>
@@ -220,9 +240,11 @@ namespace Meetins.Services.User
 
                 return auth;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -240,9 +262,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -260,9 +284,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -280,9 +306,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -301,9 +329,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -322,9 +352,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -350,9 +382,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -371,9 +405,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -392,9 +428,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -413,9 +451,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }
@@ -434,9 +474,11 @@ namespace Meetins.Services.User
 
                 return user;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //TODO: log
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
                 throw;
             }
         }

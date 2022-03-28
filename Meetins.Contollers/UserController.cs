@@ -42,8 +42,7 @@ namespace Meetins.Controllers
                 return Ok(authResult);
             }
             catch (Exception e)
-            {
-                //TODO: log
+            {                
                 return BadRequest(new { message = e.Message});
             }
         }
@@ -65,8 +64,7 @@ namespace Meetins.Controllers
                 return Ok(refreshTokenResults);
             }
             catch (Exception e)
-            {
-                //TODO: log
+            {                
                 return BadRequest(new { message = e.Message });
             }            
         }
@@ -93,8 +91,7 @@ namespace Meetins.Controllers
                 return Ok(result);
             }
             catch (Exception e)
-            {
-                //TODO: log
+            {                
                 return BadRequest(new { message = e.Message });                
             }            
         }
@@ -116,8 +113,7 @@ namespace Meetins.Controllers
                 return Ok(user.ToProfileOutput());
             }
             catch (Exception e)
-            {
-                //TODO: log
+            {                
                 return BadRequest(new { message = e.Message });
             }
         }
