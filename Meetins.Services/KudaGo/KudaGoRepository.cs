@@ -18,7 +18,7 @@ namespace Meetins.Services.KudaGo
     public class KudaGoRepository : IKudaGoRepository
     {
         private string ApiUrl = "https://kudago.com/public-api/";
-        private string ApiVersion = "1.4";
+        private string ApiVersion = "v1.4";
 
         public KudaGoRepository()
         {
@@ -33,7 +33,7 @@ namespace Meetins.Services.KudaGo
             using (HttpClient client = new HttpClient())
             {
 
-                var response = await client.GetAsync(ApiUrl + ApiVersion + "/locationss/?lang=ru");
+                var response = await client.GetAsync(ApiUrl + ApiVersion + "/locations/?lang=ru");
 
 
                 if (response.IsSuccessStatusCode)
