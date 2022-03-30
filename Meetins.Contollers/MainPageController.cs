@@ -1,4 +1,5 @@
 ﻿using Meetins.Abstractions.Services;
+using Meetins.Communication.Abstractions;
 using Meetins.Models.MainPage.Output;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -13,11 +14,11 @@ namespace Meetins.Controllers
     [ApiController]
     public class MainPageController : ControllerBase
     {
-        IAboutService _aboutService;
+        IAboutService _aboutService;        
 
         public MainPageController(IAboutService aboutService)
         {
-            _aboutService = aboutService;
+            _aboutService = aboutService;            
         }
 
         [HttpGet]

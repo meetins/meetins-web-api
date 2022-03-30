@@ -24,9 +24,18 @@ namespace Meetins.Services.Common
         }
 
         /// <summary>
-        /// Получение списка всех городов пользователей.
+        /// Метод генерирует 6-значный цифробуквенный код.
         /// </summary>
-        /// <returns> Список все городов пользователей. </returns>
+        /// <returns>6-значный цифробуквенный код.</returns>
+        public async Task<string> GenerateCodeAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Получение списка всех городов пользователей из БД.
+        /// </summary>
+        /// <returns> Список всех городов пользователей из БД. </returns>
         public async Task<IEnumerable<CityOutput>> GetAllCitiesAsync()
         {
             try
