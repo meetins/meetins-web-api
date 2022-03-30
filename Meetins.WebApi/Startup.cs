@@ -23,6 +23,8 @@ using Meetins.Services.Events;
 using Meetins.Services.Common;
 using Meetins.Services.KudaGo;
 using Microsoft.EntityFrameworkCore;
+using Meetins.Communication.Abstractions;
+using Meetins.Communication.Services;
 
 namespace Meetins.WebApi
 {
@@ -104,6 +106,7 @@ namespace Meetins.WebApi
             services.AddTransient<IEventService, EventService>();
             services.AddTransient<ICommonService, CommonService>();
             services.AddTransient<IKudaGoService, KudaGoService>();
+            services.AddTransient<IMailingService, MailingService>();
             services.AddCors();
             services.AddSignalR();
         }
