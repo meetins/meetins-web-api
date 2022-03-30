@@ -27,7 +27,7 @@ namespace Meetins.Tests.KudaGo
                 {
                 new KudaGoOutput { Name ="Москва", Slug ="msk"},
                 new KudaGoOutput { Name ="Санкт-Петербург", Slug ="spb"},
-                new KudaGoOutput { Name ="Екатерингбург", Slug ="ekb"}
+                new KudaGoOutput { Name ="Екатеринбург", Slug ="ekb"}
                 };
             }
                         

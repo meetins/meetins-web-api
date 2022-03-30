@@ -14,5 +14,11 @@ namespace Meetins.Abstractions.Services
         /// </summary>
         /// <returns> Список всех городов пользователей. </returns>
         Task<IEnumerable<CityOutput>> GetAllCitiesAsync();
+
+        /// <summary>
+        /// Метод генерирует 6-значный цифробуквенный код.
+        /// </summary>
+        /// <returns>6-значный цифробуквенный код.</returns>
+        Task<string> GenerateCodeAsync();
     }
 }
