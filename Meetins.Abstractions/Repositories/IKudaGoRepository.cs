@@ -13,6 +13,12 @@ namespace Meetins.Abstractions.Repositories
         /// Получение списка всех доступных городов.
         /// </summary>
         /// <returns> Список всех доступных городов. </returns>
-        Task<IEnumerable<KudaGoOutput>> GetAllAvailableCitiesAsync();
+        Task<IEnumerable<KudaGoCitiesOutput>> GetAllAvailableCitiesAsync();
+
+        /// <summary>
+        /// Получение списка всех категорий событий.
+        /// </summary>
+        /// <returns> Список всех категорий событий. </returns>
+        Task<IEnumerable<KudaGoEventCategoriesOutput>> GetAllEventСategoriesAsync();
     }
 }

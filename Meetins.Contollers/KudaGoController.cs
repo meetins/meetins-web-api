@@ -1,10 +1,9 @@
 ﻿using Meetins.Abstractions.Services;
-using Meetins.Core.Exceptions;
+using Meetins.Models.Exceptions;
 using Meetins.Models.KudaGo;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Meetins.Contollers
@@ -29,7 +28,7 @@ namespace Meetins.Contollers
         /// <returns> Список всех доступных городов. </returns>
         [HttpGet]
         [Route("cities")]
-        public async Task<ActionResult<IEnumerable<KudaGoOutput>>> GetAllAvailableCitiesAsync()
+        public async Task<ActionResult<IEnumerable<KudaGoCitiesOutput>>> GetAllAvailableCitiesAsync()
         {
             try
             {
@@ -42,6 +41,28 @@ namespace Meetins.Contollers
             catch (Exception e)
             {
                 return BadRequest(new { message = e.Message });
+            }
+        }
+
+        /// <summary>
+        /// Получение списка всех категорий событий.
+        /// </summary>
+        /// <returns> Список категорий событий. </returns>
+        [HttpGet]
+        [Route("categories")]
+        public async Task<ActionResult<IEnumerable<KudaGoEventCategoriesOutput>>> GetAllEventСategoriesAsync()
+        {
+            try
+            {
+                return Ok(await _kudaGoService.GetAllEventСategoriesAsync());
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { messge = e.Message });
             }
         }
     }
