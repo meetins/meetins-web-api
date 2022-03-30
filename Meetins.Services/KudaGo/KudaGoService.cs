@@ -47,11 +47,30 @@ namespace Meetins.Services.KudaGo
         /// Получение списка всех категорий событий.
         /// </summary>
         /// <returns> Список категорий событий. </returns>
-        public async Task<IEnumerable<KudaGoEventCategoriesOutput>> GetAllEventСategoriesAsync()
+        public async Task<IEnumerable<KudaGoCategoriesOutput>> GetAllEventСategoriesAsync()
         {
             try
             {
                 return await _kudaGoRepository.GetAllEventСategoriesAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Получение списка всех категорий мест.
+        /// </summary>
+        /// <returns> Список категорий мест. </returns>
+        public async Task<IEnumerable<KudaGoCategoriesOutput>> GetAllPlaceСategoriesAsync()
+        {
+            try
+            {
+                return await _kudaGoRepository.GetAllPlaceСategoriesAsync();
             }
             catch(Exception e)
             {

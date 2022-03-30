@@ -1,9 +1,9 @@
 ﻿namespace Meetins.Models.KudaGo
 {
     /// <summary>
-    /// Выходная модель для списка категорий событий из сервиса KudaGoю
+    /// Выходная модель для списка категорий событий из сервиса KudaGo.
     /// </summary>
-    public class KudaGoEventCategoriesOutput
+    public class KudaGoCategoriesOutput
     {
         /// <summary>
         /// Идентификатор категории событий.

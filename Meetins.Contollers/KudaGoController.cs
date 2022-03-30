@@ -49,12 +49,34 @@ namespace Meetins.Contollers
         /// </summary>
         /// <returns> Список категорий событий. </returns>
         [HttpGet]
-        [Route("categories")]
-        public async Task<ActionResult<IEnumerable<KudaGoEventCategoriesOutput>>> GetAllEventСategoriesAsync()
+        [Route("event_categories")]
+        public async Task<ActionResult<IEnumerable<KudaGoCategoriesOutput>>> GetAllEventСategoriesAsync()
         {
             try
             {
                 return Ok(await _kudaGoService.GetAllEventСategoriesAsync());
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { messge = e.Message });
+            }
+        }
+
+        /// <summary>
+        /// Получение списка всех категорий мест.
+        /// </summary>
+        /// <returns> Список категорий мест. </returns>
+        [HttpGet]
+        [Route("place_categories")]
+        public async Task<ActionResult<IEnumerable<KudaGoCategoriesOutput>>> GetAllPlaceСategoriesAsync()
+        {
+            try
+            {
+                return Ok(await _kudaGoService.GetAllPlaceСategoriesAsync());
             }
             catch (NotFoundException)
             {
