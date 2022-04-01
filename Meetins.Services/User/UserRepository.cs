@@ -19,9 +19,10 @@ namespace Meetins.Services.User
         private PostgreDbContext _postgreDbContext;
         private ICommonService _commonService;
 
-        public UserRepository(PostgreDbContext postgreDbContext)
+        public UserRepository(PostgreDbContext postgreDbContext, ICommonService commonService)
         {
             _postgreDbContext = postgreDbContext;
+            _commonService = commonService;
         }
 
         /// <summary>
