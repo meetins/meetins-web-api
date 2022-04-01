@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Meetins.Core.Exceptions
+namespace Meetins.Models.Exceptions
 {
     public class NotFoundException : Exception
     {
