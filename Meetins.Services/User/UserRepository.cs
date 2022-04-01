@@ -2,6 +2,7 @@
 using Meetins.Core.Data;
 using Meetins.Core.Logger;
 using Meetins.Models.Entities;
+using Meetins.Services.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -483,7 +484,7 @@ namespace Meetins.Services.User
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="cityId">Идентификатор нового города.</param>
         /// <returns>Данные пользователя.</returns>
-        public async Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId)
+        public async Task<UserEntity> UpdateCityAsync(Guid userId, Guid cityId)
         {
             try
             {
@@ -491,8 +492,8 @@ namespace Meetins.Services.User
 
                 if (user != null)
                 {
-                    user.CityId = cityId;
-
+                    user.City.CityId = cityId;
+                    user.City.CityName = await CommonService.GetCityNameAsync(cityId);
                     await _postgreDbContext.SaveChangesAsync();
                 }
 

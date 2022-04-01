@@ -224,7 +224,7 @@ namespace Meetins.Controllers
         /// <returns>Данные профиля пользователя.</returns>
         [HttpPost]
         [Route("update-city")]
-        public async Task<ActionResult<ProfileOutput>> UpdateCityIdAsync([FromBody] Guid cityId)
+        public async Task<ActionResult<ProfileOutput>> UpdateCityAsync([FromBody] Guid cityId)
         {
             string rawUserId = HttpContext.User.FindFirst("userId").Value;
 
@@ -235,7 +235,7 @@ namespace Meetins.Controllers
 
             try
             {
-                var result = await _userService.UpdateCityIdAsync(userId, cityId);
+                var result = await _userService.UpdateCityAsync(userId, cityId);
 
                 return Ok(result.ToProfileOutput());
             }

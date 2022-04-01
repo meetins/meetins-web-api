@@ -466,11 +466,11 @@ namespace Meetins.Services.User
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="cityId">Идентификатор нового города.</param>
         /// <returns>Данные пользователя.</returns>
-        public async Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId)
+        public async Task<UserEntity> UpdateCityAsync(Guid userId, Guid cityId)
         {
             try
             {
-                var user = await _userRepository.UpdateCityIdAsync(userId, cityId);
+                var user = await _userRepository.UpdateCityAsync(userId, cityId);
 
                 return user;
             }

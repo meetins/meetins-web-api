@@ -119,7 +119,7 @@ namespace Meetins.Abstractions.Services
         /// <param name="userId">Идентификатор пользователя</param>
         /// <param name="cityId">Идентификатор нового города</param>
         /// <returns>Данные пользователя</returns>
-        Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId);
+        Task<UserEntity> UpdateCityAsync(Guid userId, Guid cityId);
 
         /// <summary>
         /// Метод удалит аккаунт пользователя.
