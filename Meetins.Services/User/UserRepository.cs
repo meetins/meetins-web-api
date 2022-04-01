@@ -1,4 +1,5 @@
 ﻿using Meetins.Abstractions.Repositories;
+using Meetins.Abstractions.Services;
 using Meetins.Core.Data;
 using Meetins.Core.Logger;
 using Meetins.Models.Entities;
@@ -16,6 +17,7 @@ namespace Meetins.Services.User
     public class UserRepository : IUserRepository
     {
         private PostgreDbContext _postgreDbContext;
+        private ICommonService _commonService;
 
         public UserRepository(PostgreDbContext postgreDbContext)
         {
@@ -493,7 +495,7 @@ namespace Meetins.Services.User
                 if (user != null)
                 {
                     user.City.CityId = cityId;
-                    user.City.CityName = await CommonService.GetCityNameAsync(cityId);
+                    user.City.CityName = await _commonService.GetCityNameAsync(cityId);
                     await _postgreDbContext.SaveChangesAsync();
                 }
 

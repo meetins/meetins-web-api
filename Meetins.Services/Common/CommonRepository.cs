@@ -55,7 +55,7 @@ namespace Meetins.Services.Common
         /// </summary>
         /// <param name="cityId">Идентификатор города</param>
         /// <returns>Название города</returns>
-        public async Task<string> GetCityNameAync(Guid cityId)
+        public async Task<string> GetCityNameAsync(Guid cityId)
         {
             try
             {
