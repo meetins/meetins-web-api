@@ -29,7 +29,10 @@ namespace Meetins.Services.Common
         /// <returns>6-значный цифробуквенный код.</returns>
         public async Task<string> GenerateCodeAsync()
         {
-            throw new NotImplementedException();
+            var rand = new Random();
+            var code = rand.Next(100000,999999);
+
+            return code.ToString();
         }
 
         /// <summary>
