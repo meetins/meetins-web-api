@@ -80,5 +80,24 @@ namespace Meetins.Services.KudaGo
                 throw;
             }
         }
+
+        /// <summary>
+        /// Получение списка всех доступных мест.
+        /// </summary>
+        /// <returns> Список всех доступных мест. </returns>
+        public async Task<IEnumerable<Results>> GetAllAvailablePlacesAsync()
+        {
+            try
+            {
+                return await _kudaGoRepository.GetAllAvailablePlacesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
+        }
     }
 }

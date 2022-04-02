@@ -1,6 +1,7 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Models.Exceptions;
 using Meetins.Models.KudaGo;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -94,6 +95,33 @@ namespace Meetins.Services.KudaGo
                 else
                 {
                     throw new Exception("KudaGo Api place categories " + response.StatusCode.ToString() + " result code");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Получение списка всех доступных мест.
+        /// </summary>
+        /// <returns> Список всех доступных мест. </returns>
+        public async Task<IEnumerable<Results>> GetAllAvailablePlacesAsync()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var res = await client.GetAsync(ApiUrl + ApiVersion + "/places/");
+                var responseJson = await client.GetStringAsync(ApiUrl + ApiVersion + "/places/");
+
+                if (res.IsSuccessStatusCode)
+                {
+                    var response = JsonConvert.DeserializeObject<KudaGoPlacesOutput>(responseJson);
+                    return response.Results;
+                }
+                else if (res.StatusCode.Equals(HttpStatusCode.NotFound))
+                {
+                    throw new NotFoundException(("KudaGo Api places notfound result code"));
+                }
+                else
+                {
+                    throw new Exception("KudaGo Api places " + res.StatusCode.ToString() + " result code");
                 }
             }
         }
