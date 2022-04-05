@@ -1,14 +1,11 @@
 ﻿using Meetins.Abstractions.Repositories;
-using Meetins.Core.Data;
-using Meetins.Core.Exceptions;
+using Meetins.Models.Exceptions;
 using Meetins.Models.KudaGo;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Mvc;
 
 namespace Meetins.Services.KudaGo
 {
@@ -28,7 +25,7 @@ namespace Meetins.Services.KudaGo
         /// Получение списка всех доступных городов.
         /// </summary>
         /// <returns> Список доступных городов. </returns>
-        public async Task<IEnumerable<KudaGoOutput>> GetAllAvailableCitiesAsync()
+        public async Task<IEnumerable<KudaGoCitiesOutput>> GetAllAvailableCitiesAsync()
         {
             using (HttpClient client = new HttpClient())
             {
@@ -38,7 +35,7 @@ namespace Meetins.Services.KudaGo
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadAsAsync<IEnumerable<KudaGoOutput>>();
+                    return await response.Content.ReadAsAsync<IEnumerable<KudaGoCitiesOutput>>();
                 }
                 else if (response.StatusCode.Equals(HttpStatusCode.NotFound))
                 {
@@ -47,6 +44,56 @@ namespace Meetins.Services.KudaGo
                 else
                 {
                     throw new Exception("KudaGo Api locations " + response.StatusCode.ToString() + " result code");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Получение списка всех категорий событий.
+        /// </summary>
+        /// <returns> Список категорий событий. </returns>
+        public async Task<IEnumerable<KudaGoCategoriesOutput>> GetAllEventСategoriesAsync()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(ApiUrl + ApiVersion + "/event-categories/?lang=ru");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<IEnumerable<KudaGoCategoriesOutput>>();
+                }
+                else if (response.StatusCode.Equals(HttpStatusCode.NotFound))
+                {
+                    throw new NotFoundException("KudaGo Api event categories notfound result code");
+                }
+                else
+                {
+                    throw new Exception("KudaGo Api categories " + response.StatusCode.ToString() + " result code");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Получение списка всех категорий мест.
+        /// </summary>
+        /// <returns> Список категорий мест. </returns>
+        public async Task<IEnumerable<KudaGoCategoriesOutput>> GetAllPlaceСategoriesAsync()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(ApiUrl + ApiVersion + "/place-categories/?lang=ru");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<IEnumerable<KudaGoCategoriesOutput>>();
+                }
+                else if (response.StatusCode.Equals(HttpStatusCode.NotFound))
+                {
+                    throw new NotFoundException(("KudaGo Api place categories notfound result code"));
+                }
+                else
+                {
+                    throw new Exception("KudaGo Api place categories " + response.StatusCode.ToString() + " result code");
                 }
             }
         }
