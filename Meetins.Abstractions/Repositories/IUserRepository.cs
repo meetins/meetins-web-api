@@ -136,5 +136,21 @@ namespace Meetins.Abstractions.Repositories
         /// <param name="userId"> Идентификатор пользователя. </param>
         /// <returns></returns>
         Task<bool> DeleteAsync(Guid userId);
+
+        /// <summary>
+        /// Метод сохранит код в БД.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="code">Код.</param>
+        /// <returns>Статус операции.</returns>
+        Task<bool> SaveAcceptCodeAsync(Guid userId, string code);
+
+        /// <summary>
+        /// Метод подтвердит почту пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="code">Код.</param>
+        /// <returns>Статус операции.</returns>
+        Task<bool> ConfirmMailAsync(Guid userId, string code);
     }
 }

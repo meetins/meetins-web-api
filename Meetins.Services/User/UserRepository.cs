@@ -298,6 +298,7 @@ namespace Meetins.Services.User
                 if (findedUser != null)
                 {
                     findedUser.Email = email;
+                    findedEmail.NormalizedEmail = email.ToUpperInvariant();
 
                     await _postgreDbContext.SaveChangesAsync();
                 }
@@ -365,6 +366,7 @@ namespace Meetins.Services.User
                 if (findedUser != null)
                 {
                     findedUser.Login = login;
+                    findedLogin.Login = login.ToUpperInvariant();
 
                     await _postgreDbContext.SaveChangesAsync();
                 }
@@ -497,6 +499,68 @@ namespace Meetins.Services.User
                 }
 
                 return user;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод сохранит код в БД.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="code">Код.</param>
+        /// <returns>Статус операции.</returns>
+        public async Task<bool> SaveAcceptCodeAsync(Guid userId, string code)
+        {
+            try
+            {
+                var findedUser = await GetUserByIdAsync(userId);
+
+                findedUser.ConfirmEmailCode = code;
+
+                await _postgreDbContext.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод подтвердит почту пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="code">Код.</param>
+        /// <returns>Статус операции.</returns>
+        public async Task<bool> ConfirmMailAsync(Guid userId, string code)
+        {
+            try
+            {
+                var findedUser = await GetUserByIdAsync(userId);
+
+                if (findedUser is null)
+                {
+                    throw new ArgumentException($"Пользователь с ID {userId} не найден.", nameof(userId));
+                }
+
+                if (findedUser.ConfirmEmailCode == code)
+                {
+                    findedUser.EmailConfirmed = true;
+                    await _postgreDbContext.SaveChangesAsync();
+                    return true;
+                }
+
+                return false;               
             }
             catch (Exception e)
             {
