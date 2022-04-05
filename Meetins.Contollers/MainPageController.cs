@@ -1,5 +1,4 @@
 ﻿using Meetins.Abstractions.Services;
-using Meetins.Communication.Abstractions;
 using Meetins.Models.MainPage.Output;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -14,13 +13,11 @@ namespace Meetins.Controllers
     [ApiController]
     public class MainPageController : ControllerBase
     {
-        IAboutService _aboutService;
-        IMailingService _mailingService;
+        IAboutService _aboutService;        
 
-        public MainPageController(IAboutService aboutService, IMailingService mailingService)
+        public MainPageController(IAboutService aboutService)
         {
-            _aboutService = aboutService;
-            _mailingService = mailingService;
+            _aboutService = aboutService;            
         }
 
         [HttpGet]
@@ -30,15 +27,6 @@ namespace Meetins.Controllers
             var result = await _aboutService.GetAboutsAsync();
 
             return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("send-code")]
-        public async Task<ActionResult<IEnumerable<AboutsOutput>>> SendCodeAsync()
-        {
-            await _mailingService.SendAcceptCodeMailAsync("123456", "dmchdmka@gmail.com");
-
-            return Ok();
         }
     }
 }
