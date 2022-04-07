@@ -85,11 +85,11 @@ namespace Meetins.Services.KudaGo
         /// Получение списка всех доступных мест.
         /// </summary>
         /// <returns> Список всех доступных мест. </returns>
-        public async Task<IEnumerable<Results>> GetAllAvailablePlacesAsync()
+        public async Task<KudaGoPlacesOutput> GetAllAvailablePlacesAsync(int numberOfPage )
         {
             try
             {
-                return await _kudaGoRepository.GetAllAvailablePlacesAsync();
+                return await _kudaGoRepository.GetAllAvailablePlacesAsync(numberOfPage);
             }
             catch (Exception e)
             {

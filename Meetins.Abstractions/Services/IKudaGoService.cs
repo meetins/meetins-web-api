@@ -31,6 +31,6 @@ namespace Meetins.Abstractions.Services
         /// Получение списка всех доступных мест.
         /// </summary>
         /// <returns> Список всех доступных мест. </returns>
-        Task<IEnumerable<Results>> GetAllAvailablePlacesAsync();
+        Task<KudaGoPlacesOutput> GetAllAvailablePlacesAsync(int numberOfPage);
     }
 }

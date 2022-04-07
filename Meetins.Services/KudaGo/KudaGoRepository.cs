@@ -103,25 +103,26 @@ namespace Meetins.Services.KudaGo
         /// Получение списка всех доступных мест.
         /// </summary>
         /// <returns> Список всех доступных мест. </returns>
-        public async Task<IEnumerable<Results>> GetAllAvailablePlacesAsync()
+        public async Task<KudaGoPlacesOutput> GetAllAvailablePlacesAsync(int numberOfPage)
         {
             using (HttpClient client = new HttpClient())
             {
-                var res = await client.GetAsync(ApiUrl + ApiVersion + "/places/");
-                var responseJson = await client.GetStringAsync(ApiUrl + ApiVersion + "/places/");
+                var responseMessage = await client.GetAsync(ApiUrl + ApiVersion + "/places/?page=" + numberOfPage);
+                var responseJson = await responseMessage.Content.ReadAsStringAsync();
 
-                if (res.IsSuccessStatusCode)
+                if (responseMessage.IsSuccessStatusCode)
                 {
                     var response = JsonConvert.DeserializeObject<KudaGoPlacesOutput>(responseJson);
-                    return response.Results;
+                    response.Page = numberOfPage;
+                    return response;
                 }
-                else if (res.StatusCode.Equals(HttpStatusCode.NotFound))
+                else if (responseMessage.StatusCode.Equals(HttpStatusCode.NotFound))
                 {
                     throw new NotFoundException(("KudaGo Api places notfound result code"));
                 }
                 else
                 {
-                    throw new Exception("KudaGo Api places " + res.StatusCode.ToString() + " result code");
+                    throw new Exception("KudaGo Api places " + responseMessage.StatusCode.ToString() + " result code");
                 }
             }
         }

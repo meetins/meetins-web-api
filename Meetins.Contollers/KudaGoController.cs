@@ -94,11 +94,11 @@ namespace Meetins.Contollers
         /// <returns> Список всех доступных мест. </returns>
         [HttpGet]
         [Route("places")]
-        public async Task<ActionResult<IEnumerable<Results>>> GetAllAvailablePlacesAsync()
+        public async Task<ActionResult<KudaGoPlacesOutput>> GetAllAvailablePlacesAsync(int numberOfPage = 1)
         {
             try
             {
-                return Ok(await _kudaGoService.GetAllAvailablePlacesAsync());
+                return Ok(await _kudaGoService.GetAllAvailablePlacesAsync(numberOfPage));
             }
             catch (NotFoundException)
             {
