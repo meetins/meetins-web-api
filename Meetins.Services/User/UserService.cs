@@ -12,6 +12,7 @@ using Meetins.Models.Mapper;
 using Meetins.Models.Entities;
 using Meetins.Core.Logger;
 using Meetins.Core.Data;
+using Meetins.Communication.Abstractions;
 
 namespace Meetins.Services.User
 {
@@ -23,12 +24,16 @@ namespace Meetins.Services.User
         private PostgreDbContext _postgreDbContext;
         private IUserRepository _userRepository;
         private IRefreshTokenRepository _refreshTokenRepository;
+        private IMailingService _mailingService;
+        private ICommonService _commonService;
 
-        public UserService(IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository, PostgreDbContext postgreDbContext)
+        public UserService(IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository, PostgreDbContext postgreDbContext, IMailingService mailingService, ICommonService commonService)
         {
             _userRepository = userRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _postgreDbContext = postgreDbContext;
+            _mailingService = mailingService;
+            _commonService = commonService;
         }
 
         /// <summary>
@@ -460,6 +465,86 @@ namespace Meetins.Services.User
             }
         }
 
+        /// <summary>
+        /// Метод обновит город пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="cityId">Идентификатор нового города.</param>
+        /// <returns>Данные пользователя.</returns>
+        public async Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId)
+        {
+            try
+            {
+                var user = await _userRepository.UpdateCityIdAsync(userId, cityId);
+
+                return user;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод отправит и сохранит код в БД.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>        
+        /// <returns>Статус операции.</returns>
+        public async Task<bool> SendAndSaveAcceptCodeAsync(Guid userId)
+        {
+            try
+            {
+                var findedUser = await _userRepository.GetUserByIdAsync(userId);
+                
+                if (findedUser is null)
+                {
+                    throw new ArgumentException($"Пользователь с ID {userId} не найден.", nameof(userId));
+                }
+
+                string acceptCode = await _commonService.GenerateCodeAsync();               
+
+                var saveStatus = await _userRepository.SaveAcceptCodeAsync(userId, acceptCode);
+
+                await _mailingService.SendAcceptCodeMailAsync(acceptCode, findedUser.Email);
+
+                return saveStatus;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Метод подтвердит почту пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="code">Код.</param>
+        /// <returns>Статус операции.</returns>
+        public async Task<bool> ConfirmMailAsync(Guid userId, string code)
+        {
+            try
+            {
+                var confirmStatus = await _userRepository.ConfirmMailAsync(userId, code);
+
+                return confirmStatus;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
+        }
+
         #region PRIVATE-методы
         private bool ValidateRefreshToken(string refreshToken)
         {
@@ -537,7 +622,7 @@ namespace Meetins.Services.User
             string refreshToken = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return refreshToken;
-        }
+        }       
         #endregion
     }
 }

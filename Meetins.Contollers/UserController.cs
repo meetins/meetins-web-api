@@ -166,5 +166,65 @@ namespace Meetins.Controllers
 
             return Ok(status);
         }
+
+        /// <summary>
+        /// Метод отправит код подтверждения на почту аутентифицированному пользователю и сохранит код в БД.
+        /// </summary>
+        /// <param name="email">Почта.</param>
+        /// <returns>Статус операции.</returns>
+        [HttpGet]
+        [Route("send-accept-code")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        public async Task<ActionResult<bool>> SendAcceptCodeMailAsync()
+        {
+            try
+            {
+                string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+                if (!Guid.TryParse(rawUserId, out Guid userId))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _userService.SendAndSaveAcceptCodeAsync(userId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new {message = ex.Message});
+            }           
+        }
+
+        /// <summary>
+        /// Метод проверит код и подтвердит почту.
+        /// </summary>
+        /// <param name="email">Почта.</param>
+        /// <param name="code">Код.</param>
+        /// <returns>Статус подтверждения.</returns>
+        [HttpPost]
+        [Route("confirm-mail")]
+        [ProducesResponseType(200, Type = typeof(bool))]
+        public async Task<ActionResult<bool>> ConfirmMailAsync([FromBody] string code)
+        {
+            try
+            {
+                string rawUserId = HttpContext.User.FindFirst("userId").Value;
+
+                if (!Guid.TryParse(rawUserId, out Guid userId))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _userService.ConfirmMailAsync(userId, code); 
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
+
