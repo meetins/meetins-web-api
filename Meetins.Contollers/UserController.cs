@@ -19,10 +19,12 @@ namespace Meetins.Controllers
     public class UserController : ControllerBase
     {
         IUserService _userService;
+        ICommonService _commonService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ICommonService commonService)
         {
             _userService = userService;
+            _commonService = commonService;
         }
 
         /// <summary>
@@ -109,8 +111,11 @@ namespace Meetins.Controllers
             try
             {
                 var user = await _userService.GetUserByEmailAsync(email);
+                var profile = user.ToProfileOutput();
 
-                return Ok(user.ToProfileOutput());
+                profile.City = await _commonService.GetCityNameAsync(user.CityId);
+
+                return Ok(profile);
             }
             catch (Exception e)
             {                
@@ -134,8 +139,11 @@ namespace Meetins.Controllers
             }
 
             var user = await _userService.GetUserByPhoneAsync(phone);
+            var profile = user.ToProfileOutput();
 
-            return Ok(user.ToProfileOutput());
+            profile.City = await _commonService.GetCityNameAsync(user.CityId);
+
+            return Ok(profile);
         }
 
         /// <summary>

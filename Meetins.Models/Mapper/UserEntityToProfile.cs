@@ -32,7 +32,6 @@ namespace Meetins.Models.Mapper
                 DateRegister = user.DateRegister,
                 Login = user.Login,
                 BirthDate = user.BirthDate,
-                City = user.City.CityName,
                 EmailConfirmed = user.EmailConfirmed
             };
 

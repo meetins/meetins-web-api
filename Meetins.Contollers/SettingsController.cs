@@ -17,11 +17,13 @@ namespace Meetins.Controllers
     public class SettingsController : ControllerBase
     {
         private IUserService _userService;       
-        private IDialogsService _dialogsService;        
-        public SettingsController(IUserService userService, IDialogsService dialogsService)
+        private IDialogsService _dialogsService;
+        private ICommonService _commonService;
+        public SettingsController(IUserService userService, IDialogsService dialogsService, ICommonService commonService)
         {
             _userService = userService;            
             _dialogsService = dialogsService;
+            _commonService = commonService;
         }
 
         /// <summary>
@@ -40,8 +42,11 @@ namespace Meetins.Controllers
             }
 
             var user = await _userService.GetUserByLoginAsync(login);
+            var profile = user.ToProfileOutput();
 
-            return Ok(user.ToProfileOutput());
+            profile.City = await _commonService.GetCityNameAsync(user.CityId);
+
+            return Ok(profile);
         }
 
         /// <summary>
@@ -63,8 +68,11 @@ namespace Meetins.Controllers
             try
             {
                 var result = await _userService.UpdateLoginAsync(userId, login);
+                var profile = result.ToProfileOutput();
 
-                return Ok(result.ToProfileOutput());
+                profile.City = await _commonService.GetCityNameAsync(result.CityId);
+
+                return Ok(profile);
             }
             catch (Exception e)
             {
@@ -91,8 +99,11 @@ namespace Meetins.Controllers
             try
             {
                 var result = await _userService.UpdateEmailAsync(userId, email);
+                var profile = result.ToProfileOutput();
 
-                return Ok(result.ToProfileOutput());
+                profile.City = await _commonService.GetCityNameAsync(result.CityId);
+
+                return Ok(profile);
             }
             catch (Exception e)
             {
@@ -119,8 +130,11 @@ namespace Meetins.Controllers
             try
             {
                 var result = await _userService.UpdatePhoneNumberAsync(userId, phone);
+                var profile = result.ToProfileOutput();
 
-                return Ok(result.ToProfileOutput());
+                profile.City = await _commonService.GetCityNameAsync(result.CityId);
+
+                return Ok(profile);
             }
             catch (Exception e)
             {
@@ -147,8 +161,11 @@ namespace Meetins.Controllers
             try
             {
                 var result = await _userService.UpdateNameAsync(userId, name);
+                var profile = result.ToProfileOutput();
 
-                return Ok(result.ToProfileOutput());
+                profile.City = await _commonService.GetCityNameAsync(result.CityId);
+
+                return Ok(profile);
             }
             catch (Exception e)
             {
@@ -175,8 +192,11 @@ namespace Meetins.Controllers
             try
             {
                 var result = await _userService.UpdatePasswordAsync(userId, password);
+                var profile = result.ToProfileOutput();
 
-                return Ok(result.ToProfileOutput());
+                profile.City = await _commonService.GetCityNameAsync(result.CityId);
+
+                return Ok(profile);
             }
             catch (Exception e)
             {
@@ -208,36 +228,11 @@ namespace Meetins.Controllers
             try
             {
                 var result = await _userService.UpdateBirthDateAsync(userId, date);
+                var profile = result.ToProfileOutput();
 
-                return Ok(result.ToProfileOutput());
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { message = e.Message });
-            }
-        }
+                profile.City = await _commonService.GetCityNameAsync(result.CityId);
 
-        /// <summary>
-        /// Метод обновит город пользователя.
-        /// </summary>
-        /// <param name="city">Идентификатор нового города.</param>
-        /// <returns>Данные профиля пользователя.</returns>
-        [HttpPost]
-        [Route("update-city")]
-        public async Task<ActionResult<ProfileOutput>> UpdateCityAsync([FromBody] Guid cityId)
-        {
-            string rawUserId = HttpContext.User.FindFirst("userId").Value;
-
-            if (!Guid.TryParse(rawUserId, out Guid userId))
-            {
-                return Unauthorized();
-            }
-
-            try
-            {
-                var result = await _userService.UpdateCityAsync(userId, cityId);
-
-                return Ok(result.ToProfileOutput());
+                return Ok(profile);
             }
             catch (Exception e)
             {

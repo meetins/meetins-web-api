@@ -1,5 +1,5 @@
 ﻿using Meetins.Abstractions.Repositories;
-using Meetins.Core.Exceptions;
+using Meetins.Models.Exceptions;
 using Meetins.Models.Entities;
 using Meetins.Services.Profile;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -1,5 +1,5 @@
 ﻿using Meetins.Abstractions.Repositories;
-using Meetins.Core.Exceptions;
+using Meetins.Models.Exceptions;
 using Meetins.Models.KudaGo;
 using Meetins.Services.KudaGo;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,13 +21,13 @@ namespace Meetins.Tests.KudaGo
         public async Task GetAllAvailableCitiesAsyncTest_ReturnsCities()
         {
             //Arrange
-            async Task<IEnumerable<KudaGoOutput>> GetMockedCities()
+            async Task<IEnumerable<KudaGoCitiesOutput>> GetMockedCities()
             {
-                return new List<KudaGoOutput>
+                return new List<KudaGoCitiesOutput>
                 {
-                new KudaGoOutput { Name ="Москва", Slug ="msk"},
-                new KudaGoOutput { Name ="Санкт-Петербург", Slug ="spb"},
-                new KudaGoOutput { Name ="Екатеринбург", Slug ="ekb"}
+                new KudaGoCitiesOutput { Name ="Москва", Slug ="msk"},
+                new KudaGoCitiesOutput { Name ="Санкт-Петербург", Slug ="spb"},
+                new KudaGoCitiesOutput { Name ="Екатеринбург", Slug ="ekb"}
                 };
             }
                         

@@ -460,29 +460,6 @@ namespace Meetins.Services.User
             }
         }
 
-        /// <summary>
-        /// Метод обновит город пользователя.
-        /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <param name="cityId">Идентификатор нового города.</param>
-        /// <returns>Данные пользователя.</returns>
-        public async Task<UserEntity> UpdateCityAsync(Guid userId, Guid cityId)
-        {
-            try
-            {
-                var user = await _userRepository.UpdateCityAsync(userId, cityId);
-
-                return user;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
-                await logger.LogError();
-                throw;
-            }
-        }
-
         #region PRIVATE-методы
         private bool ValidateRefreshToken(string refreshToken)
         {
