@@ -26,5 +26,11 @@ namespace Meetins.Abstractions.Repositories
         /// </summary>
         /// <returns> Список категорий мест. </returns>
         Task<IEnumerable<KudaGoCategoriesOutput>> GetAllPlaceСategoriesAsync();
+
+        /// <summary>
+        /// Получение списка всех доступных мест.
+        /// </summary>
+        /// <returns> Список всех доступных мест. </returns>
+        Task<KudaGoPlacesOutput> GetAllAvailablePlacesAsync(int numberOfPage);
     }
 }

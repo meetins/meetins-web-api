@@ -49,7 +49,7 @@ namespace Meetins.Contollers
         /// </summary>
         /// <returns> Список категорий событий. </returns>
         [HttpGet]
-        [Route("event_categories")]
+        [Route("event-categories")]
         public async Task<ActionResult<IEnumerable<KudaGoCategoriesOutput>>> GetAllEventСategoriesAsync()
         {
             try
@@ -71,12 +71,34 @@ namespace Meetins.Contollers
         /// </summary>
         /// <returns> Список категорий мест. </returns>
         [HttpGet]
-        [Route("place_categories")]
+        [Route("place-categories")]
         public async Task<ActionResult<IEnumerable<KudaGoCategoriesOutput>>> GetAllPlaceСategoriesAsync()
         {
             try
             {
                 return Ok(await _kudaGoService.GetAllPlaceСategoriesAsync());
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { messge = e.Message });
+            }
+        }
+
+        /// <summary>
+        /// Получение списка всех доступных мест.
+        /// </summary>
+        /// <returns> Список всех доступных мест. </returns>
+        [HttpGet]
+        [Route("places")]
+        public async Task<ActionResult<KudaGoPlacesOutput>> GetAllAvailablePlacesAsync(int numberOfPage = 1)
+        {
+            try
+            {
+                return Ok(await _kudaGoService.GetAllAvailablePlacesAsync(numberOfPage));
             }
             catch (NotFoundException)
             {
