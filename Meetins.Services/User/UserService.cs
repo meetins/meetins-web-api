@@ -136,6 +136,8 @@ namespace Meetins.Services.User
                     profile = user.ToProfileOutput()
                 };
 
+                loginOutput.profile.City = await _commonService.GetCityNameAsync(user.CityId);
+
                 return loginOutput;
             }
             catch (Exception e)
