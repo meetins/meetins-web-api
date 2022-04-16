@@ -28,14 +28,14 @@ namespace Meetins.Abstractions.Repositories
         /// Метод удалит рефреш токен.
         /// </summary>
         /// <param name="refreshTokenId">Идентификатор токена.</param>
-        /// <returns></returns>
-        Task<Task> DeleteAsync(Guid refreshTokenId);
+        /// <returns>Статус операции.</returns>
+        Task<bool> DeleteAsync(Guid refreshTokenId);
 
         /// <summary>
         /// Метод удалит все токены принадлежащие пользователю.
         /// </summary>
         /// <param name="userId">Идентификатор пользователя.</param>
-        /// <returns></returns>
-        Task<Task> DeleteAllAsync(Guid userId);        
+        /// <returns>Статус операции.</returns>
+        Task<bool> DeleteAllAsync(Guid userId);        
     }
 }

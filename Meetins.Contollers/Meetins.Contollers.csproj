@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Meetins.Abstractions\Meetins.Abstractions.csproj" />
+    <ProjectReference Include="..\Meetins.Communication\Meetins.Communication.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using Meetins.Abstractions.Repositories;
 using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.Entities;
 using Meetins.Models.User.Output;
 using Microsoft.EntityFrameworkCore;
@@ -10,54 +11,94 @@ using System.Threading.Tasks;
 
 namespace Meetins.Services.User
 {
+    /// <summary>
+    /// Класс репозитория рефреш токенов.
+    /// </summary>
     public class RefreshTokenRepository : IRefreshTokenRepository
     {
-        private PostgreDbContext _db;
+        private PostgreDbContext _postgreDbContext;
 
-        public RefreshTokenRepository(PostgreDbContext db)
+        public RefreshTokenRepository(PostgreDbContext postgreDbContext)
         {
-            _db = db;
+            _postgreDbContext = postgreDbContext;
         }
 
-        public async Task<Task> DeleteAllAsync(Guid userId)
+        /// <summary>
+        /// Метод удалит все рефреш токены пользователя по идентификатору пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Статус оперцаии.</returns>
+        public async Task<bool> DeleteAllAsync(Guid userId)
         {
-            List<RefreshTokenEntity> refreshTokens = await _db.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
-
-            foreach (var item in refreshTokens)
+            try
             {
-                _db.RefreshTokens.Remove(item);
+                List<RefreshTokenEntity> refreshTokens = await _postgreDbContext.RefreshTokens.Where(x => x.UserId == userId).ToListAsync();
 
+                foreach (var item in refreshTokens)
+                {
+                    _postgreDbContext.RefreshTokens.Remove(item);
+                }
+
+                await _postgreDbContext.SaveChangesAsync();
+
+                return true;
             }
-
-            await _db.SaveChangesAsync();
-
-            return Task.CompletedTask;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
+        /// <summary>
+        /// Метод создаст новую запись в таблице рефреш токенов.
+        /// </summary>
+        /// <param name="refreshToken">Рефреш токен.</param>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Выходная модель рефреш токена.</returns>
         public async Task<RefreshTokenOutput> CreateAsync(string refreshToken, Guid userId)
         {
-            RefreshTokenEntity newRefreshToken = new RefreshTokenEntity
+            try
             {
-                Token = refreshToken,
-                UserId = userId
-            };
+                RefreshTokenEntity newRefreshToken = new RefreshTokenEntity
+                {
+                    Token = refreshToken,
+                    UserId = userId
+                };
 
-            await _db.RefreshTokens.AddAsync(newRefreshToken);
+                await _postgreDbContext.RefreshTokens.AddAsync(newRefreshToken);
 
-            await _db.SaveChangesAsync();
+                await _postgreDbContext.SaveChangesAsync();
 
-            RefreshTokenOutput result = new()
+                RefreshTokenOutput result = new()
+                {
+                    Token = refreshToken,
+                    UserId = userId
+                };
+
+                return result;
+            }
+            catch (Exception e)
             {
-                Token = refreshToken,
-                UserId = userId
-            };
-
-            return result;
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
+        /// <summary>
+        /// Метод найдёт запись в таблице рефреш токенов по значению токена.
+        /// </summary>
+        /// <param name="refreshToken"></param>
+        /// <returns>Выходная модель рефреш токена.</returns>
         public async Task<RefreshTokenOutput> GetByTokenAsync(string refreshToken)
         {
-            var result = await _db.RefreshTokens
+            try
+            {
+                var result = await _postgreDbContext.RefreshTokens
                     .Where(b => b.Token.Equals(refreshToken))
                     .Select(b => new RefreshTokenOutput
                     {
@@ -67,21 +108,43 @@ namespace Meetins.Services.User
                     })
                     .FirstOrDefaultAsync();
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
 
-        public async Task<Task> DeleteAsync(Guid refreshTokenId)
+        /// <summary>
+        /// Метод удалит токен по идентификатору токена.
+        /// </summary>
+        /// <param name="refreshTokenId">Идентификатор токена.</param>
+        /// <returns>Статус операции.</returns>
+        public async Task<bool> DeleteAsync(Guid refreshTokenId)
         {
+            try
+            {
+                var deletedToken = await _postgreDbContext.RefreshTokens
+                   .Where(b => b.RefreshTokenId.Equals(refreshTokenId))
+                   .FirstOrDefaultAsync();
 
-            var deletedToken = await _db.RefreshTokens
-                    .Where(b => b.RefreshTokenId.Equals(refreshTokenId))
-                    .FirstOrDefaultAsync();
+                _postgreDbContext.RefreshTokens.Remove(deletedToken);
 
-            _db.RefreshTokens.Remove(deletedToken);
+                await _postgreDbContext.SaveChangesAsync();
 
-            await _db.SaveChangesAsync();
-
-            return Task.CompletedTask;
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
         }
     }
 }
