@@ -16,11 +16,13 @@ namespace Meetins.Services.Profile
     {
         private IUserRepository _userRepository;
         private PostgreDbContext _postgreDbContext;
+        private ICommonService _commonService;
 
-        public ProfileService(IUserRepository userRepository, PostgreDbContext postgreDbContext)
+        public ProfileService(IUserRepository userRepository, PostgreDbContext postgreDbContext, ICommonService commonService)
         {
             _userRepository = userRepository;
             _postgreDbContext = postgreDbContext;
+            _commonService = commonService;
         }
 
         /// <summary>
@@ -33,8 +35,11 @@ namespace Meetins.Services.Profile
             try
             {
                 var user = await _userRepository.GetUserByIdAsync(userId);
+                var profile = user.ToProfileOutput();
 
-                return user.ToProfileOutput();
+                profile.City = await _commonService.GetCityNameAsync(user.CityId);
+
+                return profile;
             }
             catch (Exception e)
             {
@@ -62,7 +67,11 @@ namespace Meetins.Services.Profile
                     return null;
                 }
 
-                return user.ToProfileOutput();
+                var profile = user.ToProfileOutput();
+
+                profile.City = await _commonService.GetCityNameAsync(user.CityId);
+
+                return profile;
             }
             catch (Exception e)
             {
@@ -84,8 +93,11 @@ namespace Meetins.Services.Profile
             try
             {
                 var user = await _userRepository.UpdateAvatarPathAsync(userId, newAvatarPath);
+                var profile = user.ToProfileOutput();
 
-                return user.ToProfileOutput();
+                profile.City = await _commonService.GetCityNameAsync(user.CityId);
+
+                return profile;
             }
             catch (Exception e)
             {
@@ -107,8 +119,11 @@ namespace Meetins.Services.Profile
             try
             {
                 var user = await _userRepository.UpdateStatusAsync(userId, status);
+                var profile = user.ToProfileOutput();
 
-                return user.ToProfileOutput();
+                profile.City = await _commonService.GetCityNameAsync(user.CityId);
+
+                return profile;
             }
             catch (Exception e)
             {

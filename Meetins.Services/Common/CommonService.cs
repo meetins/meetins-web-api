@@ -55,5 +55,27 @@ namespace Meetins.Services.Common
                 throw;
             }
         }
+
+        /// <summary>
+        /// Получение названия города по идентификатору города
+        /// </summary>
+        /// <param name="cityId">Идентификатор города</param>
+        /// <returns>Название города</returns>
+        public async Task<string> GetCityNameAsync(Guid cityId)
+        {
+            try
+            {
+                var result = await _commonRepository.GetCityNameAsync(cityId);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
+        }
     }
 }

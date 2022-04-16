@@ -1,7 +1,9 @@
 ﻿using Meetins.Abstractions.Repositories;
+using Meetins.Abstractions.Services;
 using Meetins.Core.Data;
 using Meetins.Core.Logger;
 using Meetins.Models.Entities;
+using Meetins.Services.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -15,10 +17,12 @@ namespace Meetins.Services.User
     public class UserRepository : IUserRepository
     {
         private PostgreDbContext _postgreDbContext;
+        private ICommonService _commonService;
 
-        public UserRepository(PostgreDbContext postgreDbContext)
+        public UserRepository(PostgreDbContext postgreDbContext, ICommonService commonService)
         {
             _postgreDbContext = postgreDbContext;
+            _commonService = commonService;
         }
 
         /// <summary>
@@ -464,36 +468,6 @@ namespace Meetins.Services.User
                 if (user != null)
                 {
                     user.BirthDate = birthDate;
-
-                    await _postgreDbContext.SaveChangesAsync();
-                }
-
-                return user;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
-                await logger.LogError();
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Метод обновит город пользователя.
-        /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <param name="cityId">Идентификатор нового города.</param>
-        /// <returns>Данные пользователя.</returns>
-        public async Task<UserEntity> UpdateCityIdAsync(Guid userId, Guid cityId)
-        {
-            try
-            {
-                var user = await GetUserByIdAsync(userId);
-
-                if (user != null)
-                {
-                    user.CityId = cityId;
 
                     await _postgreDbContext.SaveChangesAsync();
                 }

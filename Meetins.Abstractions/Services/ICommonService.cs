@@ -1,4 +1,5 @@
 ﻿using Meetins.Models.Common;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,6 +15,13 @@ namespace Meetins.Abstractions.Services
         /// </summary>
         /// <returns> Список всех городов пользователей. </returns>
         Task<IEnumerable<CityOutput>> GetAllCitiesAsync();
+
+        /// <summary>
+        /// Получение название города по идентификатору города
+        /// </summary>
+        /// <param name="cityId">Идентификатор города</param>
+        /// <returns>Название города</returns>
+        Task<string> GetCityNameAsync(Guid cityId);
 
         /// <summary>
         /// Метод генерирует 6-значный цифробуквенный код.
