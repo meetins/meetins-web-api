@@ -115,9 +115,7 @@ namespace Meetins.WebApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(options =>
-            options.WithOrigins("http://localhost:5003", "http://localhost:3000",
-                        "https://meetins-s.vercel.app",
-                        "https://meetins.ru")
+            options.WithOrigins("https://meetins.org")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
