@@ -99,5 +99,27 @@ namespace Meetins.Services.KudaGo
                 throw;
             }
         }
+
+        /// <summary>
+        /// Метод вернёт все приглашения для пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Список приглашений для пользователя.</returns>
+        public async Task<IEnumerable<KudagoInvitesOutput>> GetMyInvitesAsync(Guid userId)
+        {
+            try
+            {
+                var result = await _kudaGoRepository.GetMyInvitesAsync(userId);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;
+            }
+        }
     }
 }
