@@ -1,9 +1,13 @@
 ﻿using Meetins.Abstractions.Repositories;
+using Meetins.Core.Data;
+using Meetins.Core.Logger;
 using Meetins.Models.Exceptions;
 using Meetins.Models.KudaGo;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -17,9 +21,11 @@ namespace Meetins.Services.KudaGo
     {
         private string ApiUrl = "https://kudago.com/public-api/";
         private string ApiVersion = "v1.4";
+        private readonly PostgreDbContext _postgreDbContext;
 
-        public KudaGoRepository()
+        public KudaGoRepository(PostgreDbContext postgreDbContext)
         {
+            _postgreDbContext = postgreDbContext;
         }
 
         /// <summary>
@@ -124,6 +130,41 @@ namespace Meetins.Services.KudaGo
                 {
                     throw new Exception("KudaGo Api places " + responseMessage.StatusCode.ToString() + " result code");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Метод вернёт все приглашения для пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Список приглашений для пользователя.</returns>
+        public async Task<IEnumerable<KudagoInvitesOutput>> GetMyInvitesAsync(Guid userId)
+        {
+            try
+            {
+                var result = await _postgreDbContext.KudagoInvites
+                                    .Where(u => u.UserIdTo == userId)
+                                    .Include(u=>u.UserFrom)
+                                    .Select(u=> new KudagoInvitesOutput
+                                    {
+                                        InviteId = u.InviteId,
+                                        KudagoEventId = u.KudagoEventId,
+                                        Comment = u.Comment,
+                                        CreatedAt = u.CreatedAt,
+                                        UserIdFrom = u.UserIdFrom,
+                                        UserNameFrom = u.UserFrom.Name,
+                                        UserAvatarFrom = u.UserFrom.Avatar,
+                                        IsViewed = u.IsViewed
+                                    })
+                                    .ToListAsync();
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                var logger = new Logger(_postgreDbContext, e.GetType().FullName, e.Message, e.StackTrace);
+                await logger.LogError();
+                throw;                
             }
         }
     }

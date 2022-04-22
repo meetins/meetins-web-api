@@ -1,4 +1,5 @@
 ﻿using Meetins.Models.KudaGo;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -32,5 +33,12 @@ namespace Meetins.Abstractions.Repositories
         /// </summary>
         /// <returns> Список всех доступных мест. </returns>
         Task<KudaGoPlacesOutput> GetAllAvailablePlacesAsync(int numberOfPage);
+
+        /// <summary>
+        /// Метод вернёт все приглашения для пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Список приглашений для пользователя.</returns>
+        Task<IEnumerable<KudagoInvitesOutput>> GetMyInvitesAsync(Guid userId);
     }
 }

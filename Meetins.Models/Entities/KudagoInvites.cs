@@ -38,14 +38,12 @@ namespace Meetins.Models.Entities
         /// <summary>
         /// Пользователь, от которого приглашение.
         /// </summary>
-        [ForeignKey("KudagoInvites_UserIdFrom_fkey")]
         [Column("UserIdFrom", TypeName = "uuid")]
         public Guid UserIdFrom { get; set; }
 
         /// <summary>
         /// Пользователь, которому приглашение.
-        /// </summary>
-        [ForeignKey("KudagoInvites_UserIdTo_fkey")]
+        /// </summary>        
         [Column("UserIdTo", TypeName = "uuid")]
         public Guid UserIdTo { get; set; }
 
@@ -54,5 +52,17 @@ namespace Meetins.Models.Entities
         /// </summary>
         [Column("IsViewed", TypeName = "boolean")]
         public bool IsViewed { get; set; }
+
+        /// <summary>
+        /// Навигационное свойство.
+        /// </summary>
+        [ForeignKey("UserIdFrom")]
+        public UserEntity UserFrom { get; set; }
+
+        /// <summary>
+        /// Навигационное свойство.
+        /// </summary>
+        [ForeignKey("UserIdTo")]
+        public UserEntity UserTo { get; set; }
     }
 }
